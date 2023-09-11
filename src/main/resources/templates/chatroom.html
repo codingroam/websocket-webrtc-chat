@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞鱼聊天</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+
+    <script src="/js/emoji_jQuery.min.js"></script>
+    <!--    <link rel="stylesheet" href="../static/css/style.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+    <style>
+        @media(min-width: 768px) {
+            .panel-container {
+                border-right: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .panel-chat-list{
+                height: 300px; overflow-y:scroll; background: #f5f5f5
+            }
+            .panel-chat-card{
+                height: 500px; overflow-y:scroll; background: #f5f5f5
+            }
+
+            .room-card {
+                width: 50%;
+            }
+
+            .w-30 {
+                width: 30%;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .panel-container {
+                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            }
+
+            .room-card {
+                width: 100%;
+            }
+
+            .w-30 {
+                width: 48%;
+            }
+
+            .panel-chat-list{
+                height: 200px; overflow-y:scroll; background: #f5f5f5
+            }
+            .panel-chat-card{
+                height: 400px; overflow-y:scroll; background: #f5f5f5
+            }
+        }
+
+
+        .no-cursor {
+            caret-color: transparent;
+        }
+
+        .chat-card-header {
+            height: 1.5rem;
+            font-size: 2px;
+            padding: 2% 0;
+        }
+
+        .linestate-font {
+            font-size: 1px;
+        }
+
+        .count-font{
+            font-size: 1px;
+        }
+
+        .online-background {
+            background-color: #2dc5374d;
+        }
+
+        .offline-background {
+            background-color: #8c838d57;
+        }
+    </style>
+</head>
+
+
+<body class="bg-light">
+<div class="container pt-3">
+    <div class="card">
+        <div class="card-header bg-success bg-gradient text-light d-flex justify-content-between no-cursor">
+            <span class="text-light no-cursor"><i class="bi bi-send"></i>&nbsp;飞鱼&nbsp;</i> </span>
+            <span id="talktitle">飞鱼Chat&nbsp;</i></span>
+            <span class="text-light" onclick="logout()">退出</span>
+        </div>
+        <div class="card-body no-cursor" style="padding: 0 0">
+            <div class="row" style="margin-left: 0">
+                <div class="panel-container col-sm-12 col-md-4" style="background: #eae7e6;padding: 0 0;">
+                    <ul class="list-group list-group-flush" style="background: #eae7e6">
+                        <li class="list-group-item d-flex justify-content-between" style="background: #f5f5f5">
+                            <div>
+                                <div class="mt-1"><i class="bi bi-person-circle"></i><b>&nbsp;<span
+                                        style="text-overflow:ellipsis" id="user"></span></b></div>
+                            </div><button type="button" class="btn btn-success btn-sm">在线</button>
+                        </li>
+
+                    </ul>
+                    <ul></ul>
+
+                    <ul class="list-group list-group-flush" style="background: #eae7e6">
+                        <li class="list-group-item" style="background: #f5f5f5"><i
+                                class="bi bi-people-fill"></i>&nbsp;<b>用户列表</b></li>
+
+                    </ul>
+                    <div class="row">
+                        <div>
+                            <div class="list-group panel-chat-list" id="users" role="tablist" style="background: #eae7e6" >
+                                <!--                                <a class="list-group-item list-group-item-action active"  data-bs-toggle="list" href="#"  >Home</a>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 panel-chat-card"
+                     id="talk-container">
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="input-group mb-1 mt-1">
+                    <input id="sendmessage" type="text" class="form-control" placeholder="请输入消息">
+                    <button id="emojibtn" class="btn btn-light"><i class="bi bi-emoji-laughing"></i></button>
+                    <button id="send" class="btn bg-success text-light"><i class="bi bi-send"></i>&nbsp;发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var websocket;
+        var username;
+        var lockReconnect = false;
+
+        $(document).ready(function () {
+
+            var url = location.href;
+
+            var paraString = url.substring(url.indexOf("?") + 1, url.length).split("=");
+
+            if (paraString != null && paraString.length == 2) {
+                username = decodeURI(paraString[1])
+                $("#user").html(username);
+                $("body").data("user", username);
+            } else {
+                $.alert({
+                    title: '提示',
+                    content: '没有用户！',
+                });
+                return
+            }
+
+            if ('WebSocket' in window) {
+                websocketInit()
+            } else {
+                alert("not support websocket")
+                return;
+            }
+
+
+            $("#send").click(function () {
+                if ($("body").data("to") == undefined) {
+                    var activeuser = $("#users > .active").val()
+                    if (activeuser == undefined) {
+                        // alert("当前没有其他用户在线,无法发送消息");
+
+                        $.alert({
+                            title: '提示',
+                            content: '当前没有其他用户在线,无法发送消息',
+                        });
+                        return false;
+                    } else {
+                        $("body").data("to", activeuser);
+                    }
+
+                }
+                var data = {};
+                data["from"] = username;
+                data["to"] = $("body").data("to");
+                data["content"] = $("#sendmessage").val();
+                websocket.send(JSON.stringify(data));
+                var messagevar = getEmojiStr($("#sendmessage").val())
+                var message = `<div class="d-flex justify-content-end my-3">
+                        <div class="card w-30 border-light">
+                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
+                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
+                        </div>
+                    </div>`;
+
+                $("#talk-container").append(message);
+                storageTalkUserMessage(data["to"], message)
+                scrollToBottom();
+                $("#sendmessage").val("");
+            });
+
+            $('#sendmessage').keydown(function (e) {
+                if (e.keyCode == 13) {
+                    $("#send").click()
+                }
+            });
+
+            $.Lemoji({
+                emojiInput: '#sendmessage',
+                emojiBtn: '#emojibtn',
+                position: 'LEFTBOTTOM',
+                length: 8,
+                emojis: {
+                    qq: { path: 'images/qq/', code: ':', name: 'QQ表情' },
+                    tieba: { path: 'images/tieba', code: ';', name: "贴吧表情" },
+                    emoji: { path: 'images/emoji', code: ',', name: 'Emoji表情' }
+                }
+            });
+
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState == 'hidden') {
+                    //记录页面隐藏时间
+                    console.log("进入锁屏或者后台" + new Date())
+                } else {
+                    console.log("从锁屏或者后台唤醒" + new Date())
+                    var readyState = WebSocket.readyState
+                    if (readyState == 2 || readyState == 3) {
+                        reconnect()
+                    }
+                    scrollToBottom()
+                }
+            });
+
+
+
+        });
+        function addOnlineUserAndGet(user) {
+            var alluserkey = getAlluserKey();
+            var allUserSet = window.localStorage.getItem(alluserkey);
+            if (allUserSet == undefined) {
+                allUserSet = new Set();
+                allUserSet.add(user)
+                window.localStorage.setItem(alluserkey, JSON.stringify(Array.from(allUserSet)));
+            } else {
+                var allUserSet = new Set(JSON.parse(allUserSet))
+                allUserSet.add(user);
+                window.localStorage.setItem(alluserkey, JSON.stringify(Array.from(allUserSet)));
+            }
+            return allUserSet;
+        }
+
+
+
+        function talk(a) {
+            $("#users").children().removeClass("active")
+            $(a).addClass("active");
+            var talkToUsername = $(a).children()[0].innerHTML
+            $("#talktitle").text("与" + talkToUsername + "的聊天");
+
+            $(a).find('span .count-font')[0].innerText = ''
+            clearUnreadMessageCount(talkToUsername)
+            var userMessageKey = getTalkUserMessageKey(talkToUsername)
+            var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
+            if (messageList != undefined) {
+                $("#talk-container").empty();
+                for (var i = 0; i < messageList.length; i++) {
+                    $("#talk-container").append(messageList[i]);
+                }
+
+            } else {
+                $("#talk-container").empty();
+            }
+            $("body").data("to", talkToUsername);
+            scrollToBottom()
+        }
+
+        function talkuser(username) {
+            if (username == null || username == undefined) {
+                return
+            }
+            $("#users").children(`span:contains(${username})`).addClass("active");
+            $("#talktitle").text("与" + username + "的聊天");
+            var talkUserKey = getTalkUserMessageKey(username)
+            var messageList = JSON.parse(window.localStorage.getItem(talkUserKey));
+            if (messageList != undefined) {
+                $("#talk-container").empty();
+                for (var i = 0; i < messageList.length; i++) {
+                    $("#talk-container").append(messageList[i]);
+                }
+
+            } else {
+                $("#talk-container").empty();
+            }
+            $("body").data("to", username);
+        }
+
+        function getEmojiStr(str) {
+            var emojiList = getExecStrs(str)
+            if (emojiList.length > 0) {
+                for (var i = 0; i < emojiList.length; i++) {
+                    var oriEmo = "[:" + emojiList[i] + "]";
+                    var emo = $.emojiParse({
+                        content: oriEmo,
+                        emojis: [{ type: 'qq', path: 'images/qq/', code: ':' }, {
+                            path: 'images/tieba/',
+                            code: ';',
+                            type: 'tieba'
+                        }, { path: 'images/emoji/', code: ',', type: 'emoji' }]
+                    });
+                    str = str.replace(oriEmo, emo);
+                }
+
+            }
+            return str;
+        }
+
+        function getExecStrs(str) {
+            var reg = /\[\:(.*?)(?=[\]])/g;
+            var list = []
+            var result = null
+            do {
+                result = reg.exec(str)
+                result && list.push(result[1])
+            } while (result)
+            return list
+        }
+
+        function scrollToBottom() {
+            var div = document.getElementById('talk-container');
+            div.scrollTop = div.scrollHeight;
+        }
+
+
+        function logout() {
+
+            $.confirm({
+                title: '退出提示',
+                content: '确定要退出吗？',
+                buttons: {
+                    confirm: {
+                        text: "确定",
+                        action: function () {
+                            window.location.href = "logout"
+                        }
+                    },
+                    cancel: {
+                        text: "取消",
+                        action: function () {
+                            return
+                        }
+                    },
+
+                }
+            });
+
+        }
+
+        function getAlluserKey() {
+
+            return $("body").data("user") + "@@" + "all_user";
+
+        }
+
+        function getTalkUserMessageKey(talkUser) {
+            return $("body").data("user") + "@@" + talkUser + "messsage"
+
+        }
+        //当前聊天对象的mesage存储
+        function storageTalkUserMessage(talkUser, message) {
+            var userMessageKey = getTalkUserMessageKey(talkUser)
+            var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
+            if (messageList == undefined) {
+                messageList = new Array();
+                messageList.push(message)
+                window.localStorage.setItem(userMessageKey, JSON.stringify(messageList));
+            } else {
+                messageList.push(message);
+                window.localStorage.setItem(userMessageKey, JSON.stringify(messageList));
+            }
+
+        }
+
+        function websocketInit() {
+
+            try {
+                websocket = new WebSocket("ws://localhost:8086/webSocket/" + username);
+            } catch (e) {
+                console.log(' 您的浏览器暂时不支持 webSocket ');
+            }
+
+            websocket.onclose = function (e) {
+                websocket.close();
+                console.log("WebSocket 关闭");
+                reconnect()
+            }
+
+            websocket.onopen = function () {
+                //心跳检测重置
+                console.log("WebSocket 已连接");
+            }
+
+            //连接发生错误的回调方法
+            websocket.onerror = function () {
+                websocket.close();
+                console.log("WebSocket 连接发生错误");
+                reconnect()
+            }
+
+            websocket.onmessage = function (event) {
+                var data = JSON.parse(event.data);
+                if (data.contentType == "online") {//上线消息
+                    var allUserSet = addOnlineUserAndGet(data.content)
+                    if (allUserSet.size == 1) {
+                        $("#users").append(`<div class="list-group-item d-flex justify-content-between list-group-item-action active"  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
+                    } else {
+                        $("#users").append(`<div class="list-group-item d-flex justify-content-between list-group-item-action"  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
+                    }
+                    var touser = $("body").data("to")
+                    if (touser == undefined || touser == null) {
+                        talkuser(data.content)
+                    }
+                } else if (data.contentType == "offline") {//下线消息
+                    $("#users > span").remove(":contains('" + data.content + "')");
+                } else if (data.contentType == "msg") {
+                    // 普通消息
+                    // 接收服务端的实时消息并添加到HTML页面中
+                    // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
+
+                    var messagevar = getEmojiStr(data.content)
+                    var message = `<div class="d-flex justify-content-start my-3">
+                            <div class="card w-30 border-light">
+                                <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
+                                <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
+                            </div>
+                        </div>`;
+                    if (data.from == $("body").data("to")) {
+                        $("#talk-container").append(message);
+                    } else {
+                        addAndFlushUnreadMessageCount(data.from)
+                    }
+
+
+                    storageTalkUserMessage(data.from, message)
+
+                    // 滚动条滚动到最低部
+                    scrollToBottom();
+                } else {
+                    $("#users").empty()
+                    var users = data.content;
+                    for (var i = 0; i < users.length; i++) {
+                        var count = getUserUnreadMessageCount(users[i].userName)
+                        var active = getIsActive(users[i].userName)
+                        $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between list-group-item-action online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between list-group-item-action offline-background ${active ? ' active ' : ''} "`}  onclick="talk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+                    }
+                }
+            };
+
+        }
+
+        function getIsActive(username){
+           var activeUser =  $("body").data("to");
+           if ( activeUser == undefined || activeUser == null ){
+               return false;
+           }else{
+               return activeUser == username;
+           }
+        }
+
+        function getUserUnreadMessageCount(fromuser){
+            var countKey = username+"@@"+fromuser+"count"
+            var count = window.localStorage.getItem(countKey);
+            if (count == undefined || count == 0 || count == NaN){
+                return 0;
+            }else{
+                return count;
+            }
+        }
+        function addAndFlushUnreadMessageCount(fromuser) {
+
+            var countKey = username+"@@"+fromuser+"count"
+            var count = getUserUnreadMessageCount(fromuser)
+            count++
+            window.localStorage.setItem(countKey, count);
+            var countstr = "+" + count
+            $("#users").find(`div:contains(${fromuser})`).find('span .count-font')[0].innerText = countstr
+
+        }
+
+        function clearUnreadMessageCount(fromuser) {
+            var countKey = username+"@@"+fromuser+"count"
+            window.localStorage.setItem(countKey, 0);
+        }
+
+        function reconnect() {
+            if (lockReconnect) return;
+            lockReconnect = true;
+            //没连接上会一直重连，设置延迟避免请求过多，每2秒重连一次
+            setTimeout(function () {
+                console.log("WebSocket：Reconnecting!");
+                websocketInit();
+                lockReconnect = false;
+            }, 1000);
+        }
+
+        Date.prototype.format = function (fmt) {
+            var o = {
+                "M+": this.getMonth() + 1,                 //月份
+                "d+": this.getDate(),                    //日
+                "h+": this.getHours(),                   //小时
+                "m+": this.getMinutes(),                 //分
+                "s+": this.getSeconds(),                 //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds()             //毫秒
+            };
+            if (/(y+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+            }
+            return fmt;
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
