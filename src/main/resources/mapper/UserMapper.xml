@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.acme.chat.mapper.UserMapper">
+	<resultMap type="com.acme.chat.po.User" id="userMap">
+        <id column="id" property="id" ></id>
+        <result column="username" property="userName"/>
+        <result column="password" property="passWord"/>
+        <result column="nickname" property="nickName"/>
+        <result column="signature" property="signature"/>
+        <result column="addr" property="addr"/>
+    </resultMap>
+    <select id="getUserByUserName" parameterType="String"  resultMap="userMap">
+    	select * from user where  username=#{userName}
+    </select>
+
+    <select id="getAllUser"  resultMap="userMap">
+    	select * from user
+    </select>
+</mapper>

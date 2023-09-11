@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞鱼聊天</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!--    <link rel="stylesheet" href="../static/css/mstyle.css">-->
+
+    <style>
+        @media(min-width: 768px){
+            .panel-container{
+                border-right: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .room-card{
+                width: 50%;
+            }
+        }
+
+        @media(max-width: 768px){
+            .panel-container{
+                border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+            }
+            .room-card{
+                width: 100%;
+            }
+        }
+
+        .w-30{
+            width: 30%;
+        }
+    </style>
+
+</head>
+
+<body class="bg-light">
+<div class="p-5">
+    <div class="d-flex justify-content-center">
+
+
+        <div class="card room-card">
+            <div class="card-header bg-success bg-gradient text-light">
+                <div class="text-center fs-6">
+                    <i class="bi bi-chat-dots"></i>
+                    <span>飞鱼聊天</span>
+
+                </div>
+            </div>
+<!--            <form action="loginvalidate" method="post">-->
+<!--                <div class="card-body">-->
+<!--                    <div class="mb-3">-->
+<!--                        <label   class="form-label">用户名</label>-->
+<!--                        <input class="form-control" name="username" placeholder="请输入用户名" required autofocus>-->
+<!--                    </div>-->
+<!--                    <div class="mb-3">-->
+<!--                        <label   class="form-label">密码</label>-->
+<!--                        <input type="password" name="password" class="form-control" placeholder="请输入密码" required>-->
+<!--                    </div>-->
+<!--                    <button id="login" type="submit" class="btn bg-success w-100">登录</button>-->
+
+<!--                </div>-->
+<!--            </form>-->
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label   class="form-label">用户名</label>
+                                    <input class="form-control" id="username" placeholder="请输入用户名" required autofocus>
+                                </div>
+                                <div class="mb-3">
+                                    <label   class="form-label">密码</label>
+                                    <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
+                                </div>
+                                <button id="loginbutton"  class="btn bg-success w-100">登录</button>
+
+                            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        $("#loginbutton").click(function () {
+            $.get("/login?username="+$("#username").val()+"&password="+$("#password").val(),function (data) {
+                if(data.code == 0){
+                    var param = encodeURI($("#username").val())
+                    window.location.href="chatroom?username="+param
+                }else {
+                    $.alert(data.message)
+                }
+
+
+
+            })
+
+        })
+    });
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
