@@ -17,7 +17,7 @@
   
   效果图：
   移动端效果图
-![pc端效果](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/7.jpg)
+![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/7.jpg)
   pc端效果图
 ![登录](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/1.jpg)
 
