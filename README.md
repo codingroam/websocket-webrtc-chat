@@ -15,10 +15,14 @@
   
   7.项目启动后登录地址为localhost:8086 用户：路飞 密码：1234
   
-  效果图：
-  移动端效果图
+  # 效果图：
+  
+  # 移动端效果图
+  
 ![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/7.jpg)
-  pc端效果图
+
+ # pc端效果图
+ 
 ![登录](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/1.jpg)
 
 ![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/2.jpg)
