@@ -23,8 +23,20 @@
 		        <exclusion>  
 		            <groupId>org.springframework.boot</groupId>  
 		            <artifactId>spring-boot-starter-logging</artifactId>  
-		        </exclusion>  
-		    </exclusions>  
+		        </exclusion>
+				<exclusion>
+					<artifactId>spring-core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -54,6 +66,12 @@
 			<groupId>org.mybatis.spring.boot</groupId>
 			<artifactId>mybatis-spring-boot-starter</artifactId>
 			<version>2.0.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-core</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -66,6 +84,11 @@
 		    <artifactId>poi</artifactId>
 		    <version>3.14</version>
 		</dependency>
+	  <dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-core</artifactId>
+		  <version>5.2.3.RELEASE</version>
+	  </dependency>
 
 		<dependency>
 		    <groupId>com.alibaba</groupId>
@@ -97,7 +120,75 @@
 		  <artifactId>lombok</artifactId>
 		  <version>1.18.10</version>
 	  </dependency>
-		</dependencies>
+	  <!-- springboot security -->
+	  <dependency>
+		  <groupId>com.auth0</groupId>
+		  <artifactId>java-jwt</artifactId>
+		  <version>3.10.3</version>
+	  </dependency>
+	  <!-- 引入jackson依赖包-->
+	  <dependency>
+		  <groupId>com.fasterxml.jackson.core</groupId>
+		  <artifactId>jackson-databind</artifactId>
+		  <version>2.14.2</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>com.aliyun</groupId>
+		  <artifactId>dysmsapi20170525</artifactId>
+		  <version>2.0.9</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>com.alibaba</groupId>
+		  <artifactId>fastjson</artifactId>
+		  <version>1.2.75</version>
+	  </dependency>
+
+
+
+
+
+	  <!--	  <dependency>-->
+<!--		  <groupId>org.springframework.boot</groupId>-->
+<!--		  <artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--	  </dependency>-->
+	  <!-- jwt -->
+
+	  <!-- hutool工具类-->
+	  <dependency>
+		  <groupId>cn.hutool</groupId>
+		  <artifactId>hutool-all</artifactId>
+		  <version>5.3.3</version>
+	  </dependency>
+
+
+	  <dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-lang3</artifactId>
+		  <version>3.12.0</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>commons-codec</groupId>
+		  <artifactId>commons-codec</artifactId>
+		  <version>1.15</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>javax.xml.ws</groupId>
+		  <artifactId>jaxws-api</artifactId>
+		  <version>2.3.1</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>org.codehaus.jackson</groupId>
+		  <artifactId>jackson-mapper-asl</artifactId>
+		  <version>1.8.3</version>
+	  </dependency>
+	  <dependency>
+		  <groupId>org.apache.lucene</groupId>
+		  <artifactId>lucene-core</artifactId>
+		  <version>8.8.0</version>
+	  </dependency>
+
+
+  </dependencies>
 		<build>
 			<finalName>Spring-websocket</finalName>
 			<plugins>

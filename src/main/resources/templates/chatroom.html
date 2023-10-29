@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="
+		width=device-width,
+		initial-scale=1.0,
+		minimum-scale=1.0,
+		maximum-scale=1.0,
+		user-scalable=no">
+
     <title>飞鱼聊天</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -17,25 +25,94 @@
     <!--    <link rel="stylesheet" href="../static/css/style.css">-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/traditional.js"></script>
 
     <style>
+
+        .remoteVideo{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            background: #222;
+        }
         @media(min-width: 768px) {
             .panel-container {
                 border-right: 1px solid rgba(0, 0, 0, 0.125);
             }
             .panel-chat-list{
-                height: 300px; overflow-y:scroll; background: #f5f5f5
+                height: 350px; overflow-y:scroll; background: #f5f5f5
             }
             .panel-chat-card{
                 height: 500px; overflow-y:scroll; background: #f5f5f5
             }
-
-            .room-card {
-                width: 50%;
+            .imag-size{
+                height: 50px;
+                width: 50px;
             }
+            .round_icon{
+                width: 50px;
+                height: 50px;
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            .videomain {
+                position: absolute;
+                width: 420px;
+                height: 440px;
+                z-index: 999!important;
+            }
+            .localVideo {
+                position: absolute;
+                background: #757474;
+                top: 10px;
+                right: 10px;
+                width: 120px;
+                height: 140px;
+                z-index: 2;
+            }
+
+            .videobuttons {
+                align-content: center;
+                z-index: 3;
+                bottom: 15px;
+                left: 0;
+                right: 0;
+                position: absolute;
+                text-align: center;
+            }
+
+            .hangup {
+                width: 50px;
+                height: 30px;
+                background-color: #FF5151;
+                border: none;
+                color: white;
+                border-radius: 5px;
+            }
+            .accept {
+                width: 50px;
+                height: 30px;
+                background-color: #57a963;
+                border: none;
+                color: white;
+                border-radius: 5px;
+            }
+
 
             .w-30 {
                 width: 30%;
+            }
+            .sign-font{
+                font-size: 12px;
+                font-family:新宋体;
+                margin-top: 5px;
             }
         }
 
@@ -44,19 +121,147 @@
                 border-bottom: 1px solid rgba(0, 0, 0, 0.125);
             }
 
-            .room-card {
-                width: 100%;
+            .videomain {
+                position: absolute;
+                width: 300px;
+                height: 330px;
+                z-index: 999!important;
             }
+            .localVideo {
+                position: absolute;
+                background: #757474;
+                top: 5px;
+                right: 5px;
+                width: 100px;
+                height: 120px;
+                z-index: 2;
+            }
+            .videobuttons {
+                align-content: center;
+                z-index: 3;
+                bottom: 15px;
+                left: 0;
+                right: 0;
+                position: absolute;
+                text-align: center;
+            }
+
+            .hangup {
+                width: 45px;
+                height: 30px;
+                background-color: #FF5151;
+                border: none;
+                color: white;
+                border-radius: 3px;
+                font-size: 15px;
+            }
+            .accept {
+                width: 45px;
+                height: 30px;
+                background-color: #57a963;
+                border: none;
+                color: white;
+                border-radius: 3px;
+                font-size: 15px;
+            }
+
+
 
             .w-30 {
                 width: 48%;
             }
 
+            .panel-chat-header{
+                height: 40px;
+            }
+            .imag-size{
+                height: 35px;
+                width: 35px;
+            }
+            .round_icon{
+                width: 35px;
+                height: 35px;
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+            .panel-chat-header>.list-group-item {
+                position: relative;
+                display: block;
+                padding: 0.2rem 1rem;
+                color: #212529;
+                text-decoration: none;
+                background-color: #fff;
+                border: 1px solid rgba(0,0,0,.125);
+            }
+
+            .list-group-item {
+                position: relative;
+                display: block;
+                padding: 0.5rem 0.5rem;
+                color: #212529;
+                text-decoration: none;
+                background-color: #fff;
+                border: 1px solid rgba(0,0,0,.125);
+                font-size: 12px;
+            }
+            .card-header {
+                padding: 0.3rem 0.7rem;
+                margin-bottom: 0;
+                background-color: rgba(0,0,0,.03);
+                border-bottom: 1px solid rgba(0,0,0,.125);
+                font-size: 12px;
+            }
+
+            .btn {
+                display: inline-block;
+                font-weight: 400;
+                line-height: 1.5;
+                color: #212529;
+                text-align: center;
+                text-decoration: none;
+                vertical-align: middle;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                background-color: transparent;
+                border: 1px solid transparent;
+                padding: 0.375rem 0.75rem;
+                /* font-size: 1rem; */
+                font-size: 12px;
+                border-radius: 0.25rem;
+                transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+
+            .input-group>.form-control, .input-group>.form-select {
+                position: relative;
+                flex: 1 1 auto;
+                width: 1%;
+                min-width: 0;
+                font-size: 12px;
+            }
+            .search-font-size{
+                font-size: 12px;
+            }
+            .sign-font{
+                font-size: 10px;
+                font-family:新宋体;
+                margin-top: 5px;
+            }
+
+
+
+
             .panel-chat-list{
-                height: 200px; overflow-y:scroll; background: #f5f5f5
+                height: 174px; overflow-y:scroll; background: #f5f5f5;
+                font-size: 12px;
             }
             .panel-chat-card{
-                height: 400px; overflow-y:scroll; background: #f5f5f5
+                height: 280px; overflow-y:scroll; background: #f5f5f5;
+                font-size: 12px;
             }
         }
 
@@ -67,60 +272,107 @@
 
         .chat-card-header {
             height: 1.5rem;
-            font-size: 2px;
+            font-size: 8px;
             padding: 2% 0;
         }
 
         .linestate-font {
-            font-size: 1px;
+            font-size: 10px;
         }
 
         .count-font{
-            font-size: 1px;
+            font-size: 10px;
         }
 
         .online-background {
-            background-color: #2dc5374d;
+            background-color: #00d62475;
         }
 
         .offline-background {
-            background-color: #8c838d57;
+
         }
+
+        .w-33 {
+            width: 33%;
+        }
+        .list-focus{
+            background-color: #4b8cfe;
+        }
+
+        .list-group-item.active {
+            z-index: 2;
+            color: #fff;
+            background-color: #4b8cfe;
+            border-color: #4b8cfe;
+        }
+        .btn-color{
+            background-color: #12b7f5
+        }
+        .card-footer {
+            background-color: rgba(0,0,0,.03);
+        }
+        .card-body {
+            flex: 1 1 auto;
+            padding: 0.3rem 0.5rem;
+        }
+
+        .btn-outline-primary {
+            color: #12b7f5;
+            border-color: #f8f9fa;
+        }
+        .videomain{
+            display: none;
+        }
+
     </style>
 </head>
 
 
-<body class="bg-light">
-<div class="container pt-3">
+<body id="body-container" class="bg-light">
+<div id="videomain" class="videomain">
+    <video id="remoteVideo" class="remoteVideo" playsinline autoplay></video>
+    <video id="localVideo" class="localVideo" playsinline autoplay muted></video>
+    <div id="videoinfo"></div>
+
+    <div id="videobuttons" class="videobuttons">
+        <button id="accept" class="accept" onclick="acceptvideo()" >接受</button>
+        <button id="hangup" class="hangup" onclick="hangupvideo()">挂断</button>
+    </div>
+</div>
+<div class="container pt-3" id="card-container">
     <div class="card">
-        <div class="card-header bg-success bg-gradient text-light d-flex justify-content-between no-cursor">
+        <div class="card-header  text-light d-flex justify-content-between no-cursor" style="background-image: linear-gradient(to right,#4b8cfe,#4adafe)">
             <span class="text-light no-cursor"><i class="bi bi-send"></i>&nbsp;飞鱼&nbsp;</i> </span>
             <span id="talktitle">飞鱼Chat&nbsp;</i></span>
             <span class="text-light" onclick="logout()">退出</span>
         </div>
-        <div class="card-body no-cursor" style="padding: 0 0">
-            <div class="row" style="margin-left: 0">
+        <div style="padding:0rem 0.75rem" class="card-body no-cursor">
+            <div class="row" >
                 <div class="panel-container col-sm-12 col-md-4" style="background: #eae7e6;padding: 0 0;">
-                    <ul class="list-group list-group-flush" style="background: #eae7e6">
-                        <li class="list-group-item d-flex justify-content-between" style="background: #f5f5f5">
+                    <ul class="list-group list-group-flush panel-chat-header" style="background: #eae7e6">
+                        <li class="list-group-item d-flex justify-content-between" style="background-image: linear-gradient(to right ,#4b8cfe , #1fd1fe)">
                             <div>
-                                <div class="mt-1"><i class="bi bi-person-circle"></i><b>&nbsp;<span
-                                        style="text-overflow:ellipsis" id="user"></span></b></div>
-                            </div><button type="button" class="btn btn-success btn-sm">在线</button>
+                                <div class="d-flex flex-row text-light"><img id="imaghead" class="round_icon imag-size">&nbsp;&nbsp;<div><div class="d-flex flex-column"><b>&nbsp;<span
+                                        style="text-overflow:ellipsis" id="user"></span></b><span class="sign-font" id="signature"></span></div></div></div>
+                            </div>
                         </li>
 
                     </ul>
-                    <ul></ul>
+                    <ul class="list-group list-group-flush" style="caret-color: #4acbfe;">
+                        <input id="search" type="search" class="form-control search-font-size" placeholder="搜索">
+                    </ul>
 
                     <ul class="list-group list-group-flush" style="background: #eae7e6">
-                        <li class="list-group-item" style="background: #f5f5f5"><i
-                                class="bi bi-people-fill"></i>&nbsp;<b>用户列表</b></li>
+                        <li class="list-group-item d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center" class="w-33 d-flex justify-content-center"><i
+                            class="bi bi-person-video2"></i>&nbsp;好友</div><div id="messageList" onclick="messageListClick()" style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center">
+                            <i class="bi bi-chat"></i>&nbsp;消息</div><div style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center"><i
+                                class="bi bi-people-fill" ></i>&nbsp;&nbsp;群组</div></li>
 
                     </ul>
                     <div class="row">
                         <div>
                             <div class="list-group panel-chat-list" id="users" role="tablist" style="background: #eae7e6" >
-                                <!--                                <a class="list-group-item list-group-item-action active"  data-bs-toggle="list" href="#"  >Home</a>-->
+                                <!--                                <a class="list-group-item   active"  data-bs-toggle="list" href="#"  >Home</a>-->
                             </div>
                         </div>
                     </div>
@@ -132,10 +384,11 @@
             </div>
 
             <div class="card-footer">
-                <div class="input-group mb-1 mt-1">
-                    <input id="sendmessage" type="text" class="form-control" placeholder="请输入消息">
-                    <button id="emojibtn" class="btn btn-light"><i class="bi bi-emoji-laughing"></i></button>
-                    <button id="send" class="btn bg-success text-light"><i class="bi bi-send"></i>&nbsp;发送</button>
+                <div class="input-group">
+                    <input id="sendmessage"  type="text" class="form-control" placeholder="请输入消息">
+                    <button id="plusbtn" onclick="plusClick()" class="btn btn-outline-primary btn-light"><i class="bi bi-plus-circle"></i></button>
+                    <button id="emojibtn" onclick="emojiButtonClick()" class="btn btn-outline-primary btn-light"><i  class="bi bi-emoji-laughing"></i></button>
+                    <button id="send"  class="btn  btn-color text-light"><i class="bi bi-send"></i>&nbsp;发送</button>
                 </div>
             </div>
         </div>
@@ -146,11 +399,24 @@
         var websocket;
         var username;
         var lockReconnect = false;
+        var reconnectCount = 0;
+        var listindex = 0;
+        var signList = ["我感到难过，不是因为你欺骗了我，而是因为我再也不能相信你了","一个人知道自己为什么而活，就可以忍受任何一种生活","哈库拉玛塔塔","人是苦虫，不打不行","比比，爱姆sheep","我于杀戮之中盛放，一如黎明中的花朵","死亡如风，常伴吾身","一曲肝肠断，天涯何处觅知音","无边落木萧萧下，不尽长江滚滚来","很多年之后，我有个绰号叫做西毒","睡一会罢，——便好了。","老栓慌忙摸出洋钱，抖抖的想交给他，却又不敢去接他的东西","不多不多!多乎哉?不多也。","哪里有天才，我只是把别人喝咖啡的功夫都用在了学习上"]
+
+        var localVideo = document.getElementById('localVideo');
+        var remoteVideo = document.getElementById('remoteVideo');
+        var videodata;
+
+        var yourConn;
+        var stream;
+        var RTCSessionDescription;
+        var PeerConnection;
+        var isVideo = false;
+
 
         $(document).ready(function () {
 
             var url = location.href;
-
             var paraString = url.substring(url.indexOf("?") + 1, url.length).split("=");
 
             if (paraString != null && paraString.length == 2) {
@@ -171,6 +437,11 @@
                 alert("not support websocket")
                 return;
             }
+        <!-- 默认选中用户列表 -->
+            $("#userList").addClass("text-light").addClass("list-focus")
+            var randomHead = "images/head"+( username.charCodeAt(0) % 7 )+".png"
+            $("#imaghead").attr("src",randomHead)
+            $("#signature").html(signList[Math.floor(Math.random()*14)])
 
 
             $("#send").click(function () {
@@ -181,7 +452,7 @@
 
                         $.alert({
                             title: '提示',
-                            content: '当前没有其他用户在线,无法发送消息',
+                            content: '请选中好友后再发送消息',
                         });
                         return false;
                     } else {
@@ -193,6 +464,7 @@
                 data["from"] = username;
                 data["to"] = $("body").data("to");
                 data["content"] = $("#sendmessage").val();
+                data["contentType"] = "text";
                 websocket.send(JSON.stringify(data));
                 var messagevar = getEmojiStr($("#sendmessage").val())
                 var message = `<div class="d-flex justify-content-end my-3">
@@ -213,6 +485,9 @@
                     $("#send").click()
                 }
             });
+            $("#card-container").click(function () {
+                $(".emoji_container").hide()
+            })
 
             $.Lemoji({
                 emojiInput: '#sendmessage',
@@ -221,8 +496,7 @@
                 length: 8,
                 emojis: {
                     qq: { path: 'images/qq/', code: ':', name: 'QQ表情' },
-                    tieba: { path: 'images/tieba', code: ';', name: "贴吧表情" },
-                    emoji: { path: 'images/emoji', code: ',', name: 'Emoji表情' }
+
                 }
             });
 
@@ -242,7 +516,92 @@
 
 
 
+
+
+            var cpLock = false;
+            $('#search').on('compositionstart', function () {
+                // 输入汉语拼音时锁住搜索框，不进行搜索，或者从汉语拼音转到字母时也可触发
+                cpLock = true;
+                console.log('不搜索')
+                console.log($('#search').val())
+            });
+            $('#search').on('compositionend', function () {
+                // 结束汉语拼音输入并生成汉字时，解锁搜索框，进行搜索
+                cpLock = false;
+                console.log('汉字搜索');
+                console.log($('#search').val())
+                search($('#search').val())
+                // 接下去放ajax请求生成下拉框内容
+            });
+            $('#search').on('input', function () {
+                if (!cpLock) {
+                    console.log('字母搜索')
+                    // 接下去放ajax请求生成下拉框内容
+                    console.log($('#search').val())
+                    search($('#search').val())
+                }
+            });
+
+            $('#localVideo').dblclick(function() {
+                overturnvideo();
+            });
+
+            $('#remoteVideo').dblclick(function() {
+                overturnvideo();
+            });
+
+
+            $("#videomain").mousedown(function (e) {
+                // 元素大小
+                let elW = e.currentTarget.offsetWidth
+                let elH = e.currentTarget.offsetHeight
+                // 元素位置
+                let elL = e.currentTarget.offsetLeft
+                let elT = e.currentTarget.offsetTop
+                // 鼠标位置
+                let x = e.clientX
+                let y = e.clientY
+                // 窗口大小
+                let w = window.innerWidth
+                let h = window.innerHeight
+                // 鼠标到元素左边距离
+                let moveX = x - elL
+                let moveY = y - elT
+                let el = e.currentTarget
+                document.onmousemove = function (e) {
+                    el.style.right = w - (e.clientX - moveX) - elW + 'px'
+                    el.style.bottom = h - (e.clientY - moveY) - elH + 'px'
+                }
+                document.onmouseup = function () {
+                    document.onmousemove = null
+                    document.onmouseup = null
+                }
+
+            })
+
+
+
+
+
+
         });
+
+        function overturnvideo() {
+            if($('#localVideo').hasClass("localVideo")){
+                $('#localVideo').removeClass("localVideo")
+                $('#localVideo').addClass("remoteVideo")
+
+                $('#remoteVideo').removeClass("remoteVideo")
+                $('#remoteVideo').addClass("localVideo")
+            }else{
+                $('#localVideo').removeClass("remoteVideo")
+                $('#localVideo').addClass("localVideo")
+
+                $('#remoteVideo').removeClass("localVideo")
+                $('#remoteVideo').addClass("remoteVideo")
+            }
+
+        }
         function addOnlineUserAndGet(user) {
             var alluserkey = getAlluserKey();
             var allUserSet = window.localStorage.getItem(alluserkey);
@@ -349,7 +708,7 @@
                     confirm: {
                         text: "确定",
                         action: function () {
-                            window.location.href = "logout"
+                            window.location.href = "logout?username="+username
                         }
                     },
                     cancel: {
@@ -391,78 +750,429 @@
 
         function websocketInit() {
 
-            try {
-                websocket = new WebSocket("ws://localhost:8086/webSocket/" + username);
-            } catch (e) {
-                console.log(' 您的浏览器暂时不支持 webSocket ');
-            }
+            var token = window.localStorage.getItem(username+"_token")
+            if(token != null && token != undefined){
 
-            websocket.onclose = function (e) {
-                websocket.close();
-                console.log("WebSocket 关闭");
-                reconnect()
-            }
+                try {
 
-            websocket.onopen = function () {
-                //心跳检测重置
-                console.log("WebSocket 已连接");
-            }
+                    websocket = new WebSocket("wss://localhost:8089/webSocket/" + username+"?token="+token);
+                } catch (e) {
+                    console.log(' 您的浏览器暂时不支持 webSocket ');
+                }
 
-            //连接发生错误的回调方法
-            websocket.onerror = function () {
-                websocket.close();
-                console.log("WebSocket 连接发生错误");
-                reconnect()
-            }
+                websocket.onclose = function (e) {
+                    websocket.close();
+                    console.log("WebSocket 关闭");
+                }
 
-            websocket.onmessage = function (event) {
-                var data = JSON.parse(event.data);
-                if (data.contentType == "online") {//上线消息
-                    var allUserSet = addOnlineUserAndGet(data.content)
-                    if (allUserSet.size == 1) {
-                        $("#users").append(`<div class="list-group-item d-flex justify-content-between list-group-item-action active"  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
-                    } else {
-                        $("#users").append(`<div class="list-group-item d-flex justify-content-between list-group-item-action"  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
+                websocket.onopen = function (e) {
+                    //心跳检测重置
+                    console.log("WebSocket 已连接");
+                }
+
+                //连接发生错误的回调方法
+                websocket.onerror = function (data,status,e) {
+                    reconnectCount ++
+                    websocket.close();
+                    console.log("WebSocket 连接发生错误");
+                    reconnect()
+                    if(reconnectCount == 10){
+                        reconnectCount = 0
+                        wensocketErrorToast()
                     }
-                    var touser = $("body").data("to")
-                    if (touser == undefined || touser == null) {
-                        talkuser(data.content)
-                    }
-                } else if (data.contentType == "offline") {//下线消息
-                    $("#users > span").remove(":contains('" + data.content + "')");
-                } else if (data.contentType == "msg") {
-                    // 普通消息
-                    // 接收服务端的实时消息并添加到HTML页面中
-                    // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
+                }
 
-                    var messagevar = getEmojiStr(data.content)
-                    var message = `<div class="d-flex justify-content-start my-3">
+                websocket.onmessage = async function (event) {
+                    var data = JSON.parse(event.data);
+                    console.log("onmessage:"+JSON.stringify(data))
+                    let {contentType, from, content, to, sdp,iceCandidate } = JSON.parse(event.data);
+                    if (data.contentType == "online") {//上线消息
+                        var allUserSet = addOnlineUserAndGet(data.content)
+                        if (allUserSet.size == 1) {
+                            $("#users").append(`<div class="list-group-item d-flex justify-content-between   active"  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
+                        } else {
+                            $("#users").append(`<div class="list-group-item d-flex justify-content-between  "  onclick="talk(this)" data-bs-toggle="list"  ><span>${data.content}</span><span>在线</span><i class="bi bi-7-circle"></i></div>`);
+                        }
+                        var touser = $("body").data("to")
+                        if (touser == undefined || touser == null) {
+                            talkuser(data.content)
+                        }
+                    } else if (data.contentType == "offline") {//下线消息
+                        $("#users > span").remove(":contains('" + data.content + "')");
+                    } else if (data.contentType == "text") {
+                        // 普通消息
+                        // 接收服务端的实时消息并添加到HTML页面中
+                        // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
+
+                        var messagevar = getEmojiStr(data.content)
+                        var message = `<div class="d-flex justify-content-start my-3">
                             <div class="card w-30 border-light">
                                 <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
                                 <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
                             </div>
                         </div>`;
-                    if (data.from == $("body").data("to")) {
-                        $("#talk-container").append(message);
-                    } else {
-                        addAndFlushUnreadMessageCount(data.from)
+                        if (data.from == $("body").data("to")) {
+                            $("#talk-container").append(message);
+                        } else {
+                            addAndFlushUnreadMessageCount(data.from)
+                        }
+
+
+                        storageTalkUserMessage(data.from, message)
+
+                        // 滚动条滚动到最低部
+                        scrollToBottom();
+                    } else if(data.contentType == "onlineUsers") {
+
+                        window.localStorage.setItem(username+"-allUserList", JSON.stringify(data.content));
+                        createUserList(data.content)
+                    }else {
+
+                        if(PeerConnection == null || PeerConnection ==undefined){
+                            initWebRTC()
+                        }
+
+                        switch(data.contentType) {
+                            case "call_start":
+                                handleCallStart(data);
+                                break;
+                            case "call_back":
+                                handleCallBack(data);
+                                break;
+                            case "offer":
+                                handleOffer(data);
+                                break;
+                            case "answer":
+                                handleAnswer(data);
+                                break;
+                            //when a remote peer sends an ice candidate to us
+                            case "candidate":
+                                handleCandidate(data);
+                                break;
+                            case "leave":
+                                handleLeave();
+                                break;
+                            default:
+                                break;
+                        }
+
+
                     }
+                };
+
+            }else{
+                noTokenToast("用户未登录，请先登录")
+
+            }
 
 
-                    storageTalkUserMessage(data.from, message)
+        }
 
-                    // 滚动条滚动到最低部
-                    scrollToBottom();
-                } else {
-                    $("#users").empty()
-                    var users = data.content;
-                    for (var i = 0; i < users.length; i++) {
-                        var count = getUserUnreadMessageCount(users[i].userName)
-                        var active = getIsActive(users[i].userName)
-                        $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between list-group-item-action online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between list-group-item-action offline-background ${active ? ' active ' : ''} "`}  onclick="talk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+        function hangupvideo() {
+            var data = {};
+            data["from"] = username;
+            data["to"] = $("body").data("to");
+            data["contentType"] = "leave";
+            data["content"] = "";
+            websocket.send(JSON.stringify(data));
+            $("#videomain").hide()
+            $("#accept").hide()
+
+            closevideo()
+
+        }
+
+        function plusClick() {
+            if(isVideo){
+                return
+            }
+            $("#videomain").show()
+            $("#accept").hide()
+            $("#videoinfo").html("呼叫中...")
+
+
+
+
+            if(PeerConnection == null || PeerConnection ==undefined){
+                initWebRTC()
+            }
+
+            var data = {};
+            data["from"] = username;
+            data["to"] = $("body").data("to");
+            data["contentType"] = "call_start";
+            data["content"] = "";
+            websocket.send(JSON.stringify(data));
+
+
+        }
+
+        function handleLeave() {
+            $("#videomain").hide()
+            $("#accept").hide()
+
+            closevideo()
+        }
+
+        function closevideo() {
+
+            localVideo.srcObject.getTracks()[0].stop();
+            localVideo.srcObject.getTracks()[1].stop();
+            remoteVideo.srcObject.getTracks()[0].stop();
+            remoteVideo.srcObject.getTracks()[1].stop();
+            localVideo.src = null;
+            remoteVideo.src = null;
+
+            yourConn.close();
+            yourConn.onicecandidate = null;
+            yourConn.onaddstream = null;
+            isVideo = false;
+
+        }
+
+        function handleCandidate(data) {
+            yourConn.addIceCandidate(new RTCIceCandidate(data.content));
+        }
+
+        function handleAnswer(data) {
+            yourConn.setRemoteDescription(new RTCSessionDescription(data.content));
+            isVideo  = true;
+        }
+
+
+        //when somebody sends us an offer
+        function handleOffer(data) {
+            yourConn.setRemoteDescription(new RTCSessionDescription(data.content));
+
+            //create an answer to an offer
+            yourConn.createAnswer(function (answer) {
+                yourConn.setLocalDescription(answer);
+
+                websocket.send(JSON.stringify({
+                    to:videodata.from,
+                    from:videodata.to,
+                    contentType:"answer",
+                    content:answer
+                }));
+
+            }, function (error) {
+                alert("Error when creating an answer");
+            });
+        }
+
+        function handleCallStart(data) {
+            videodata = data
+            $("#videomain").show()
+            $("#accept").show()
+            $("#hangup").show()
+            $("#videoinfo").html(data.from+"  视频通话")
+
+        }
+
+        function acceptvideo() {
+            var data = {
+                contentType:"call_back",
+                to:videodata.from,
+                from:videodata.to,
+                content:"accept"
+            }
+            websocket.send(JSON.stringify(data));
+            $("#accept").hide()
+        }
+
+        function refusevideo() {
+            var data = {
+                contentType:"call_back",
+                to:videodata.from,
+                from:videodata.to,
+                content:"refuse"
+            }
+            websocket.send(JSON.stringify(data));
+        }
+        function handleCallBack(data) {
+            if(data.content == "accept"){
+
+                yourConn.createOffer(function (offer) {
+                    // send({
+                    //     type: "offer",
+                    //     offer: offer
+                    // });
+
+                    websocket.send(JSON.stringify({
+                        from :  username,
+                        to : $("body").data("to"),
+                        contentType:"offer",
+                        content:offer
+                    }));
+
+                    yourConn.setLocalDescription(offer);
+                }, function (error) {
+                    alert("Error when creating an offer");
+                });
+            }else{
+
+            }
+
+        }
+
+        function initWebRTC() {
+
+            PeerConnection = (window.webkitRTCPeerConnection || window.mozRTCPeerConnection || window.RTCPeerConnection || undefined);
+            RTCSessionDescription = (window.webkitRTCSessionDescription || window.mozRTCSessionDescription || window.RTCSessionDescription || undefined);
+
+
+
+
+            if (navigator.mediaDevices === undefined) {
+                navigator.mediaDevices = {};
+            }
+            //
+            if (navigator.mediaDevices.getUserMedia === undefined) {
+                navigator.mediaDevices.getUserMedia = function(constraints) {
+                    var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                    if (!getUserMedia) {
+                        return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                    }
+                    return new Promise(function(resolve, reject) {
+                        getUserMedia.call(navigator, constraints, resolve, reject);
+                    });
+                }
+            }
+            window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
+            var mediaOpts = {
+                audio: true,
+                video: { facingMode: "user" }
+            }
+            function successFunc(myStream) {
+                // var video = document.querySelector('video');
+                // if ("srcObject" in video) {
+                //     video.srcObject = stream
+                // } else {
+                //     video.src = window.URL && window.URL.createObjectURL(stream) || stream
+                // }
+                // video.play();
+
+                stream = myStream;
+
+                //displaying local video stream on the page
+                localVideo.srcObject = stream;
+
+                //using Google public stun server
+                var configuration = {
+                    "iceServers": []
+                };
+
+                yourConn = new PeerConnection(configuration);
+
+                // setup stream listening
+                yourConn.addStream(stream);
+
+                //when a remote user adds stream to the peer connection, we display it
+                yourConn.onaddstream = function (e) {
+                    remoteVideo.srcObject = e.stream;
+                };
+
+                // Setup ice handling
+                yourConn.onicecandidate = function (event) {
+                    if (event.candidate) {
+                        websocket.send(JSON.stringify({
+                            from :  username,
+                            to : $("body").data("to") == null ? videodata.to : $("body").data("to"),
+                            contentType:"candidate",
+                            content:event.candidate
+                        }));
+                        // send({
+                        //     type: "candidate",
+                        //     candidate: event.candidate
+                        // });
+                    }
+                };
+            }
+            function errorFunc(err) {
+                if("NotFoundError" == err.name){
+                    noDevicesToast("设备不具备视频、音频条件或没有音视频权限");
+                }else{
+                    alert(err.name);
+                }
+
+                $("#videomain").hide()
+                PeerConnection = null;
+
+                isVideo = false;
+            }
+
+            navigator.getUserMedia(mediaOpts, successFunc, errorFunc);
+
+        }
+
+
+
+
+        function noDevicesToast(message) {
+            $.confirm({
+                title: '提示',
+                content: message,
+                autoClose: 'cancelAction|5000',
+                buttons: {
+                    test:{
+                        text:"确认",
+                        action: function(){
+
+                        }
+                    },
+                    cancelAction: {
+                        text: "关闭",
+                        action: function () {
+
+                        }
                     }
                 }
-            };
+            });
+
+        }
+        function noTokenToast(message) {
+            $.confirm({
+                title: '提示',
+                content: message,
+                autoClose: 'cancelAction|5000',
+                buttons: {
+                    test:{
+                        text:"跳转首页",
+                        action: function(){
+                            window.location.href = "logout?username="+username
+                        }
+                    },
+                    cancelAction: {
+                        text: "关闭",
+                        action: function () {
+
+                        }
+                    }
+                }
+            });
+
+        }
+
+        function wensocketErrorToast() {
+            $.confirm({
+                title: '提示',
+                content: "连接异常，请重新登录，即将跳转首页",
+                autoClose: 'cancelAction|5000',
+                buttons: {
+                    test:{
+                        text:"跳转首页",
+                        action: function(){
+                            window.location.href = "logout?username="+username
+                        }
+                    },
+                    cancelAction: {
+                        text: "取消跳转",
+                        action: function () {
+
+                        }
+                    }
+                }
+            });
 
         }
 
@@ -531,6 +1241,93 @@
             }
             return fmt;
         }
+
+        function search(key) {
+            if(key != null && key != undefined && key.length>0){
+                if(listindex == 0){
+                    createUserListByKey(key)
+                }else{
+                    if(!"索隆你在吗".includes(key)){
+                        $("#users").empty()
+                    }
+                }
+            }else{
+                if(listindex == 0){
+                    userListClick()
+                }else{
+                    messageListClick()
+                }
+            }
+
+
+
+        }
+
+        function userListClick() {
+            listindex = 0;
+            $("#messageList").removeClass("text-light").removeClass("list-focus")
+            $("#userList").addClass("text-light").addClass("list-focus")
+            var allUserList = JSON.parse(window.localStorage.getItem(username+"-allUserList"));
+            createUserList(allUserList)
+        }
+
+        function messageListClick() {
+            listindex = 1
+            $("#userList").removeClass("text-light").removeClass("list-focus")
+            $("#messageList").addClass("text-light").addClass("list-focus")
+            $("#users").empty()
+            $("#users").append(`<div class="list-group-item d-flex flex-row"><div><img  src="images/suolong.png" width="50" height="50"></div>&nbsp;&nbsp;<div class="d-flex w-100 flex-column">
+                                <div>索隆</div>
+                                <div class="mt-2 w-100 d-flex justify-content-between" style="font-size: 12px"><div>你在吗</div><div>17:26</div></div>
+                            </div></div>`);
+
+
+        }
+
+        function createUserList(users) {
+            $("#users").empty()
+            for (var i = 0; i < users.length; i++) {
+                var count = getUserUnreadMessageCount(users[i].userName)
+                var active = getIsActive(users[i].userName)
+                $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between   offline-background ${active ? ' active ' : ''} "`}  onclick="talk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+            }
+
+        }
+
+        function createUserListByKey(key) {
+            var users = JSON.parse(window.localStorage.getItem(username+"-allUserList"));
+            $("#users").empty()
+            for (var i = 0; i < users.length; i++) {
+                if(PinyinMatch.match(users[i].userName, key)){
+                    var count = getUserUnreadMessageCount(users[i].userName)
+                    var active = getIsActive(users[i].userName)
+                    $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between   offline-background ${active ? ' active ' : ''} "`}  onclick="talk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+                }
+            }
+
+
+        }
+
+        function emojiButtonClick() {
+            setTimeout(function () {
+                window.scrollTo(0, document.body.scrollHeight)
+            },400)
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     </script>

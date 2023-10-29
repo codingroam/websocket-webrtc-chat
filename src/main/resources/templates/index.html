@@ -5,34 +5,68 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="
+		width=device-width,
+		initial-scale=1.0,
+		minimum-scale=1.0,
+		maximum-scale=1.0,
+		user-scalable=no">
+
     <title>飞鱼聊天</title>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<!--    <link rel="stylesheet" href="../static/css/mstyle.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrapValidator.css" />
+    <script src="js/bootstrapValidator.js"></script>
+    <!--    <link rel="stylesheet" href="../static/css/mstyle.css">-->
 
     <style>
-        @media(min-width: 768px){
-            .panel-container{
+        @media(min-width: 768px) {
+            .panel-container {
                 border-right: 1px solid rgba(0, 0, 0, 0.125);
             }
-            .room-card{
+
+            .room-card {
                 width: 50%;
             }
         }
 
-        @media(max-width: 768px){
-            .panel-container{
+        @media(max-width: 768px) {
+            .panel-container {
                 border-bottom: 1px solid rgba(0, 0, 0, 0.125);
             }
-            .room-card{
+
+            .room-card {
                 width: 100%;
             }
         }
 
-        .w-30{
+        .w-30 {
             width: 30%;
+        }
+
+        .header-color {
+            background-color: #2c86ff;
+        }
+
+        .btn-color {
+            background-color: #12b7f5
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .w-40 {
+            width: 40%
+        }
+        .help-block{
+            color: red;
         }
     </style>
 
@@ -44,39 +78,60 @@
 
 
         <div class="card room-card">
-            <div class="card-header bg-success bg-gradient text-light">
+            <div class="card-header  header-color bg-gradient text-light">
                 <div class="text-center fs-6">
                     <i class="bi bi-chat-dots"></i>
                     <span>飞鱼聊天</span>
 
                 </div>
             </div>
-<!--            <form action="loginvalidate" method="post">-->
-<!--                <div class="card-body">-->
-<!--                    <div class="mb-3">-->
-<!--                        <label   class="form-label">用户名</label>-->
-<!--                        <input class="form-control" name="username" placeholder="请输入用户名" required autofocus>-->
-<!--                    </div>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label   class="form-label">密码</label>-->
-<!--                        <input type="password" name="password" class="form-control" placeholder="请输入密码" required>-->
-<!--                    </div>-->
-<!--                    <button id="login" type="submit" class="btn bg-success w-100">登录</button>-->
+            <form id="login-form" action="">
+                <div id="logincard" class="card-body">
+                    <div class="form-group mb-3">
+                        <label class="form-label">用户名</label>
+                        <input class="form-control" id="username" name="username" placeholder="请输入用户名" required
+                               autofocus>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label">密码</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="请输入密码" required>
+                    </div>
+                    <button id="loginbutton" class="btn btn-color w-100 text-light">登录</button>
+                </div>
+                <div id="fastcard" class="card-body hidden">
+                    <div class="form-group mb-3">
+                        <label class="form-label">手机号</label>
+                        <input class="form-control" id="tel" name="tel" placeholder="请输入手机号" required autofocus>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label ">验证码</label>
+                        <div  class="d-flex justify-content-between">
+                            <input style="font-size: 12px" id="checkNum" name="checkNum" class="form-control w-40" placeholder="请输入验证码"
+                                   required>
+                            <button style="font-size: 12px" class="btn btn-color w-40 text-light" onclick="getcheckcode()"
+                                    id="checkcodebutton">获取验证码</button>
+                            <input id="countTime"
+                                   style="background-color: #f2f2f2;text-align:center;caret-color: transparent;"
+                                   class="w-40 hidden" disabled>
+                        </div>
 
-<!--                </div>-->
-<!--            </form>-->
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label   class="form-label">用户名</label>
-                                    <input class="form-control" id="username" placeholder="请输入用户名" required autofocus>
-                                </div>
-                                <div class="mb-3">
-                                    <label   class="form-label">密码</label>
-                                    <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
-                                </div>
-                                <button id="loginbutton"  class="btn bg-success w-100">登录</button>
+                    </div>
+                    <button id="fastloginbutton" onclick="fastloginbutton" class="btn btn-color w-100 text-light">快速登录</button>
 
-                            </div>
+                </div>
+            </form>
+
+            <div class="d-flex justify-content-end">
+                <button id="fastbutton" onclick="fastLogin()"
+                        class="btn btn-outline-success btn-sm me-3 mb-2">快速登录</button>
+                <button id="backbutton" onclick="backLogin()"
+                        class="btn hidden btn-outline-success btn-sm me-3 mb-2">返回用户登录</button>
+                <button id="registerbutton" onclick="registerUser()"
+                        class="btn btn-outline-success btn-sm me-3 mb-2">注册账号</button>
+            </div>
+
+
 
         </div>
     </div>
@@ -85,12 +140,29 @@
 
     $(document).ready(function () {
         $("#loginbutton").click(function () {
-            $.get("/login?username="+$("#username").val()+"&password="+$("#password").val(),function (data) {
-                if(data.code == 0){
+            if( $("#password").val() == '' ||$("#username").val() == '' || $("#password").val() == null ||$("#username").val() == null || $("#password").val() == undefined ||$("#username").val() == undefined){
+                return
+            }
+            $.get("/login?username=" + $("#username").val() + "&password=" + md5($("#password").val()), function (data, textStatus, request) {
+                if (data.code == 0) {
                     var param = encodeURI($("#username").val())
-                    window.location.href="chatroom?username="+param
-                }else {
-                    $.alert(data.message)
+                    let token = request.getResponseHeader("token")
+                    window.localStorage.setItem($("#username").val() + "_token", token);
+                    window.location.href = "chatroom?username=" + param
+                } else {
+                    $.confirm({
+                        title: '登录失败',
+                        content: data.message,
+                        autoClose: 'cancelAction|3000',
+                        buttons: {
+                            cancelAction: {
+                                text: "确认",
+                                function() {
+                                }
+                            }
+                        }
+                    });
+
                 }
 
 
@@ -98,7 +170,154 @@
             })
 
         })
+
+
+        $("#login-form").bootstrapValidator({
+            message: 'This value is not valid',
+            // 表单框里右侧的icon
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            submitHandler: function (validator, form, submitButton) {
+                // 表单提交成功时会调用此方法
+                // validator: 表单验证实例对象
+                // form  jq对象  指定表单对象
+                // submitButton  jq对象  指定提交按钮的对象
+            },
+            fields: {
+                username: {
+                    message: '用户名验证失败',
+                    validators: {
+                        notEmpty: {     //不能为空
+                            message: '用户名不能为空'
+                        },
+
+                    }
+                },
+                password: {
+                    message: '密码验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '密码不能为空'
+                        }
+                    }
+                },
+
+                tel: {
+                    message: '电话号验证失败',
+                    validators: {
+                        notEmpty: {
+                            message: '电话号不能为空'
+                        },
+                        regexp: {   //正则验证
+                            regexp: /^1\d{10}$/,
+                            message: '请输入正确的电话号'
+                        },
+                    }
+                },
+                checkNum: {
+                    message: '验证码不能为空',
+                    validators: {
+                        notEmpty: {
+                            message: '验证码不能为空'
+                        },
+
+
+                    }
+                },
+
+
+            }
+        });
+
+
     });
+
+
+
+
+    function registerUser() {
+        window.location.href = "/register"
+
+    }
+    function fastLogin() {
+        $("#fastcard").show()
+        $("#logincard").hide()
+        $("#fastbutton").hide()
+        $("#backbutton").show()
+    }
+    function backLogin() {
+        $("#fastcard").hide()
+        $("#logincard").show()
+        $("#fastbutton").show()
+        $("#backbutton").hide()
+    }
+    function getcheckcode() {
+        $.get("/getcheckcode?tel=" + $("#tel").val()), function (data) {
+            if(data.code==0){
+                $("#checkcodebutton").hide()
+                $("#countTime").show()
+                $("#countTime").val("60s")
+                var time = 59
+                var interval = setInterval(function () {
+                    $("#countTime").val(time + "s")
+                    time--;
+                    if (time == -1) {
+                        clearInterval(interval)
+                        $("#checkcodebutton").show()
+                        $("#countTime").hide()
+                    }
+                }, 1000)
+            }else{
+
+                $.confirm({
+                    title: '发送验证码失败',
+                    content: data.message,
+                    autoClose: 'cancelAction|3000',
+                    buttons: {
+                        cancelAction: {
+                            text: "确认",
+                            action: function() {
+                            }
+                        }
+                    }
+                });
+
+            }
+        }
+
+
+
+    }
+
+    function fastloginbutton() {
+        $.get("/fastlogin?tel=" + $("#tel").val()+"&checkNum="+$("#checkNum").val()), function (data) {
+            if(data.code == 0){
+                var param = encodeURI(data.data.userName)
+                let token = request.getResponseHeader("token")
+                window.localStorage.setItem(data.data.userName + "_token", token);
+                window.location.href = "chatroom?username=" + param
+            }else{
+                $.confirm({
+                    title: '提示',
+                    content: data.message,
+                    autoClose: 'cancelAction|3000',
+                    buttons: {
+                        cancelAction: {
+                            text: "确认",
+                            function() {
+                            }
+                        }
+                    }
+                });
+            }
+
+        }
+
+    }
+
 
 </script>
 

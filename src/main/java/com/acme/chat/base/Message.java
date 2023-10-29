@@ -1,6 +1,7 @@
 package com.acme.chat.base;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.alibaba.fastjson.annotation.JSONField;
 public class Message<T> {
@@ -13,6 +14,10 @@ public class Message<T> {
 	public T content;
 	//内容类型
 	public String contentType;
+
+	public String sdp;
+
+	public Map iceCandidate;
 	//发送时间
 	@JSONField(format="yyyy-MM-dd HH:mm:ss")
 	public Date date;
@@ -69,4 +74,19 @@ public class Message<T> {
 		this.contentType = contentType;
 	}
 
+	public String getSdp() {
+		return sdp;
+	}
+
+	public void setSdp(String sdp) {
+		this.sdp = sdp;
+	}
+
+	public Map getIceCandidate() {
+		return iceCandidate;
+	}
+
+	public void setIceCandidate(Map iceCandidate) {
+		this.iceCandidate = iceCandidate;
+	}
 }

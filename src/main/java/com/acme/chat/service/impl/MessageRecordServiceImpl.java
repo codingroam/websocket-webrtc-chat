@@ -61,7 +61,10 @@ public class MessageRecordServiceImpl implements MessageRecordService {
         MessageRecord messageRecord = new MessageRecord();
         messageRecord.setFromUser(message.getFrom());
         messageRecord.setToUser(message.getTo());
-        messageRecord.setContent(message.getContent().toString());
+        if(message.getContent() != null){
+            messageRecord.setContent(message.getContent().toString());
+        }
+
         messageRecord.setDate(message.getDate());
         messageRecord.setState(1);
         return messageRecord;

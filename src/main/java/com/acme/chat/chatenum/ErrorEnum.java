@@ -8,7 +8,9 @@ package com.acme.chat.chatenum;
 public enum ErrorEnum {
 
     NO_USER(10001,"没有该用户，请注册后登录"),
-    CHECK_USER_FAIL(10002,"用户名或密码错误");
+    CHECK_USER_FAIL(10002,"用户名或密码错误"),
+    NO_TOKEN(10003,"请求无token,请先登录"),
+    NOAUTH_TOKEN(10004,"当前token无权限");
 
 
     private Integer code;
