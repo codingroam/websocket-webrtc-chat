@@ -755,7 +755,7 @@
 
                 try {
 
-                    websocket = new WebSocket("wss://localhost:8089/webSocket/" + username+"?token="+token);
+                    websocket = new WebSocket("wss://182.92.218.20:8089/webSocket/" + username+"?token="+token);
                 } catch (e) {
                     console.log(' 您的浏览器暂时不支持 webSocket ');
                 }
@@ -871,7 +871,7 @@
         function hangupvideo() {
             var data = {};
             data["from"] = username;
-            data["to"] = $("body").data("to");
+            data["to"] = $("body").data("to") == null ? videodata.from : $("body").data("to");
             data["contentType"] = "leave";
             data["content"] = "";
             websocket.send(JSON.stringify(data));
@@ -916,17 +916,27 @@
 
         function closevideo() {
 
-            localVideo.srcObject.getTracks()[0].stop();
-            localVideo.srcObject.getTracks()[1].stop();
-            remoteVideo.srcObject.getTracks()[0].stop();
-            remoteVideo.srcObject.getTracks()[1].stop();
-            localVideo.src = null;
-            remoteVideo.src = null;
+            try{
+                localVideo.srcObject.getTracks()[0].stop();
+                localVideo.srcObject.getTracks()[1].stop();
+                remoteVideo.srcObject.getTracks()[0].stop();
+                remoteVideo.srcObject.getTracks()[1].stop();
 
-            yourConn.close();
-            yourConn.onicecandidate = null;
-            yourConn.onaddstream = null;
-            isVideo = false;
+            }catch (e) {
+                console.log(e)
+
+            }finally {
+                yourConn.close();
+                PeerConnection = null;
+                yourConn.onicecandidate = null;
+                yourConn.onaddstream = null;
+                isVideo = false;
+            }
+
+
+
+
+
 
         }
 
@@ -1000,7 +1010,7 @@
 
                     websocket.send(JSON.stringify({
                         from :  username,
-                        to : $("body").data("to"),
+                        to : $("body").data("to") == null ? videodata.to : $("body").data("to"),
                         contentType:"offer",
                         content:offer
                     }));
@@ -1059,7 +1069,12 @@
 
                 //using Google public stun server
                 var configuration = {
-                    "iceServers": []
+                    "iceServers": [
+                        {
+                            'urls': 'stun:stun.l.google.com:19302'
+                        },
+                        { "urls": "turn:182.92.218.20:3478", "username": "wk", "credential": "feiyu" }
+                    ]
                 };
 
                 yourConn = new PeerConnection(configuration);
