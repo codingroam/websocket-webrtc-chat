@@ -1,5 +1,17 @@
 server:
-  port: 8086
+  port: 8089
+#  ssl:
+#    # 证书文件名
+#    key-store: classpath:test.p12
+#    # 证书密钥别名
+#    key-alias: myhttps
+#    # 密钥口令
+#    key-store-password: 123456
+  ssl:
+   # key-alias: tomcat    #证书别名
+    key-store-password: psk8cn7u    #填写jks-password.txt文件内的密码。
+    key-store-type: JKS #JKS格式证书密钥库类型。PFX格式的证书密钥库类型为PKCS12。
+    key-store: classpath:codingroam.com.jks   #您需要使用实际的证书名称替换domain_name.jks。
 
 spring:
   datasource:
@@ -12,3 +24,8 @@ spring:
 logging:
   config: classpath:log4j2.xml
 
+websocket:
+  jwt:
+    header: Authorization
+    expire: 604800 # 7天，s为单位
+    secret: abcdefghabcdefghabcdefghabcdefgh

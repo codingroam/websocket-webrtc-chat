@@ -1,17 +1,21 @@
 package com.acme.chat.service.impl;
 
+import com.acme.chat.base.BusinessResult;
+import com.acme.chat.cache.LoginUserInfoCahce;
 import com.acme.chat.chatenum.ErrorEnum;
 import com.acme.chat.exception.BusinessException;
 import com.acme.chat.mapper.UserMapper;
 import com.acme.chat.po.User;
 import com.acme.chat.service.UserService;
+import com.acme.chat.utils.SchemaTaskUtils;
+import com.acme.chat.utils.SendSms;
 import com.acme.chat.vo.UserVO;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +35,7 @@ public class UserServiceImpl implements UserService {
         if(user == null){
             throw new BusinessException(ErrorEnum.NO_USER);
         }
-        if(!password.equals(user.getPassWord())){
+        if(!password.equalsIgnoreCase(user.getPassWord())){
             throw new BusinessException(ErrorEnum.CHECK_USER_FAIL);
         }
         return user;
@@ -68,5 +72,49 @@ public class UserServiceImpl implements UserService {
 
 
         return allUsers;
+    }
+
+    @Override
+    public User getUserByName(String username) {
+
+        return userMapper.getUserByUserName(username);
+    }
+
+    @Override
+    public User getUserByTel(String tel) {
+        return userMapper.getUserByTel(tel);
+    }
+
+    @Override
+    public void userLogOut(String userName) {
+        LoginUserInfoCahce.removeTokenByUserName(userName);
+        LoginUserInfoCahce.removeUserInfoByUserName(userName);
+    }
+
+    @Override
+    public void registerUser(User user) {
+        userMapper.addUser(user);
+    }
+
+    @Override
+    public BusinessResult generateAndSendCode(String tel) {
+        Random random = new Random();
+        int code = random.nextInt(900000);
+        code += 100000;
+        LoginUserInfoCahce.putTelCode(tel,code);
+        //一分钟后清理手机验证码
+        SchemaTaskUtils.clearMapKeyByDelay(LoginUserInfoCahce.getTelCodeMap(),tel,1000*60L);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("code", code);
+
+        JSONObject sendResult = SendSms.send(tel, jsonObject.toJSONString());
+        BusinessResult businessResult = new BusinessResult();
+        if (sendResult.getString("Code").equals("OK")) {
+            return businessResult;
+        }
+        businessResult.setCode(-1);
+        businessResult.setMessage(sendResult.getString("Message"));
+        return businessResult;
     }
 }

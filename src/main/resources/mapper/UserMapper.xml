@@ -10,12 +10,21 @@
         <result column="nickname" property="nickName"/>
         <result column="signature" property="signature"/>
         <result column="addr" property="addr"/>
+        <result column="tel" property="tel"/>
     </resultMap>
     <select id="getUserByUserName" parameterType="String"  resultMap="userMap">
     	select * from user where  username=#{userName}
     </select>
 
+    <select id="getUserByTel" parameterType="String"  resultMap="userMap">
+    	select * from user where  tel=#{tel}
+    </select>
+
     <select id="getAllUser"  resultMap="userMap">
     	select * from user
     </select>
+
+    <insert id="addUser"  parameterType="com.acme.chat.po.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    	insert into user (username,nickname,password,signature,addr,tel) values (#{userName},#{nickName},#{passWord},#{signature},#{addr},#{tel})
+    </insert>
 </mapper>

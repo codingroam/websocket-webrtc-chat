@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -13,6 +14,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import com.acme.chat.cache.LoginUserInfoCahce;
+import com.acme.chat.config.WebSocketConfig;
 import com.acme.chat.po.User;
 import com.acme.chat.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +26,7 @@ import com.alibaba.fastjson.JSON;
 
 import com.acme.chat.base.Message;
 
-@ServerEndpoint("/webSocket/{username}")
+@ServerEndpoint(value="/webSocket/{username}",configurator = WebSocketConfig.class)
 @Component
 @Slf4j
 public class WebSocketServer {
@@ -47,7 +50,7 @@ public class WebSocketServer {
     private static ConcurrentHashMap<String, Session> sessionPools = new ConcurrentHashMap<>();
 
     //线程安全的排序set
-    private static Set<String> onlineUserSet = Collections.synchronizedSet(new LinkedHashSet<>());
+    public static Set<String> onlineUserSet = Collections.synchronizedSet(new LinkedHashSet<>());
 
     //发送消息
     public void sendMessage(Session session, String message) throws IOException {
@@ -82,6 +85,31 @@ public class WebSocketServer {
         }
     }
 
+    public void broadcast(List<UserVO> allusers){
+        for (String userName: sessionPools.keySet()) {
+            Session session = sessionPools.get(userName);
+            orderAllUsersByUserName(userName,allusers);
+            try {
+                Message message = new Message<List>("server", "alluser", allusers, "onlineUsers", new Date());
+                sendMessage(session, JSON.toJSONString(message,true));
+            } catch(Exception e){
+                e.printStackTrace();
+                continue;
+            }
+        }
+    }
+
+    private void orderAllUsersByUserName(String userName, List<UserVO> allusers) {
+        int target = 0;
+        for(int i=0;i<allusers.size();i++){
+            if(userName.equals(allusers.get(i).getUserName())){
+                target = i;
+                break;
+            }
+        }
+        allusers.add(0,allusers.remove(target));
+    }
+
     //建立连接成功调用
     @OnOpen
     public void onOpen(Session session, @PathParam(value = "username") String userName){
@@ -104,9 +132,10 @@ public class WebSocketServer {
     private void updateOnlineUserList() {
         List<UserVO> allusers= userService.getAllUserWithState(onlineUserSet);
         //获取所有用户，包括已上线用户和未上线用户
-        Message message = new Message<List>("server", "alluser", allusers, "onlineUsers", new Date());
+        //Message message = new Message<List>("server", "alluser", allusers, "onlineUsers", new Date());
         //广播更新上线人数
-        broadcast(JSON.toJSONString(message,true));
+        //broadcast(JSON.toJSONString(message,true));
+        broadcast(allusers);
     }
 
     /**
@@ -148,7 +177,41 @@ public class WebSocketServer {
     public void onMessage(String message) throws IOException{
         System.out.println("server get" + message);
         Message msg=JSON.parseObject(message, Message.class);
-        msg.setContentType("msg");
+
+        //对方挂断
+        if ("hangup".equals(msg.contentType)) {
+            msg.setContent("对方挂断！");
+        }
+
+//        //视频通话请求
+//        if ("call_start".equals(type)) {
+//            map.put("fromUser",fromUser);
+//            map.put("msg","1");
+//        }
+//
+//        //视频通话请求回应
+//        if ("call_back".equals(type)) {
+//            map.put("fromUser",toUser);
+//            map.put("msg",msg);
+//        }
+
+        //offer
+//        if ("offer".equals(type)) {
+//            msg.setSdp("sdp",sdp);
+//        }
+//
+//        //answer
+//        if ("answer".equals(type)) {
+//            map.put("fromUser",toUser);
+//            map.put("sdp",sdp);
+//        }
+//
+//        //ice
+//        if ("_ice".equals(type)) {
+//            map.put("fromUser",toUser);
+//            map.put("iceCandidate",iceCandidate);
+//        }
+
 		msg.setDate(new Date());
         if(onlineUserSet.contains(msg.getTo())){
             sendInfoToUser(msg.getTo(), JSON.toJSONString(msg,true));

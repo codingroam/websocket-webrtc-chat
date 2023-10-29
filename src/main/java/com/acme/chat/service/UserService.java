@@ -1,5 +1,6 @@
 package com.acme.chat.service;
 
+import com.acme.chat.base.BusinessResult;
 import com.acme.chat.po.User;
 import com.acme.chat.vo.UserVO;
 
@@ -34,4 +35,13 @@ public interface UserService {
      * @return
      */
     List<UserVO> getAllUserWithState(Set<String> onLineUsers);
+
+    User getUserByName(String username);
+    User getUserByTel(String tel);
+
+    void userLogOut(String username);
+
+    void registerUser(User user);
+
+    BusinessResult generateAndSendCode(String tel);
 }
