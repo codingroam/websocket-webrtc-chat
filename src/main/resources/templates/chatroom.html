@@ -330,6 +330,7 @@
 
 <body id="body-container" class="bg-light">
 <div id="videomain" class="videomain">
+    <span id="videomsg" style="display: none;">对方已挂断</span>
     <video id="remoteVideo" class="remoteVideo" playsinline autoplay></video>
     <video id="localVideo" class="localVideo" playsinline autoplay muted></video>
     <div id="videoinfo"></div>
@@ -405,13 +406,14 @@
 
         var localVideo = document.getElementById('localVideo');
         var remoteVideo = document.getElementById('remoteVideo');
-        var videodata;
+        var videodata = {};
 
         var yourConn;
         var stream;
         var RTCSessionDescription;
         var PeerConnection;
         var isVideo = false;
+        var isCaller = false;
 
 
         $(document).ready(function () {
@@ -869,16 +871,21 @@
         }
 
         function hangupvideo() {
-            var data = {};
-            data["from"] = username;
-            data["to"] = $("body").data("to") == null ? videodata.from : $("body").data("to");
-            data["contentType"] = "leave";
-            data["content"] = "";
-            websocket.send(JSON.stringify(data));
-            $("#videomain").hide()
-            $("#accept").hide()
+            if(isVideo){
+                var data = {};
+                data["from"] = username;
+                data["to"] = isCaller ? $("body").data("to") : videodata.caller;
+                data["contentType"] = "leave";
+                data["content"] = "";
+                websocket.send(JSON.stringify(data));
+                $("#videomain").hide()
+                $("#accept").hide()
 
-            closevideo()
+                closevideo()
+            }else{
+                refusevideo()
+            }
+
 
         }
 
@@ -886,6 +893,7 @@
             if(isVideo){
                 return
             }
+            isCaller = true;
             $("#videomain").show()
             $("#accept").hide()
             $("#videoinfo").html("呼叫中...")
@@ -908,10 +916,9 @@
         }
 
         function handleLeave() {
-            $("#videomain").hide()
-            $("#accept").hide()
-
+            hangupVideoMain()
             closevideo()
+
         }
 
         function closevideo() {
@@ -931,6 +938,7 @@
                 yourConn.onicecandidate = null;
                 yourConn.onaddstream = null;
                 isVideo = false;
+                isCaller = false;
             }
 
 
@@ -942,6 +950,7 @@
 
         function handleCandidate(data) {
             yourConn.addIceCandidate(new RTCIceCandidate(data.content));
+            isVideo  = true;
         }
 
         function handleAnswer(data) {
@@ -959,8 +968,8 @@
                 yourConn.setLocalDescription(answer);
 
                 websocket.send(JSON.stringify({
-                    to:videodata.from,
-                    from:videodata.to,
+                    to:isCaller ? $("body").data("to") : videodata.caller,
+                    from:username,
                     contentType:"answer",
                     content:answer
                 }));
@@ -971,7 +980,8 @@
         }
 
         function handleCallStart(data) {
-            videodata = data
+            videodata.caller = data.from
+            videodata.callee = data.to
             $("#videomain").show()
             $("#accept").show()
             $("#hangup").show()
@@ -982,8 +992,8 @@
         function acceptvideo() {
             var data = {
                 contentType:"call_back",
-                to:videodata.from,
-                from:videodata.to,
+                to:videodata.caller,
+                from:videodata.callee,
                 content:"accept"
             }
             websocket.send(JSON.stringify(data));
@@ -993,8 +1003,8 @@
         function refusevideo() {
             var data = {
                 contentType:"call_back",
-                to:videodata.from,
-                from:videodata.to,
+                to:videodata.caller,
+                from:videodata.callee,
                 content:"refuse"
             }
             websocket.send(JSON.stringify(data));
@@ -1010,7 +1020,7 @@
 
                     websocket.send(JSON.stringify({
                         from :  username,
-                        to : $("body").data("to") == null ? videodata.to : $("body").data("to"),
+                        to : isCaller ? $("body").data("to") : videodata.caller,
                         contentType:"offer",
                         content:offer
                     }));
@@ -1021,7 +1031,19 @@
                 });
             }else{
 
+
+                hangupVideoMain()
+
             }
+
+        }
+
+        function hangupVideoMain() {
+            isCaller = false;
+            $('#videomsg').show()
+            setTimeout(()=>{
+                $("#videomain").hide()
+            },2000)
 
         }
 
@@ -1070,10 +1092,10 @@
                 //using Google public stun server
                 var configuration = {
                     "iceServers": [
-                      //  {
-                      //      'urls': 'stun:stun.l.google.com:19302'
-                      //  },
-                      //  { "urls": "turn:182.92.218.20:3478", "username": "wk", "credential": "feiyu" }
+                        {
+                            'urls':'stun:stun.l.google.com:19302'
+                        },
+                        { "urls": "turn:182.92.218.20:3478", "username":"wk", "credential": "feiyu" }
                     ]
                 };
 
@@ -1092,7 +1114,7 @@
                     if (event.candidate) {
                         websocket.send(JSON.stringify({
                             from :  username,
-                            to : $("body").data("to") == null ? videodata.to : $("body").data("to"),
+                            to : isCaller ? $("body").data("to") : videodata.caller,
                             contentType:"candidate",
                             content:event.candidate
                         }));
@@ -1114,6 +1136,7 @@
                 PeerConnection = null;
 
                 isVideo = false;
+                isCaller =false;
             }
 
             navigator.getUserMedia(mediaOpts, successFunc, errorFunc);
