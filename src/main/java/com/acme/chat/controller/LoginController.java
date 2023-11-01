@@ -50,14 +50,9 @@ public class LoginController {
 	@PassToken
 	@RequestMapping("/chatroom")
 	public String login(){
-		return "chatroom";
+		return "chatmain";
 	}
 
-	@PassToken
-	@RequestMapping("/videocall")
-	public String videocall(){
-		return "videocall";
-	}
 
 	
 	@RequestMapping("/logout")

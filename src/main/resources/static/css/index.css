@@ -1,0 +1,43 @@
+
+@media(min-width: 768px) {
+    .panel-container {
+        border-right: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .room-card {
+        width: 50%;
+    }
+}
+
+@media(max-width: 768px) {
+    .panel-container {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .room-card {
+        width: 100%;
+    }
+}
+
+.w-30 {
+    width: 30%;
+}
+
+.header-color {
+    background-color: #2c86ff;
+}
+
+.btn-color {
+    background-color: #12b7f5
+}
+
+.hidden {
+    display: none;
+}
+
+.w-40 {
+    width: 40%
+}
+.help-block{
+    color: red;
+}
