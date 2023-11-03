@@ -3,7 +3,7 @@ function websocketInit() {
     var token = window.localStorage.getItem(currentUserInfo.username+"_token")
     if(token != null && token != undefined){
         try {
-            websocket = new WebSocket("wss://localhost:8089/webSocket/" + currentUserInfo.username+"?token="+token);
+            websocket = new WebSocket("wss://182.92.218.20:8089/webSocket/" + currentUserInfo.username+"?token="+token);
         } catch (e) {
             console.log(' 您的浏览器暂时不支持 webSocket ');
         }
@@ -69,14 +69,29 @@ function websocketInit() {
             } else if(data.contentType == "onlineUsers") {
                 window.localStorage.setItem(currentUserInfo.username+"-allUserList", JSON.stringify(data.content));
                 createUserList(data.content)
-            }else {
-                //视频通话
-                if(PeerConnection == null || PeerConnection ==undefined){
-                    initWebRTC()
+            }else if(data.contentType == "msg"){
+                commonMsg(data.content)
+            }else{
+                if(isVideo && videodata.caller && videodata.caller != data.from){
+                    var data = {
+                        contentType:"msg",
+                        to:data.from,
+                        from:currentUserInfo.username,
+                        content:"对方占线请稍后再拨"
+                    }
+                    websocket.send(JSON.stringify(data));
+
+                }else{
+                    //视频通话
+                    if(PeerConnection == null || PeerConnection ==undefined){
+                        initWebRTC()
+                    }
+
+                    //视频信令处理
+                    videoSignallingHandle(data.contentType,data);
+
                 }
 
-                //视频信令处理
-                videoSignallingHandle(data.contentType,data);
 
 
             }

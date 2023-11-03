@@ -1,11 +1,5 @@
-.remoteVideo{
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background: #222;
-}
+
+
 @media(min-width: 768px) {
     .panel-container {
         border-right: 1px solid rgba(0, 0, 0, 0.125);
@@ -30,19 +24,39 @@
         overflow: hidden;
     }
 
+    .videobuttonsturn {
+        align-content: center;
+        z-index: 3;
+        bottom: 15px;
+        right: 0;
+        width: 20%;
+        position: absolute;
+        text-align: center;
+    }
+
+    .remoteVideo{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 80%;
+        height: 100%;
+
+    }
+
     .videomain {
         position: absolute;
-        width: 420px;
-        height: 440px;
+        width: 750px;
+        height: 450px;
+        background: #222;
         z-index: 999!important;
     }
     .localVideo {
         position: absolute;
         background: #757474;
-        top: 10px;
-        right: 10px;
-        width: 120px;
-        height: 140px;
+        top: 0px;
+        right: 0px;
+        width: 20%;
+        height: 25%;
         z-index: 2;
     }
 
@@ -51,13 +65,14 @@
         z-index: 3;
         bottom: 15px;
         left: 0;
-        right: 0;
+        width: 80%;
         position: absolute;
         text-align: center;
     }
 
+
+
     .hangup {
-        width: 50px;
         height: 30px;
         background-color: #FF5151;
         border: none;
@@ -65,7 +80,7 @@
         border-radius: 5px;
     }
     .accept {
-        width: 50px;
+
         height: 30px;
         background-color: #57a963;
         border: none;
@@ -91,17 +106,37 @@
 
     .videomain {
         position: absolute;
-        width: 300px;
+        width: 380px;
         height: 330px;
+        background: #222;
         z-index: 999!important;
+    }
+
+    .videobuttonsturn {
+        align-content: center;
+        z-index: 3;
+        bottom: 15px;
+        right: 0;
+        width: 30%;
+        position: absolute;
+        text-align: center;
+    }
+
+    .remoteVideo{
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 70%;
+        height: 100%;
+
     }
     .localVideo {
         position: absolute;
         background: #757474;
-        top: 5px;
-        right: 5px;
-        width: 100px;
-        height: 120px;
+        top: 0px;
+        right: 0px;
+        width: 30%;
+        height: 40%;
         z-index: 2;
     }
     .videobuttons {
@@ -121,7 +156,7 @@
         border: none;
         color: white;
         border-radius: 3px;
-        font-size: 15px;
+        font-size: 10px;
     }
     .accept {
         width: 45px;
@@ -130,7 +165,7 @@
         border: none;
         color: white;
         border-radius: 3px;
-        font-size: 15px;
+        font-size: 10px;
     }
 
 

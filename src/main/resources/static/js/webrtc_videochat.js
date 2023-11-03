@@ -1,7 +1,8 @@
+var minflag = 0;
 function initWebRTC() {
 
     PeerConnection = (window.webkitRTCPeerConnection || window.mozRTCPeerConnection || window.RTCPeerConnection || undefined);
-    RTCSessionDescription = (window.webkitRTCSessionDescription || window.mozRTCSessionDescription || window.RTCSessionDescription || undefined);
+  //  RTCSessionDescription = (window.webkitRTCSessionDescription || window.mozRTCSessionDescription || window.RTCSessionDescription || undefined);
 
     if (navigator.mediaDevices === undefined) {
         navigator.mediaDevices = {};
@@ -18,7 +19,7 @@ function initWebRTC() {
             });
         }
     }
-    window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
+    //window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
     var mediaOpts = {
         audio: true,
         video: { facingMode: "user" }
@@ -58,10 +59,7 @@ function initWebRTC() {
                     contentType:"candidate",
                     content:event.candidate
                 }));
-                // send({
-                //     type: "candidate",
-                //     candidate: event.candidate
-                // });
+
             }
         };
     }
@@ -197,12 +195,12 @@ function closevideo() {
 
 function handleCandidate(data) {
     yourConn.addIceCandidate(new RTCIceCandidate(data.content));
-    isVideo  = true;
+    videoConnectPostProcessor()
 }
 
 function handleAnswer(data) {
     yourConn.setRemoteDescription(new RTCSessionDescription(data.content));
-    isVideo  = true;
+    videoConnectPostProcessor();
 }
 
 
@@ -323,5 +321,43 @@ function overturnvideo() {
         $('#remoteVideo').addClass("remoteVideo")
     }
 
+}
+
+function videoConnectPostProcessor(){
+    isVideo = true;
+    if(!isPC){
+        $("#turnoverbutton").hide()
+    }
+}
+
+
+function minmaxvideo() {
+    if(minflag==0){
+        $("#videomsg").hide();
+        $("#videobuttons").hide();
+        $("#turnoverbutton").hide();
+        $("#videomain").css('width','100px')
+        $("#videomain").css('height','80px')
+        $("#minmaxbutton i").removeClass('bi bi-dash-square');
+        $("#minmaxbutton i").addClass('bi bi-fullscreen');
+        minflag=1
+
+    }else{
+        if(isPC){
+            $("#videomain").css('width','750px')
+            $("#videomain").css('height','450px')
+        }else{
+
+            $("#videomain").css('width','380px')
+            $("#videomain").css('height','330px')
+        }
+
+        $("#videomsg").show();
+        $("#videobuttons").show();
+        $("#turnoverbutton").show();
+        $("#minmaxbutton i").removeClass('bi bi-fullscreen');
+        $("#minmaxbutton i").addClass('bi bi-dash-square');
+        minflag=0
+    }
 
 }

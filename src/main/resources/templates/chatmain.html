@@ -21,6 +21,7 @@
     <script src="/js/external/jquery_confirm.min.js"></script>
     <script src="/js/external/main.js"></script>
     <script src="/js/external/traditional.js"></script>
+    <script src="/js/external/adapter_latest.js"></script>
 
 
 </head>
@@ -28,14 +29,18 @@
 
 <body id="body-container" class="bg-light">
 <div id="videomain" class="videomain">
-    <span id="videomsg" style="font-size: 14px;color: #e74c3c">对方已挂断</span>
     <video id="remoteVideo" class="remoteVideo" playsinline autoplay></video>
+
     <video id="localVideo" class="localVideo" playsinline autoplay muted></video>
-    <div id="videoinfo"></div>
 
     <div id="videobuttons" class="videobuttons">
         <button id="accept" class="accept" onclick="acceptvideo()" >接受</button>
         <button id="hangup" class="hangup" onclick="hangupvideo()">挂断</button>
+    </div>
+    <div  class="videobuttonsturn">
+        <button id="turnoverbutton" class="accept btn-mini" onclick="overturnvideo()" ><i class="bi bi-arrow-counterclockwise"></i></button>
+        <button id="minmaxbutton" class="accept btn-mini" onclick="minmaxvideo()"><i class="bi bi-dash-square"></i></button>
+
     </div>
 </div>
 <div class="container pt-3" id="card-container">
@@ -112,6 +117,7 @@
         var isVideo = false;
         var isCaller = false;
         var currentUserInfo = {};
+        var isPC = true;
 
 
         $(document).ready(function () {
@@ -235,7 +241,7 @@
             });
 
 
-            //视频窗口可移动处理
+           // 视频窗口可移动处理
             $("#videomain").mousedown(function (e) {
                 // 元素大小
                 let elW = e.currentTarget.offsetWidth
@@ -265,6 +271,21 @@
             })
 
         });
+
+        isPC = function() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android", "iPhone","SymbianOS", "Windows Phone","iPad", "iPod"];
+            var flag = true;
+
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+
+            return flag;
+        }();
 
 
 
@@ -346,6 +367,7 @@
     <script src="/js/usermsg_storagerender.js"></script>
     <script src="/js/webrtc_videochat.js"></script>
     <script src="/js/message_tips.js"></script>
+    <script src="/js/draft.js"></script>
 
 
 

@@ -23,6 +23,23 @@ function logout() {
 
 }
 
+function commonMsg(msg) {
+
+    $.confirm({
+        title: '提示',
+        content: msg,
+        buttons: {
+            cancel: {
+                text: "确定",
+                action: function () {
+                }
+            },
+
+        }
+    });
+
+}
+
 
 function noDevicesToast(message) {
     $.confirm({
