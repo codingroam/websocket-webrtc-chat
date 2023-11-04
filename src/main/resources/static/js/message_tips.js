@@ -23,19 +23,30 @@ function logout() {
 
 }
 
+function commonMsg(msg) {
 
-function noDevicesToast(message) {
+    $.confirm({
+        title: '提示',
+        content: msg,
+        buttons: {
+            cancel: {
+                text: "确定",
+                action: function () {
+                }
+            },
+
+        }
+    });
+
+}
+
+
+function commonMsgAutoClose(message) {
     $.confirm({
         title: '提示',
         content: message,
         autoClose: 'cancelAction|5000',
         buttons: {
-            test:{
-                text:"确认",
-                action: function(){
-
-                }
-            },
             cancelAction: {
                 text: "关闭",
                 action: function () {

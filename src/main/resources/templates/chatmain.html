@@ -9,9 +9,9 @@
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 
     <title>飞鱼聊天</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/chatmain.css" >
     <link rel="stylesheet" href="/css/external/jquery_confirm.min.css">
@@ -21,26 +21,41 @@
     <script src="/js/external/jquery_confirm.min.js"></script>
     <script src="/js/external/main.js"></script>
     <script src="/js/external/traditional.js"></script>
+    <script src="/js/external/adapter_latest.js"></script>
 
 
 </head>
 
 
 <body id="body-container" class="bg-light">
-<div id="videomain" class="videomain">
-    <span id="videomsg" style="font-size: 14px;color: #e74c3c">对方已挂断</span>
+
+<div id="videomain" draggable="true" class="videomain videomain-border-radius">
+    <div id="videoinfo" class="videoinfo text-light videoinfo-color videoinfo-border-radius">来电</div>
+
+
     <video id="remoteVideo" class="remoteVideo" playsinline autoplay></video>
+
     <video id="localVideo" class="localVideo" playsinline autoplay muted></video>
-    <div id="videoinfo"></div>
 
     <div id="videobuttons" class="videobuttons">
-        <button id="accept" class="accept" onclick="acceptvideo()" >接受</button>
-        <button id="hangup" class="hangup" onclick="hangupvideo()">挂断</button>
+        <button id="hangup" class="hangup" onclick="hangupVideoButton()">挂断</button>
+        <button id="accept" class="accept" onclick="acceptVideoButton()" >接受</button>
     </div>
+    <div  class="videobuttonicon videoclass">
+        <button id="turnoverbutton" class="accept btn-mini" onclick="overturnvideo()" ><i class="bi bi-arrow-counterclockwise"></i></button>
+        <button id="minmaxbutton" class="accept btn-mini" onclick="minmaxvideo()"><i class="bi bi-dash-square"></i></button>
+    </div>
+    <div  class="videobuttonicon audioclass">
+        <button  class="accept btn-mini" ><i class="bi bi-ear"></i></i></button>
+    </div>
+
+
+
 </div>
+
 <div class="container pt-3" id="card-container">
     <div class="card">
-        <div class="card-header  text-light d-flex justify-content-between no-cursor" style="background-image: linear-gradient(to right,#4b8cfe,#4adafe)">
+        <div class="card-header  text-light d-flex justify-content-between no-cursor topbar-gradient" >
             <span class="text-light no-cursor"><i class="bi bi-send"></i>&nbsp;飞鱼&nbsp;</i> </span>
             <span id="talktitle">飞鱼Chat&nbsp;</i></span>
             <span class="text-light" onclick="logout()">退出</span>
@@ -85,9 +100,18 @@
             <div class="card-footer">
                 <div class="input-group">
                     <input id="sendmessage"  type="text" class="form-control" placeholder="请输入消息">
-                    <button id="plusbtn" onclick="plusClick()" class="btn btn-outline-primary btn-light"><i class="bi bi-plus-circle"></i></button>
+<!--                    <button id="plusbtn" onclick="plusClick()" class="btn btn-outline-primary btn-light"><i class="bi bi-plus-circle"></i></button>-->
+                    <div class="dropup-center dropup">
+                        <button class="btn btn-outline-primary btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-plus-circle"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" onclick="videoCallClick()" >视频通话</a></li>
+                            <li><a class="dropdown-item" onclick="audioCallClick()" >语音通话</a></li>
+                        </ul>
+                    </div>
                     <button id="emojibtn" onclick="emojiButtonClick()" class="btn btn-outline-primary btn-light"><i  class="bi bi-emoji-laughing"></i></button>
-                    <button id="send"  class="btn  btn-color text-light"><i class="bi bi-send"></i>&nbsp;发送</button>
+                    <button id="send"   class="btn  btn-color text-light"><i class="bi bi-send"></i>&nbsp;发送</button>
                 </div>
             </div>
         </div>
@@ -112,6 +136,7 @@
         var isVideo = false;
         var isCaller = false;
         var currentUserInfo = {};
+        var isPC = true;
 
 
         $(document).ready(function () {
@@ -141,6 +166,7 @@
             $("#signature").html(signList[Math.floor(Math.random()*14)])
 
             $("#send").click(function () {
+
                 if (currentUserInfo.to == undefined) {
                     var activeuser = $("#users > .active").val()
                     if (activeuser == undefined) {
@@ -235,36 +261,47 @@
             });
 
 
-            //视频窗口可移动处理
-            $("#videomain").mousedown(function (e) {
-                // 元素大小
-                let elW = e.currentTarget.offsetWidth
-                let elH = e.currentTarget.offsetHeight
-                // 元素位置
-                let elL = e.currentTarget.offsetLeft
-                let elT = e.currentTarget.offsetTop
-                // 鼠标位置
-                let x = e.clientX
-                let y = e.clientY
-                // 窗口大小
-                let w = window.innerWidth
-                let h = window.innerHeight
-                // 鼠标到元素左边距离
-                let moveX = x - elL
-                let moveY = y - elT
-                let el = e.currentTarget
-                document.onmousemove = function (e) {
-                    el.style.right = w - (e.clientX - moveX) - elW + 'px'
-                    el.style.bottom = h - (e.clientY - moveY) - elH + 'px'
-                }
-                document.onmouseup = function () {
-                    document.onmousemove = null
-                    document.onmouseup = null
-                }
 
-            })
+
+
 
         });
+
+        isPC = function() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android", "iPhone","SymbianOS", "Windows Phone","iPad", "iPod"];
+            var flag = true;
+
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+
+            return flag;
+        }();
+
+
+
+
+        function sendByMsgInfo(msginfo) {
+
+            var data = msginfo
+            websocket.send(JSON.stringify(data));
+            var messagevar = getEmojiStr(msginfo.content)
+            var message = `<div class="d-flex justify-content-end my-3">
+                        <div class="card w-30 border-light">
+                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
+                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
+                        </div>
+                    </div>`;
+
+            $("#talk-container").append(message);
+            storageTalkUserMessage(data["to"], message)
+            scrollToBottom();
+
+        }
 
 
 
@@ -346,7 +383,8 @@
     <script src="/js/usermsg_storagerender.js"></script>
     <script src="/js/webrtc_videochat.js"></script>
     <script src="/js/message_tips.js"></script>
-
+    <script src="/js/draft.js"></script>
+    <script src="/js/resize.js"></script>
 
 
 </body>

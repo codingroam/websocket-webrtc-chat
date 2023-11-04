@@ -1,11 +1,5 @@
-.remoteVideo{
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    background: #222;
-}
+
+
 @media(min-width: 768px) {
     .panel-container {
         border-right: 1px solid rgba(0, 0, 0, 0.125);
@@ -29,44 +23,92 @@
         justify-content: center;
         overflow: hidden;
     }
+    .videoinfo {
+        top: 0px;
+        height: 7%;
+        /*background: #7fdf8d;*/
+        text-align: center;
+        font-size: 16px;
+        padding: 4px;
+    }
+    .videoinfomin{
+        top:0px;
+        /*background: #7fdf8d;*/
+        text-align: center;
+        font-size: 10px;
+        padding: 0px;
+
+    }
+
+    .videobuttonicon {
+        align-content: center;
+        z-index: 3;
+        bottom: 10px;
+        right: 0;
+        width: 20%;
+        position: absolute;
+        text-align: center;
+    }
+
+    .remoteVideo{
+        position: absolute;
+        top: 7%;
+        left: 0px;
+        width: 80%;
+        height: 93%;
+
+    }
 
     .videomain {
         position: absolute;
-        width: 420px;
-        height: 440px;
+        width: 750px;
+        height: 450px;
+        background: #222;
         z-index: 999!important;
     }
     .localVideo {
         position: absolute;
         background: #757474;
-        top: 10px;
-        right: 10px;
-        width: 120px;
-        height: 140px;
+        top: 7%;
+        right: 0px;
+        width: 20%;
+        height: 25%;
+        z-index: 2;
+    }
+    .localVideoMin {
+        position: absolute;
+        background: #757474;
+        top: 18%;
+        right: 0px;
+        width: 20%;
+        height: 25%;
         z-index: 2;
     }
 
     .videobuttons {
         align-content: center;
         z-index: 3;
-        bottom: 15px;
+        bottom: 10px;
         left: 0;
-        right: 0;
+        width: 80%;
         position: absolute;
         text-align: center;
     }
 
+
+
     .hangup {
-        width: 50px;
-        height: 30px;
+        height: 25px;
+        font-size: 12px;
         background-color: #FF5151;
         border: none;
         color: white;
         border-radius: 5px;
     }
     .accept {
-        width: 50px;
-        height: 30px;
+
+        height: 25px;
+        font-size: 12px;
         background-color: #57a963;
         border: none;
         color: white;
@@ -91,27 +133,64 @@
 
     .videomain {
         position: absolute;
-        width: 300px;
+        width: 380px;
         height: 330px;
+        background: #222;
         z-index: 999!important;
+    }
+    .videoinfo {
+        top: 0px;
+        height: 7%;
+        background: #7fdf8d;
+        text-align: center;
+        font-size: 12px;
+        padding: 2px;
+    }
+
+    .videobuttons{
+        align-content: center;
+        z-index: 3;
+        bottom: 10px;
+        left: 0;
+        width: 70%;
+        position: absolute;
+        text-align: center;
+    }
+
+    .remoteVideo{
+        position: absolute;
+        top: 7%;
+        left: 0px;
+        width: 70%;
+        height: 93%;
+
     }
     .localVideo {
         position: absolute;
         background: #757474;
-        top: 5px;
-        right: 5px;
-        width: 100px;
-        height: 120px;
+        top: 7%;
+        right: 0px;
+        width: 30%;
+        height: 40%;
         z-index: 2;
     }
-    .videobuttons {
+    .videobuttonicon {
         align-content: center;
         z-index: 3;
-        bottom: 15px;
-        left: 0;
+        bottom: 10px;
         right: 0;
+        width: 30%;
         position: absolute;
         text-align: center;
+    }
+    .localVideoMin {
+        position: absolute;
+        background: #757474;
+        top: 18%;
+        right: 0px;
+        width: 30%;
+        height: 45%;
+        z-index: 2;
     }
 
     .hangup {
@@ -121,7 +200,7 @@
         border: none;
         color: white;
         border-radius: 3px;
-        font-size: 15px;
+        font-size: 10px;
     }
     .accept {
         width: 45px;
@@ -130,7 +209,7 @@
         border: none;
         color: white;
         border-radius: 3px;
-        font-size: 15px;
+        font-size: 10px;
     }
 
 
@@ -290,4 +369,94 @@
 }
 .videomain{
     display: none;
+}
+
+.audioclass{
+    display: none;
+
+}
+.videoclass{
+    display: none;
+
+}
+
+
+
+
+
+.audioinfo {
+    top: 0px;
+    /* height: 25px; */
+    background: #7fdf8d;
+    text-align: center;
+    font-size: 12px;
+    padding: 2px;
+}
+
+.topbar-gradient{
+    background-image: linear-gradient(to right,#4b8cfe,#4adafe)
+}
+
+.videomain-border-radius{
+    border-radius : 5px 5px 5px 5px;
+}
+.videoinfo-border-radius{
+    border-radius : 5px 5px 0px 0px;
+}
+.videoinfo-color{
+    background: #4b92fe;
+}
+
+
+
+
+.dropdown-menu .show {
+    position: absolute;
+    inset: auto auto 0px 0px;
+    margin: 0px;
+    transform: translate3d(-19px, -38.6667px, 14px);
+    /* width: 50%; */
+}
+
+.dropdown-menu {
+    --bs-dropdown-zindex: 1000;
+    --bs-dropdown-min-width: 6rem;
+    --bs-dropdown-padding-x: 0;
+    --bs-dropdown-padding-y: 0.5rem;
+    --bs-dropdown-spacer: 0.125rem;
+    --bs-dropdown-font-size: 1rem;
+    --bs-dropdown-color: var(--bs-body-color);
+    --bs-dropdown-bg: var(--bs-body-bg);
+    --bs-dropdown-border-color: var(--bs-border-color-translucent);
+    --bs-dropdown-border-radius: var(--bs-border-radius);
+    --bs-dropdown-border-width: var(--bs-border-width);
+    --bs-dropdown-inner-border-radius: calc(var(--bs-border-radius) - var(--bs-border-width));
+    --bs-dropdown-divider-bg: var(--bs-border-color-translucent);
+    --bs-dropdown-divider-margin-y: 0.5rem;
+    --bs-dropdown-box-shadow: var(--bs-box-shadow);
+    --bs-dropdown-link-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-bg: var(--bs-tertiary-bg);
+    --bs-dropdown-link-active-color: #fff;
+    --bs-dropdown-link-active-bg: #0d6efd;
+    --bs-dropdown-link-disabled-color: var(--bs-tertiary-color);
+    --bs-dropdown-item-padding-x: 1rem;
+    --bs-dropdown-item-padding-y: 0.25rem;
+    --bs-dropdown-header-color: #6c757d;
+    --bs-dropdown-header-padding-x: 1rem;
+    --bs-dropdown-header-padding-y: 0.5rem;
+    position: absolute;
+    z-index: var(--bs-dropdown-zindex);
+    display: none;
+    min-width: var(--bs-dropdown-min-width);
+    padding: var(--bs-dropdown-padding-y) var(--bs-dropdown-padding-x);
+    margin: 0;
+    font-size: var(--bs-dropdown-font-size);
+    color: var(--bs-dropdown-color);
+    text-align: left;
+    list-style: none;
+    background-color: var(--bs-dropdown-bg);
+    background-clip: padding-box;
+    border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+    border-radius: var(--bs-dropdown-border-radius);
 }

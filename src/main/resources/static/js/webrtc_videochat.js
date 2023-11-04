@@ -1,12 +1,13 @@
+var minflag = 0;
+var audioVideoDevices;
 function initWebRTC() {
 
     PeerConnection = (window.webkitRTCPeerConnection || window.mozRTCPeerConnection || window.RTCPeerConnection || undefined);
-    RTCSessionDescription = (window.webkitRTCSessionDescription || window.mozRTCSessionDescription || window.RTCSessionDescription || undefined);
+  //  RTCSessionDescription = (window.webkitRTCSessionDescription || window.mozRTCSessionDescription || window.RTCSessionDescription || undefined);
 
     if (navigator.mediaDevices === undefined) {
         navigator.mediaDevices = {};
     }
-    //
     if (navigator.mediaDevices.getUserMedia === undefined) {
         navigator.mediaDevices.getUserMedia = function(constraints) {
             var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -18,11 +19,16 @@ function initWebRTC() {
             });
         }
     }
-    window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
+
     var mediaOpts = {
-        audio: true,
-        video: { facingMode: "user" }
+       // audio: audioVideoDevices.audioinput || audioVideoDevices.audiooutput,
+        audio:true,
+        video: audioVideoDevices.video ? { facingMode: "user" } : false
     }
+    navigator.getUserMedia(mediaOpts, successFunc, errorFunc);
+
+
+
     function successFunc(myStream) {
         stream = myStream;
 
@@ -58,32 +64,25 @@ function initWebRTC() {
                     contentType:"candidate",
                     content:event.candidate
                 }));
-                // send({
-                //     type: "candidate",
-                //     candidate: event.candidate
-                // });
+
             }
         };
     }
     function errorFunc(err) {
         if("NotFoundError" == err.name){
-            noDevicesToast("设备不具备视频、音频条件或没有音视频权限");
+            commonMsgAutoClose("设备不具备视频、音频条件或没有音视频权限");
         }else{
-            alert(err.name);
+            commonMsgAutoClose(err.name);
         }
-
-        $("#videomain").hide()
-        PeerConnection = null;
-
         isVideo = false;
-        isCaller =false;
+        isCaller = false;
     }
 
-    navigator.getUserMedia(mediaOpts, successFunc, errorFunc);
+
 
 }
 
-
+//音视频信令处理
 function videoSignallingHandle(signtype,data) {
 
     switch(signtype) {
@@ -104,7 +103,7 @@ function videoSignallingHandle(signtype,data) {
             handleCandidate(data);
             break;
         case "leave":
-            handleLeave();
+            handleLeave("对方已已挂断");
             break;
         default:
             break;
@@ -113,7 +112,7 @@ function videoSignallingHandle(signtype,data) {
 }
 
 //视频聊天
-function plusClick() {
+function videoCallClick(type) {
     if(currentUserInfo.to == null || currentUserInfo.to == undefined){
         videoNoUserToast()
         return;
@@ -121,13 +120,13 @@ function plusClick() {
     if(isVideo){
         return;
     }
+    // getAudioVideoDevices(type).then(devices =>{})
+        //获取当前音视频设备状态
+    audioVideoDevices = getAudioVideoDevices(type);
     isCaller = true;
-    $("#videomain").show()
-    $("#accept").hide()
-    $("#videoinfo").html("呼叫中...")
 
-
-
+    //视频发起方打开视频界面
+    openVideoMain("caller")
 
     if(PeerConnection == null || PeerConnection ==undefined){
         initWebRTC()
@@ -138,78 +137,117 @@ function plusClick() {
     data["to"] = currentUserInfo.to;
     data["contentType"] = "call_start";
     data["content"] = "";
+    if(type && type == "audio"){
+        data["content"] = "audio";
+    }
     websocket.send(JSON.stringify(data));
+    data["contentType"] = "text";
+    if(type && type == "audio"){
+        data["content"] = "<请求与你进行语音通话>";
+    }else{
+        data["content"] = "<请求与你进行视频通话>";
+    }
+
+    sendByMsgInfo(data);
 
 
+
+
+
+}
+
+function audioCallClick() {
+
+    videoCallClick("audio")
 }
 
 //挂断视频聊天
-function hangupvideo() {
-    if(isVideo){
-        var data = {};
-        data["from"] = currentUserInfo.username;
-        data["to"] = isCaller ? currentUserInfo.to : videodata.caller;
-        data["contentType"] = "leave";
-        data["content"] = "";
-        websocket.send(JSON.stringify(data));
-        $("#videomain").hide()
-        $("#accept").hide()
-        closevideo()
-    }else if(isCaller){
-        handleLeave()
+function hangupVideoButton() {
+    if(isVideo || isCaller){
+        if(currentUserInfo.username != currentUserInfo.to){
+            var data = {};
+            data["from"] = currentUserInfo.username;
+            data["to"] = isCaller ? currentUserInfo.to : videodata.caller;
+            data["contentType"] = "leave";
+            data["content"] = "";
+            websocket.send(JSON.stringify(data));
+
+            data["contentType"] = "text";
+            data["content"] = "<通话已结束>";
+            sendByMsgInfo(data);
+        }
+
+
+        handleLeave("已挂断")
     }else{
-        refusevideo()
+        refuseVideoProcessor()
     }
 
 
 }
 
-
-
-function handleLeave() {
-    hangupVideoMain()
-    closevideo()
+//处理来电请求
+function handleCallStart(data) {
+    videodata.caller = data.from
+    videodata.callee = data.to
+    //视频接受方打开视频界面
+    openVideoMain("callee",data)
 
 }
 
+//处理视频请求的响应
+function handleCallBack(data) {
+    //接受视频
+    if(data.content == "accept"){
+        yourConn.createOffer(function (offer) {
+            websocket.send(JSON.stringify({
+                from :  currentUserInfo.username,
+                to : isCaller ? currentUserInfo.to : videodata.caller,
+                contentType:"offer",
+                content:offer
+            }));
+            yourConn.setLocalDescription(offer);
+        }, function (error) {
+            alert("Error when creating an offer");
+        });
 
-function closevideo() {
+        acceptVideoCallBackPostProcessor()
+    }else{
+        //拒绝视频
+        closeVideoProcessor("对方已拒绝")
 
-    try{
-        localVideo.srcObject.getTracks()[0].stop();
-        localVideo.srcObject.getTracks()[1].stop();
-        remoteVideo.srcObject.getTracks()[0].stop();
-        remoteVideo.srcObject.getTracks()[1].stop();
-
-    }catch (e) {
-        console.log(e)
-
-    }finally {
-        yourConn.close();
-        PeerConnection = null;
-        yourConn.onicecandidate = null;
-        yourConn.onaddstream = null;
-        isVideo = false;
-        isCaller = false;
     }
 
 }
 
+function acceptVideoCallBackPostProcessor() {
+
+    if(audioVideoDevices.video){
+        $("#videoinfo").html("与 "+currentUserInfo.to+"  的视频通话")
+    }else{
+
+        $("#videoinfo").html("与 "+currentUserInfo.to+"  的语音通话")
+    }
+
+}
+
+//处理ice备选
 function handleCandidate(data) {
     yourConn.addIceCandidate(new RTCIceCandidate(data.content));
-    isVideo  = true;
+    videoConnectPostProcessor()
 }
 
+//处理应答
 function handleAnswer(data) {
     yourConn.setRemoteDescription(new RTCSessionDescription(data.content));
-    isVideo  = true;
+    videoConnectPostProcessor();
 }
 
 
 //when somebody sends us an offer
+//处理offer请求
 function handleOffer(data) {
     yourConn.setRemoteDescription(new RTCSessionDescription(data.content));
-
     //create an answer to an offer
     yourConn.createAnswer(function (answer) {
         yourConn.setLocalDescription(answer);
@@ -226,28 +264,191 @@ function handleOffer(data) {
     });
 }
 
-function handleCallStart(data) {
-    videodata.caller = data.from
-    videodata.callee = data.to
-    $("#videomain").show()
-    $("#accept").show()
-    $("#hangup").show()
-    $("#videoinfo").html(data.from+"  视频通话")
+
+//处理通话挂断
+function handleLeave(msg) {
+    closeVideoProcessor(msg)
 
 }
 
-function acceptvideo() {
-    var data = {
-        contentType:"call_back",
-        to:videodata.caller,
-        from:videodata.callee,
-        content:"accept"
+//关闭视频处理器
+function closeVideoProcessor(msg){
+    //关闭视频主界面
+    hangupVideoMain(msg)
+    //关闭视频流
+    closeVideoStream()
+}
+
+//挂断视频主界面
+function hangupVideoMain(msg) {
+
+    $("#videoinfo").html(msg)
+    setTimeout(()=>{
+        $("#videomain").hide()
+    },2000)
+
+}
+
+
+//关闭视频流和PeerConnection
+function closeVideoStream() {
+    try{
+        localVideo.srcObject.getTracks()[0].stop();
+        localVideo.srcObject.getTracks()[1].stop();
+        remoteVideo.srcObject.getTracks()[0].stop();
+        remoteVideo.srcObject.getTracks()[1].stop();
+
+    }catch (e) {
+        console.log(e)
+
+    }finally {
+        videodata = {}
+        yourConn.close();
+        PeerConnection = null;
+        yourConn.onicecandidate = null;
+        yourConn.onaddstream = null;
+        isVideo = false;
+        isCaller = false;
     }
-    websocket.send(JSON.stringify(data));
-    $("#accept").hide()
+
 }
 
-function refusevideo() {
+
+
+//打开视频界面
+function openVideoMain(type,data){
+    $("#videomain").show()
+    $("#hangup").show()
+    if(type=='caller'){
+        $("#accept").hide()
+    }else{
+        $("#accept").show()
+    }
+
+
+
+    if(audioVideoDevices.video){
+        videoPostProcessor(type,data)
+    }else{
+        audioPostProcessor(type,data)
+    }
+}
+
+function videoPostProcessor(type,data) {
+    //视频通话
+    if(type == 'caller'){
+        $("#videoinfo").html("视频通话请求中...")
+    }else{
+        $("#videoinfo").html("来自 "+data.from+"  的视频通话")
+    }
+
+    if(isPC){
+        $("#videomain").css('width','750px')
+        $("#videomain").css('height','450px')
+    }else {
+        $("#videomain").css('width','380px')
+        $("#videomain").css('height','330px')
+    }
+    videoMainCenterShow()
+
+    $("#localVideo").show();
+    $("#remoteVideo").show();
+    $(".audioclass").hide();
+    $(".videoclass").show();
+    $("#videoinfo").removeClass('audioinfo')
+    $("#videoinfo").addClass('videoinfo')
+
+
+}
+
+function videoMainCenterShow() {
+
+    var window_width = $(window).width();
+    var window_height = $(window).height();
+// 获取div的宽高
+    var div_width = $('.videomain').width();
+    var div_height = $('.videomain').height();
+// 计算div元素的左上角位置
+    var left_margin = (window_width - div_width) / 2;
+    var top_margin = (window_height - div_height) / 3;
+// 设置div元素的样式
+    $('.videomain').css({
+        'left': left_margin + 'px',
+        'top': top_margin + 'px'
+    });
+
+
+    // setTimeout(()=>{
+    //     $('.videomain').css({
+    //         'left': '',
+    //         'top': ''
+    //     });
+    // },200)
+
+}
+
+function audioPostProcessor(type,data) {
+    //语音通话
+    if(type == 'caller'){
+        $("#videoinfo").html("语音通话请求中...")
+    }else{
+        $("#videoinfo").html("来自 "+data.from+"  的语音通话")
+    }
+    $("#localVideo").hide();
+    $("#remoteVideo").hide();
+    $(".audioclass").show();
+    $(".videoclass").hide();
+
+    $("#videomain").css('width','175px')
+    $("#videomain").css('height','90px')
+    $("#videoinfo").removeClass('videoinfo')
+    $("#videoinfo").addClass('audioinfo')
+    videoMainCenterShow()
+
+
+}
+
+//接受视频请求
+function acceptVideoButton() {
+    if(videodata.caller == videodata.callee){
+        remoteVideo.srcObject = stream
+        $("#accept").hide()
+    }else{
+        var data = {
+            contentType:"call_back",
+            to:videodata.caller,
+            from:videodata.callee,
+            content:"accept"
+        }
+        websocket.send(JSON.stringify(data));
+
+        data.contentType = "text"
+        if(audioVideoDevices.video){
+            data.content = "<同意视频通话>"
+        }else{
+            data.content = "<同意语音通话>"
+        }
+
+        sendByMsgInfo(data);
+
+        acceptVideoProcessor()
+    }
+
+
+}
+
+function acceptVideoProcessor() {
+    $("#accept").hide()
+    if(audioVideoDevices.video){
+        $("#videoinfo").html("与 "+videodata.caller+"  的视频通话")
+    }else{
+        $("#videoinfo").html("与 "+videodata.caller+"  的语音通话")
+    }
+
+}
+
+//拒绝视频请求
+function refuseVideoProcessor() {
     var data = {
         contentType:"call_back",
         to:videodata.caller,
@@ -255,48 +456,24 @@ function refusevideo() {
         content:"refuse"
     }
     websocket.send(JSON.stringify(data));
-}
 
-
-function handleCallBack(data) {
-    if(data.content == "accept"){
-
-        yourConn.createOffer(function (offer) {
-            // send({
-            //     type: "offer",
-            //     offer: offer
-            // });
-
-            websocket.send(JSON.stringify({
-                from :  currentUserInfo.username,
-                to : isCaller ? currentUserInfo.to : videodata.caller,
-                contentType:"offer",
-                content:offer
-            }));
-
-            yourConn.setLocalDescription(offer);
-        }, function (error) {
-            alert("Error when creating an offer");
-        });
+    data.contentType = "text"
+    if(audioVideoDevices.video){
+        data.content = "<拒绝视频通话>"
     }else{
-
-
-        hangupVideoMain()
-
+        data.content = "<拒绝语音通话>"
     }
 
+    sendByMsgInfo(data)
+    //关闭视频处理
+    closeVideoProcessor("已挂断")
 }
 
-//挂断视频主界面
-function hangupVideoMain() {
-    isCaller = false;
-    $('#videomsg').show()
-    setTimeout(()=>{
-        $("#videomain").hide()
-    },2000)
 
-}
 
+
+
+//双击翻转视频
 $('#localVideo').dblclick(function() {
     //翻转视频
     overturnvideo();
@@ -322,6 +499,124 @@ function overturnvideo() {
         $('#remoteVideo').removeClass("localVideo")
         $('#remoteVideo').addClass("remoteVideo")
     }
+
+}
+
+function videoConnectPostProcessor(){
+    isVideo = true;
+    if(!isPC){
+        $("#turnoverbutton").hide()
+    }
+}
+
+
+function minmaxvideo() {
+    if(minflag==0){
+
+
+
+        $("#videobuttons").hide();
+        $("#turnoverbutton").hide();
+        $("#videomain").css('width','100px')
+        $("#videomain").css('height','80px')
+        //因为有翻转功能，需要判断
+        if($("#localVideo").hasClass('localVideo')){
+            $("#localVideo").removeClass('localVideo')
+            $("#localVideo").addClass('localVideoMin')
+        }else{
+            $("#remoteVideo").removeClass('localVideo')
+            $("#remoteVideo").addClass('localVideoMin')
+        }
+        $("#videoinfo").removeClass('videoinfo')
+        $("#videoinfo").addClass('videoinfomin')
+        $("#minmaxbutton i").removeClass('bi bi-dash-square');
+        $("#minmaxbutton i").addClass('bi bi-fullscreen');
+        minflag=1
+        $('.videomain').css({
+            'right':  '0px',
+            'top': '20px'
+        });
+
+    }else{
+        if(isPC){
+            $("#videomain").css('width','750px')
+            $("#videomain").css('height','450px')
+        }else{
+
+            $("#videomain").css('width','380px')
+            $("#videomain").css('height','330px')
+        }
+
+        $("#videomsg").show();
+        $("#videobuttons").show();
+        $("#turnoverbutton").show();
+        if($("#localVideo").hasClass('localVideoMin')){
+            $("#localVideo").removeClass('localVideoMin')
+            $("#localVideo").addClass('localVideo')
+        }else{
+            $("#remoteVideo").removeClass('localVideoMin')
+            $("#remoteVideo").addClass('localVideo')
+        }
+
+        $("#videoinfo").removeClass('videoinfomin')
+        $("#videoinfo").addClass('videoinfo')
+        $("#minmaxbutton i").removeClass('bi bi-fullscreen');
+        $("#minmaxbutton i").addClass('bi bi-dash-square');
+        minflag=0
+
+        videoMainCenterShow()
+    }
+
+}
+
+
+
+ function getAudioVideoDevices(type){
+   //  var audioVideoDevicesFiled = {
+   //      "audioinput" : false,
+   //      "audiooutput" : false,
+   //      "video" : false
+   //  };
+   //
+   //  //检测是否有音频或视频设备
+   // return  navigator.mediaDevices.enumerateDevices()
+   //      .then(function(deviceInfos) {
+   //          deviceInfos.forEach(function(deviceInfo) {
+   //              console.log("deviceInfo" + deviceInfo.deviceID +": " + deviceInfo.kind +": " + deviceInfo.label);
+   //              if(deviceInfo && deviceInfo.kind){
+   //
+   //                  if(deviceInfo.kind == 'audioinput'){
+   //                      audioVideoDevicesFiled.audioinput = true;
+   //                  }else if(deviceInfo.kind == 'audiooutput'){
+   //                      audioVideoDevicesFiled.audiooutput = true;
+   //                  }else if(deviceInfo.kind.indexOf('video') != -1){
+   //                      audioVideoDevicesFiled.video = true;
+   //                  }
+   //
+   //
+   //
+   //              }
+   //
+   //
+   //          });
+   //          if(type && type == "audio"){
+   //              audioVideoDevicesFiled.video = false;
+   //          }
+   //          return audioVideoDevicesFiled;
+   //
+   //      }).catch(function(err) {
+   //          console.log("getAudioVideoDevicesErr"+err.name + ": " + err.message);
+   //      });
+     if(type && type == "audio"){
+         return {
+             "video" : false
+         }
+     }else{
+         return {
+             "video" : true
+         }
+
+     }
 
 
 }
