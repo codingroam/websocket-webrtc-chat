@@ -23,7 +23,7 @@ function initWebRTC() {
     var mediaOpts = {
        // audio: audioVideoDevices.audioinput || audioVideoDevices.audiooutput,
         audio:true,
-        video: audioVideoDevices.video ? { facingMode: "user" } : false
+        video: audioVideoDevices.video ? { facingMode: "user"} : false
     }
     navigator.getUserMedia(mediaOpts, successFunc, errorFunc);
 
@@ -517,8 +517,8 @@ function minmaxvideo() {
 
         $("#videobuttons").hide();
         $("#turnoverbutton").hide();
-        $("#videomain").css('width','100px')
-        $("#videomain").css('height','80px')
+        $("#videomain").css('width','150px')
+        $("#videomain").css('height','120px')
         //因为有翻转功能，需要判断
         if($("#localVideo").hasClass('localVideo')){
             $("#localVideo").removeClass('localVideo')
