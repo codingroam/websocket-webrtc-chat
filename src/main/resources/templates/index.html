@@ -88,7 +88,7 @@
                 <button id="fastbutton" onclick="fastLogin()"
                         class="btn btn-outline-success btn-sm me-3 mb-2">快速登录</button>
                 <button id="backbutton" onclick="backLogin()"
-                        class="btn hidden btn-outline-success btn-sm me-3 mb-2">返回用户登录</button>
+                        class="btn hidden  btn-outline-success btn-sm me-3 mb-2">返回用户登录</button>
                 <button id="registerbutton" onclick="registerUser()"
                         class="btn btn-outline-success btn-sm me-3 mb-2">注册账号</button>
             </div>
@@ -205,10 +205,10 @@
 
     }
     function fastLogin() {
-        $("#fastcard").show()
-        $("#logincard").hide()
-        $("#fastbutton").hide()
-        $("#backbutton").show()
+        // $("#fastcard").show()
+        // $("#logincard").hide()
+        // $("#fastbutton").hide()
+        // $("#backbutton").show()
     }
     function backLogin() {
         $("#fastcard").hide()
@@ -255,28 +255,28 @@
     }
 
     function fastloginbutton() {
-        $.get("/fastlogin?tel=" + $("#tel").val()+"&checkNum="+$("#checkNum").val()), function (data) {
-            if(data.code == 0){
-                var param = encodeURI(data.data.userName)
-                let token = request.getResponseHeader("token")
-                window.localStorage.setItem(data.data.userName + "_token", token);
-                window.location.href = "chatroom?username=" + param
-            }else{
-                $.confirm({
-                    title: '提示',
-                    content: data.message,
-                    autoClose: 'cancelAction|3000',
-                    buttons: {
-                        cancelAction: {
-                            text: "确认",
-                            function() {
-                            }
-                        }
-                    }
-                });
-            }
-
-        }
+        // $.get("/fastlogin?tel=" + $("#tel").val()+"&checkNum="+$("#checkNum").val()), function (data) {
+        //     if(data.code == 0){
+        //         var param = encodeURI(data.data.userName)
+        //         let token = request.getResponseHeader("token")
+        //         window.localStorage.setItem(data.data.userName + "_token", token);
+        //         window.location.href = "chatroom?username=" + param
+        //     }else{
+        //         $.confirm({
+        //             title: '提示',
+        //             content: data.message,
+        //             autoClose: 'cancelAction|3000',
+        //             buttons: {
+        //                 cancelAction: {
+        //                     text: "确认",
+        //                     function() {
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //     }
+        //
+        // }
 
     }
 

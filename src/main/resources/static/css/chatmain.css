@@ -70,7 +70,7 @@
         width: 750px;
         height: 450px;
         background: #222;
-        z-index: 999!important;
+        z-index: 999;
     }
     .localVideo {
         position: absolute;
