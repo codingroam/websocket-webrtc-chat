@@ -23,8 +23,8 @@
     color: red;
 }
 .header-color{
-    background-color: #2c86ff;
+    background-color: #2c86ff!important;
 }
-.btn-color{
-    background-color: #12b7f5
+.chat-btn-color{
+    background-color: #12b7f5!important;
 }
