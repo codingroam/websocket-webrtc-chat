@@ -52,12 +52,13 @@ function websocketInit() {
                 // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
 
                 var messagevar = getEmojiStr(data.content)
-                var message = `<div class="d-flex justify-content-start my-3">
-                            <div class="card w-30 border-light">
-                                <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
-                                <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
-                            </div>
-                        </div>`;
+                // var message = `<div class="d-flex justify-content-start my-3">
+                //             <div class="card w-30 border-light">
+                //                 <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
+                //                 <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
+                //             </div>
+                //         </div>`;
+                var message = dialogHtmlTemplate(data.from,messagevar,"from");
                 if (data.from == currentUserInfo.to) {
                     $("#talk-container").append(message);
                 } else {

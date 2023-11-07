@@ -44,11 +44,11 @@
         <button id="hangup" class="hangup" onclick="hangupVideoButton()">挂断</button>
         <button id="accept" class="accept" onclick="acceptVideoButton()" >接受</button>
     </div>
-    <div  class="videobuttonicon display-none">
+    <div  class="videobuttonicon videoclass">
         <button id="turnoverbutton" class="accept btn-mini" onclick="overturnvideo()" ><i class="bi bi-arrow-counterclockwise"></i></button>
         <button id="minmaxbutton" class="accept btn-mini" onclick="minmaxvideo()"><i class="bi bi-dash-square"></i></button>
     </div>
-    <div  class="videobuttonicon display-none">
+    <div  class="videobuttonicon audioclass">
         <button  class="accept btn-mini" ><i class="bi bi-ear"></i></i></button>
     </div>
 
@@ -214,12 +214,13 @@
                 data["contentType"] = "text";
                 websocket.send(JSON.stringify(data));
                 var messagevar = getEmojiStr($("#sendmessage").val())
-                var message = `<div class="d-flex justify-content-end my-3">
-                        <div class="card w-30 border-light">
-                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
-                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
-                        </div>
-                    </div>`;
+                // var message = `<div class="d-flex justify-content-end my-3">
+                //         <div class="card w-30 border-light">
+                //             <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
+                //             <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
+                //         </div>
+                //     </div>`;
+                var message = dialogHtmlTemplate("我",messagevar,"to")
 
                 $("#talk-container").append(message);
                 storageTalkUserMessage(data["to"], message)
@@ -424,6 +425,17 @@
         function scrollToBottom() {
             var div = document.getElementById('talk-container');
             div.scrollTop = div.scrollHeight;
+        }
+        
+        function dialogHtmlTemplate(username,messagevar,messageType) {
+
+           return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end' : 'justify-content-start'}">
+                        <div class="card w-30 border-light">
+                             <div class="card-header text-center chat-card-header">${username} ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
+                            <div class="card-body ${messageType == 'to' ? 'bg-success text-light' : 'dialog-from'} "> ${messagevar} </div>
+                        </div>
+                    </div>`;
+
         }
 
 

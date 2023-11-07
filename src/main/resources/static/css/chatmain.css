@@ -126,7 +126,8 @@
 
 
     .w-30 {
-        width: 30%;
+        max-width: 60%;
+        height: auto;
     }
     .sign-font{
         font-size: 12px;
@@ -402,6 +403,12 @@
 .display-none{
     display: none;
 }
+.videoclass{
+    display: none;
+}
+.audioclass{
+    display: none;
+}
 .opacity-0{
     opacity: 0;
 }
@@ -465,6 +472,10 @@
     background-clip: padding-box;
     border: 1px solid rgba(0,0,0,.15);
     border-radius: 0.25rem;
+}
+
+.dialog-from{
+    background: #95ec69
 }
 
 .card {
