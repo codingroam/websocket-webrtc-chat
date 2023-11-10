@@ -52,43 +52,43 @@ public class WebSocketConfig extends ServerEndpointConfig.Configurator{
 
 
 
-    /**
-     * token鉴权认证 临时写死123
-     * @param originHeaderValue
-     * @return
-     */
-    @Override
-    public boolean checkOrigin(String originHeaderValue) {
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = servletRequestAttributes.getRequest();
-        String token = request.getParameter("token");
-
-        // 获取 token 中的 user id
-        String userName;
-        try {
-            userName = JWT.decode(token).getAudience().get(0);
-        } catch (JWTDecodeException j) {
-            return false;
-            //throw new BusinessException(ErrorEnum.NOAUTH_TOKEN);
-        }
-        User user = LoginUserInfoCahce.getUserInfoByUserName(userName);
-        if (user == null) {
-           return false;
-        }
-        // 验证 token
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassWord())).build();
-        try {
-            jwtVerifier.verify(token);
-        } catch (JWTVerificationException e) {
-            //throw new BusinessException(ErrorEnum.NOAUTH_TOKEN);
-            return false;
-        }
-
-        return true;
-
-
-    }
-
+//    /**
+//     * token鉴权认证 临时写死123
+//     * @param originHeaderValue
+//     * @return
+//     */
+//    @Override
+//    public boolean checkOrigin(String originHeaderValue) {
+//        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+//        HttpServletRequest request = servletRequestAttributes.getRequest();
+//        String token = request.getParameter("token");
+//
+//        // 获取 token 中的 user id
+//        String userName;
+//        try {
+//            userName = JWT.decode(token).getAudience().get(0);
+//        } catch (JWTDecodeException j) {
+//            return false;
+//            //throw new BusinessException(ErrorEnum.NOAUTH_TOKEN);
+//        }
+//        User user = LoginUserInfoCahce.getUserInfoByUserName(userName);
+//        if (user == null) {
+//           return false;
+//        }
+//        // 验证 token
+//        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassWord())).build();
+//        try {
+//            jwtVerifier.verify(token);
+//        } catch (JWTVerificationException e) {
+//            //throw new BusinessException(ErrorEnum.NOAUTH_TOKEN);
+//            return false;
+//        }
+//
+//        return true;
+//
+//
+//    }
+//
 
 
 

@@ -8,10 +8,12 @@
         border-right: 1px solid rgba(0, 0, 0, 0.125);
     }
     .panel-chat-list{
-        height: 360px; overflow-y:scroll; background: #f5f5f5
+        height: 360px; overflow-y:scroll; background: #e3e3e4
     }
     .panel-chat-card{
-        height: 500px; overflow-y:scroll; background: #f5f5f5
+        height: 500px; overflow-y:scroll; background: #f5f5f5;
+        padding-top:20px;
+        padding-bottom:20px ;
     }
     .imag-size{
         height: 50px;
@@ -150,13 +152,15 @@
     }
     .panel-chat-list{
         /*height: 174px; */
-        overflow-y:scroll; background: #f5f5f5;
+        overflow-y:scroll; background: #e3e3e4;
         font-size: 12px;
     }
     .panel-chat-card{
         /*height: 280px;*/
         overflow-y:scroll; background: #f5f5f5;
         font-size: 12px;
+        padding-top:10px;
+        padding-bottom:10px ;
     }
 
     .videomain {
@@ -284,9 +288,9 @@
         padding: 0.5rem 0.5rem;
         color: #212529;
         text-decoration: none;
-        background-color: #fff;
-        border: 1px solid rgba(0,0,0,.125);
+        background-color: #e9e7e6;
         font-size: 12px;
+        width: 100%;
     }
     .card-header {
         padding: 0.3rem 0.7rem;
@@ -357,15 +361,19 @@
 
 .linestate-font {
     font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .count-font{
     font-size: 10px;
 }
 
-.online-background {
-    background-color: #00d62475!important;
-}
+/*.online-background {*/
+/*    background-color: #00d62475!important;*/
+/*}*/
 
 .offline-background {
 
@@ -381,8 +389,7 @@
 .list-group-item.active {
     z-index: 2;
     color: #fff!important;
-    background-color: #4b8cfe!important;
-    border-color: #4b8cfe!important;
+    background-color: #c3c4c4!important;
 }
 .chat-btn-color{
     background-color: #12b7f5!important;
@@ -527,6 +534,121 @@
     margin-right: auto;
     margin-left: auto;
 }
+
+.dialog-head-from{
+    margin-left: 30px;
+}
+
+.dialog-head-to{
+    margin-right: 30px;
+}
+.dialog-content-from{
+    background: #ffffff;
+}
+
+.dialog-content-to{
+    background: #95ec69;
+}
+
+.dialog-head-icon-from{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.dialog-head-icon-to{
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.dialog-head-icon-list{
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 1rem 0.5rem;
+    color: #212529;
+    text-decoration: none;
+    background-color: #e9e7e6!important;
+    width: 100%!important;
+    border:none!important;
+
+}
+
+.no-border{
+    border:none;
+}
+
+/*---滚动条默认显示样式--*/
+
+::-webkit-scrollbar-thumb{
+
+    background-color:#b4b2af;
+    outline-offset:-2px;
+
+    outline:2px solid #e9e7e6;
+
+    -webkit-border-radius:4px;
+
+    border: 2px solid #e9e7e6;
+
+}
+
+/*---鼠标点击滚动条显示样式--*/
+
+::-webkit-scrollbar-thumb:hover{
+
+    background-color:#b4b2af;
+
+
+
+    -webkit-border-radius:4px;
+
+}
+
+/*---滚动条大小--*/
+
+::-webkit-scrollbar{
+
+    width:9px;
+
+    height:9px;
+
+}
+
+/*---滚动框背景样式--*/
+
+::-webkit-scrollbar-track-piece{
+
+    background-color:#e9e7e6;
+    width: 30px;
+    height: 30px;
+
+    -webkit-border-radius:2px;
+
+}
+
+/*html{font-size: 62.5%;}*/
+
+/*body>p:first-child{*/
+
+/*    font-size: 2.0rem;*/
+
+/*}*/
+
+/*body>p:first-child>span{*/
+
+/*    color: yellow;*/
+
+/*    font-size: 1.0rem;*/
+
+/*}*/
+
 
 
 

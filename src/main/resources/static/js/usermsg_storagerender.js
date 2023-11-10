@@ -162,7 +162,7 @@ function createUserList(users) {
     for (var i = 0; i < users.length; i++) {
         var count = getUserUnreadMessageCount(users[i].userName)
         var active = getIsActive(users[i].userName)
-        $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between   offline-background ${active ? ' active ' : ''} "`}  onclick="clicktalk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+        $("#users").append(`<div  class="list-group-item d-flex justify-content-between" onclick="clicktalk(this)" data-bs-toggle="list" ><div><img class="dialog-head-icon-list" src="/images/head.png"><span id="username">${users[i].userName}</span></div><div class="linestate-font">在线</div></div>`);
     }
 
 }
@@ -174,9 +174,17 @@ function createUserListByKey(key) {
         if(PinyinMatch.match(users[i].userName, key)){
             var count = getUserUnreadMessageCount(users[i].userName)
             var active = getIsActive(users[i].userName)
-            $("#users").append(`<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between   offline-background ${active ? ' active ' : ''} "`}  onclick="clicktalk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`);
+            $("#users").append(`<div class="d-flex justify-content-between no-border" style="border: none"><div><img class="dialog-head-icon-list" src="/images/head.png"></div><div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between    ${active ? ' active ' : ''} "`}  onclick="clicktalk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div></div>`);
         }
     }
 
+
+}
+
+
+function getUserListItemHtmlTemplete() {
+
+    return `<div ${users[i].onLineState ? `class="list-group-item d-flex justify-content-between   online-background ${active ? ' active ' : ''} " ` : `class="list-group-item d-flex justify-content-between   offline-background ${active ? ' active ' : ''} "`}  onclick="clicktalk(this)" data-bs-toggle="list"  ><span id="username">${users[i].userName}</span>
+${users[i].onLineState ? `<span><span class="linestate-font">在线</span>&nbsp;<span class="count-font">${count>0 ? "+"+count: ""}</span></span>` : `<span><span class="linestate-font">离线</span>&nbsp;<span class="count-font"></span>${count>0 ? "+"+count: ""}</span>`}</div>`
 
 }

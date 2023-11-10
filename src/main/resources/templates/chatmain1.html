@@ -80,7 +80,7 @@
                     </ul>
 
                     <ul class="list-group list-group-flush" style="background: #eae7e6">
-                        <li class="d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center" class="w-33 d-flex justify-content-center"><i
+                        <li class="list-group-item d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center" class="w-33 d-flex justify-content-center"><i
                             class="bi bi-person-video2"></i>&nbsp;好友</div><div id="messageList" onclick="messageListClick()" style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center">
                             <i class="bi bi-chat"></i>&nbsp;消息</div><div style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center"><i
                                 class="bi bi-people-fill" ></i>&nbsp;&nbsp;群组</div></li>
@@ -429,13 +429,10 @@
         
         function dialogHtmlTemplate(username,messagevar,messageType) {
 
-           return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
-                        <div class="w-30 d-flex justify-content-between border-light">
-                        ${messageType == 'from' ?'<div><img class="dialog-head-icon-from" src="/images/head.png"> </div>':''}
-
-                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${messagevar} </div>
-
-                        ${messageType == 'to' ?'<div><img class="dialog-head-icon-to" src="/images/head.png"> </div>':''}
+           return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end' : 'justify-content-start'}">
+                        <div class="card w-30 border-light">
+                             <div class="card-header text-center chat-card-header">${username} ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
+                            <div class="card-body ${messageType == 'to' ? 'bg-success text-light' : 'dialog-from'} "> ${messagevar} </div>
                         </div>
                     </div>`;
 
