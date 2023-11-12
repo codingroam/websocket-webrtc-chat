@@ -8,7 +8,7 @@ function logout() {
             confirm: {
                 text: "确定",
                 action: function () {
-                    window.location.href = "logout?username="+currentUserInfo.username
+                    window.location.href = "logout?username="+currentUserInfo.userName
                 }
             },
             cancel: {
@@ -66,7 +66,7 @@ function noTokenToast(message) {
             test:{
                 text:"跳转首页",
                 action: function(){
-                    window.location.href = "logout?username="+currentUserInfo.username
+                    window.location.href = "logout?username="+currentUserInfo.userName
                 }
             },
             cancelAction: {
@@ -89,7 +89,7 @@ function wensocketErrorToast() {
             test:{
                 text:"跳转首页",
                 action: function(){
-                    window.location.href = "logout?username="+currentUserInfo.username
+                    window.location.href = "logout?username="+currentUserInfo.userName
                 }
             },
             cancelAction: {

@@ -141,6 +141,53 @@
         width: 102%;
         margin-left: -12px;
     }
+
+    .dialog-head-from{
+        margin-left: 30px;
+        margin-bottom: 30px;
+    }
+
+    .dialog-head-to{
+        margin-right: 30px;
+        margin-bottom: 30px;
+    }
+
+    .dialog-content-from{
+        background: #ffffff;
+        padding: 7px 10px;
+    }
+
+    .dialog-content-to{
+        background: #95ec69;
+        padding: 7px 10px;
+    }
+
+    .dialog-head-icon-from{
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .dialog-head-icon-to{
+        width: 40px;
+        height: 40px;
+        margin-left: 10px;
+    }
+
+    .dialog-head-icon-list{
+        width: 40px;
+        height: 40px;
+        margin-right: 10px;
+    }
+
+    .green-circle {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #53c753;
+        margin-top: 15px;
+        margin-right: 5px;
+    }
 }
 
 @media(max-width: 768px) {
@@ -253,7 +300,8 @@
 
 
     .w-30 {
-        width: 48%;
+        max-width: 70%;
+        height: auto;
     }
 
     .panel-chat-header{
@@ -343,6 +391,60 @@
     }
 
 
+    .dialog-head-from {
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    .dialog-head-to{
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    .dialog-content-from{
+        background: #ffffff;
+        padding: 5px 10px;
+    }
+
+    .dialog-content-to{
+        background: #95ec69;
+        padding: 5px 10px;
+    }
+
+    .dialog-head-icon-from{
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .dialog-head-icon-to{
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+    }
+
+    .dialog-head-icon-list{
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .list-header-font{
+        font-size: 12px
+    }
+
+    .green-circle {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: #53c753;
+        margin-top: 14px;
+        margin-right: 5px;
+    }
+
+
 
 
 
@@ -360,6 +462,15 @@
 }
 
 .linestate-font {
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #4b8cfe;
+
+}
+
+.offstate-font {
     font-size: 10px;
     display: flex;
     justify-content: center;
@@ -535,38 +646,8 @@
     margin-left: auto;
 }
 
-.dialog-head-from{
-    margin-left: 30px;
-}
 
-.dialog-head-to{
-    margin-right: 30px;
-}
-.dialog-content-from{
-    background: #ffffff;
-}
 
-.dialog-content-to{
-    background: #95ec69;
-}
-
-.dialog-head-icon-from{
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
-
-.dialog-head-icon-to{
-    width: 40px;
-    height: 40px;
-    margin-left: 10px;
-}
-
-.dialog-head-icon-list{
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
 
 .list-group-item {
     position: relative;
@@ -647,6 +728,41 @@
 
 /*    font-size: 1.0rem;*/
 
+/*}*/
+
+.bubble {
+    position: static;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px 5px;
+    padding: 7px 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, .2);
+    height: 28px;
+    width: 28px;
+    background: #fa5151;
+    font-size: 10px;
+    /* margin-bottom: 8px; */
+    margin-top: -8px;
+    margin-right: -16px;
+}
+/*.bubble::before,*/
+/*.bubble::after {*/
+/*    content: "";*/
+/*    display: block;*/
+/*    position: absolute;*/
+/*    bottom: -10px;*/
+/*    width: 0;*/
+/*    height: 0;*/
+/*    border-style: solid;*/
+/*}*/
+/*.bubble::before {*/
+/*    left: 10px;*/
+/*    border-color: transparent transparent #ccc;*/
+/*    border-width: 0 10px 10px;*/
+/*}*/
+/*.bubble::after {*/
+/*    left: 11px;*/
+/*    border-color: transparent transparent #fff;*/
+/*    border-width: 0 9px 9px;*/
 /*}*/
 
 

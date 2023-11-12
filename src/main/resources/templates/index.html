@@ -110,6 +110,7 @@
                     var param = encodeURI($("#username").val())
                     let token = request.getResponseHeader("token")
                     window.localStorage.setItem($("#username").val() + "_token", token);
+                    window.localStorage.setItem($("#username").val()  + "_data", JSON.stringify(data.data));
                     window.location.href = "chatroom?username=" + param
                 } else {
                     $.confirm({

@@ -168,8 +168,8 @@
             var url = location.href;
             var paraString = url.substring(url.indexOf("?") + 1, url.length).split("=");
             if (paraString != null && paraString.length == 2) {
-                currentUserInfo.username = decodeURI(paraString[1])
-                $("#user").html(currentUserInfo.username);
+                currentUserInfo.userName = decodeURI(paraString[1])
+                $("#user").html(currentUserInfo.userName);
             } else {
                 $.alert({
                     title: '提示',
@@ -186,7 +186,7 @@
             }
         <!-- 默认选中用户列表 -->
             $("#userList").addClass("text-light").addClass("list-focus")
-            var randomHead = "images/head"+( currentUserInfo.username.charCodeAt(0) % 7 )+".png"
+            var randomHead = "images/head"+( currentUserInfo.userName.charCodeAt(0) % 7 )+".png"
             $("#imaghead").attr("src",randomHead)
             $("#signature").html(signList[Math.floor(Math.random()*14)])
 
@@ -208,7 +208,7 @@
 
                 }
                 var data = {};
-                data["from"] = currentUserInfo.username;
+                data["from"] = currentUserInfo.userName;
                 data["to"] = currentUserInfo.to;
                 data["content"] = $("#sendmessage").val();
                 data["contentType"] = "text";
@@ -220,7 +220,7 @@
                 //             <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
                 //         </div>
                 //     </div>`;
-                var message = dialogHtmlTemplate("我",messagevar,"to")
+                var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
 
                 $("#talk-container").append(message);
                 storageTalkUserMessage(data["to"], message)

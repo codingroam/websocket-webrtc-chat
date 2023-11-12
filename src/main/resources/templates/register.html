@@ -63,6 +63,17 @@
                                     <label   class="form-label">确认密码</label>
                                     <input type="password" id="password2" name="password2" class="form-control" placeholder="确认密码" required>
                                 </div>
+                                <div class="form-group mb-3">
+                                    <label   class="form-label">头像</label>
+                                    <label for="image_head"> <i class="bi bi-plus-circle-fill"></i></label>
+                                    <input
+                                            type="file"
+                                            id="image_head"
+                                            name="image_head"
+                                            accept=".png,.jepg,.jpg"
+                                             />
+                                </div>
+
                                 <button id="registerbutton" onclick="registerClick()"  class="btn chat-btn-color w-100 text-light">注册</button>
 
                             </div>
@@ -79,8 +90,16 @@
 </div>
 <script>
 
-    $(document).ready(function () {
 
+    // const input = document.querySelector("input");
+    // const preview = document.querySelector(".preview");
+
+
+    // input.style.opacity = 0;
+    // input.addEventListener("change", updateImageDisplay);
+    var formData = new FormData();
+
+    $(document).ready(function () {
 
         //此处为校验的核心代码
         $("#register-form").bootstrapValidator({
@@ -196,7 +215,16 @@
 
     });
 
+        $("#image_head").css('opacity','0')
+        $("#image_head")[0].addEventListener("change",updateImageDisplay)
+
     });
+
+    function updateImageDisplay() {
+        const curFiles = $("#image_head")[0].files;
+        formData.set("file",curFiles[0])
+
+    }
 
 
 
@@ -214,6 +242,28 @@
     }
 
     function registerClick() {
+        var userData = {};
+        userData.userName = $("#username").val()
+        userData.nickName = $("#nickname").val()
+        userData.password = md5($("#password1").val())
+        userData.tel = $("#tel").val()
+        formData.set("userVOStr",JSON.stringify(userData));
+
+        $.ajax({
+            url: '/registerUser',
+            type: 'POST',
+            cache: false,
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: successCallback,
+            error: errorCallback,
+        })
+
+
+
+
+
         $.get("/registerUser?username="+$("#username").val()+"&tel="+$("#tel").val()+"&nickname="+$("#nickname").val()+"&password="+md5($("#password1").val()),function (data) {
             if(data.code == 0){
                 $.confirm({
@@ -248,6 +298,45 @@
 
 
         })
+    }
+
+
+    function successCallback(data) {
+
+        if(data.code == 0){
+            $.confirm({
+                title: '注册成功',
+                content: "欢迎"+$("#username").val()+"加入",
+                autoClose: 'cancelAction|5000',
+                buttons: {
+                    cancelAction: {
+                        text: "跳转首页",
+                        action:function () {
+                            window.location.href="/"
+                        }
+                    }
+                }
+            });
+        }else {
+            $.confirm({
+                title: '注册失败',
+                content: data.message,
+                autoClose: 'cancelAction|3000',
+                buttons: {
+                    cancelAction: {
+                        text: "确认",
+                        function () {
+                        }
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    function errorCallback(err) {
+
     }
 
 

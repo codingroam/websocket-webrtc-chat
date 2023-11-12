@@ -12,7 +12,7 @@ INSERT INTO websocket_chatroom.offmessage_record (id, from_user, to_user, DATE, 
 (8, '小明', '张无忌', '2023-10-03 15:07:43', 1, 'dfdfd'),
 (9, '路飞', '索隆', '2023-10-04 13:56:14', 1, '大师傅但是');
 DROP TABLE websocket_chatroom.user;
-CREATE TABLE websocket_chatroom.user (id int NOT NULL AUTO_INCREMENT, username varchar(50) NOT NULL, password varchar(50) NOT NULL, nickname varchar(50), picture blob, signature varchar(100), addr varchar(100), tel varchar(30) NOT NULL, PRIMARY KEY (id), CONSTRAINT username UNIQUE (username)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
+CREATE TABLE websocket_chatroom.user (id int NOT NULL AUTO_INCREMENT, username varchar(50) NOT NULL, password varchar(50) NOT NULL, nickname varchar(50), picture varchar(50), signature varchar(100), addr varchar(100), tel varchar(30) NOT NULL, PRIMARY KEY (id), CONSTRAINT username UNIQUE (username)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
 INSERT INTO websocket_chatroom.user (id, username, password, nickname, picture, signature, addr, tel) VALUES
 (1, '张无忌', '81DC9BDB52D04DC20036DBD8313ED055', '小钻风', null, null, null, ''),
 (2, '索隆', '81DC9BDB52D04DC20036DBD8313ED055', '汤姆', null, null, null, ''),

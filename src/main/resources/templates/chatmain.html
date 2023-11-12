@@ -72,6 +72,9 @@
                                 <div class="d-flex flex-row text-light"><img id="imaghead" class="round_icon imag-size">&nbsp;&nbsp;<div><div class="d-flex flex-column"><b>&nbsp;<span
                                         style="text-overflow:ellipsis" id="user"></span></b><span class="sign-font" id="signature"></span></div></div></div>
                             </div>
+                            <div>
+                                <span style="font-size: 12px"><i class="bi bi-sliders"></i></span>
+                            </div>
                         </li>
 
                     </ul>
@@ -79,8 +82,8 @@
                         <input id="search" type="search" class="form-control search-font-size" placeholder="搜索">
                     </ul>
 
-                    <ul class="list-group list-group-flush" style="background: #eae7e6">
-                        <li class="d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center" class="w-33 d-flex justify-content-center"><i
+                    <ul class="list-group list-group-flush list-header-font" style="background: #eae7e6">
+                        <li class="d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center;" class="w-33 d-flex justify-content-center"><i
                             class="bi bi-person-video2"></i>&nbsp;好友</div><div id="messageList" onclick="messageListClick()" style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center">
                             <i class="bi bi-chat"></i>&nbsp;消息</div><div style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center"><i
                                 class="bi bi-people-fill" ></i>&nbsp;&nbsp;群组</div></li>
@@ -142,6 +145,9 @@
         var isCaller = false;
         var currentUserInfo = {};
         var isPC = true;
+        var preHeadPath = "imag/head/";
+        var pictureCache = new Map();
+
 
 
         // $(window).resize(function(){
@@ -168,8 +174,9 @@
             var url = location.href;
             var paraString = url.substring(url.indexOf("?") + 1, url.length).split("=");
             if (paraString != null && paraString.length == 2) {
-                currentUserInfo.username = decodeURI(paraString[1])
-                $("#user").html(currentUserInfo.username);
+                var userName = decodeURI(paraString[1])
+                currentUserInfo = getCurrentUserInfo(userName);
+                $("#user").html(currentUserInfo.userName);
             } else {
                 $.alert({
                     title: '提示',
@@ -186,8 +193,7 @@
             }
         <!-- 默认选中用户列表 -->
             $("#userList").addClass("text-light").addClass("list-focus")
-            var randomHead = "images/head"+( currentUserInfo.username.charCodeAt(0) % 7 )+".png"
-            $("#imaghead").attr("src",randomHead)
+            $("#imaghead").attr("src",preHeadPath + getUserPictureUrl(currentUserInfo.picture))
             $("#signature").html(signList[Math.floor(Math.random()*14)])
 
             $("#send").click(function () {
@@ -208,7 +214,7 @@
 
                 }
                 var data = {};
-                data["from"] = currentUserInfo.username;
+                data["from"] = currentUserInfo.userName;
                 data["to"] = currentUserInfo.to;
                 data["content"] = $("#sendmessage").val();
                 data["contentType"] = "text";
@@ -220,7 +226,7 @@
                 //             <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
                 //         </div>
                 //     </div>`;
-                var message = dialogHtmlTemplate("我",messagevar,"to")
+                var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
 
                 $("#talk-container").append(message);
                 storageTalkUserMessage(data["to"], message)
@@ -316,6 +322,10 @@
 
 
         });
+
+        function getCurrentUserInfo(userName){
+            return  JSON.parse(window.localStorage.getItem(userName + "_data"));
+        }
 
         isPC = function() {
             var userAgentInfo = navigator.userAgent;
@@ -431,11 +441,11 @@
 
            return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
-                        ${messageType == 'from' ?'<div><img class="dialog-head-icon-from" src="/images/head.png"> </div>':''}
+                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
 
                         <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${messagevar} </div>
 
-                        ${messageType == 'to' ?'<div><img class="dialog-head-icon-to" src="/images/head.png"> </div>':''}
+                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
                         </div>
                     </div>`;
 

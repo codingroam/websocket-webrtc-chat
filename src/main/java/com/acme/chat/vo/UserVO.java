@@ -17,6 +17,8 @@ public class UserVO {
     private String signature;
     private String addr;
     private boolean onLineState;
+    private String tel;
+    private String picture;
 
 
 }

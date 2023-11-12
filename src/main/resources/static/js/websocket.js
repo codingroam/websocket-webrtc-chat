@@ -1,9 +1,9 @@
 function websocketInit() {
 
-    var token = window.localStorage.getItem(currentUserInfo.username+"_token")
+    var token = window.localStorage.getItem(currentUserInfo.userName+"_token")
     if(token != null && token != undefined){
         try {
-            websocket = new WebSocket("wss://localhost:8089/webSocket/" + currentUserInfo.username+"?token="+token);
+            websocket = new WebSocket("wss://182.92.218.20:8089/webSocket/" + currentUserInfo.userName+"?token="+token);
         } catch (e) {
             console.log(' 您的浏览器暂时不支持 webSocket ');
         }
@@ -68,7 +68,7 @@ function websocketInit() {
                 // 滚动条滚动到最低部
                 scrollToBottom();
             } else if(data.contentType == "onlineUsers") {
-                window.localStorage.setItem(currentUserInfo.username+"-allUserList", JSON.stringify(data.content));
+                window.localStorage.setItem(currentUserInfo.userName+"-allUserList", JSON.stringify(data.content));
                 createUserList(data.content)
             }else if(data.contentType == "msg"){
                 commonMsg(data.content)
@@ -77,7 +77,7 @@ function websocketInit() {
                     var data = {
                         contentType:"msg",
                         to:data.from,
-                        from:currentUserInfo.username,
+                        from:currentUserInfo.userName,
                         content:"对方占线请稍后再拨"
                     }
                     websocket.send(JSON.stringify(data));

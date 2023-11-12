@@ -59,7 +59,7 @@ function initWebRTC() {
         yourConn.onicecandidate = function (event) {
             if (event.candidate) {
                 websocket.send(JSON.stringify({
-                    from :  currentUserInfo.username,
+                    from :  currentUserInfo.userName,
                     to : isCaller ? currentUserInfo.to : videodata.caller,
                     contentType:"candidate",
                     content:event.candidate
@@ -133,7 +133,7 @@ function videoCallClick(type) {
     }
 
     var data = {};
-    data["from"] = currentUserInfo.username;
+    data["from"] = currentUserInfo.userName;
     data["to"] = currentUserInfo.to;
     data["contentType"] = "call_start";
     data["content"] = "";
@@ -164,9 +164,9 @@ function audioCallClick() {
 //挂断视频聊天
 function hangupVideoButton() {
     if(isVideo || isCaller){
-        if(currentUserInfo.username != currentUserInfo.to){
+        if(currentUserInfo.userName != currentUserInfo.to){
             var data = {};
-            data["from"] = currentUserInfo.username;
+            data["from"] = currentUserInfo.userName;
             data["to"] = isCaller ? currentUserInfo.to : videodata.caller;
             data["contentType"] = "leave";
             data["content"] = "";
@@ -201,7 +201,7 @@ function handleCallBack(data) {
     if(data.content == "accept"){
         yourConn.createOffer(function (offer) {
             websocket.send(JSON.stringify({
-                from :  currentUserInfo.username,
+                from :  currentUserInfo.userName,
                 to : isCaller ? currentUserInfo.to : videodata.caller,
                 contentType:"offer",
                 content:offer
@@ -254,7 +254,7 @@ function handleOffer(data) {
 
         websocket.send(JSON.stringify({
             to:isCaller ? currentUserInfo.to : videodata.caller,
-            from:currentUserInfo.username,
+            from:currentUserInfo.userName,
             contentType:"answer",
             content:answer
         }));
