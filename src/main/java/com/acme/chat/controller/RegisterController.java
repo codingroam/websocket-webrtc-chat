@@ -76,7 +76,7 @@ public class RegisterController {
 	@RequestMapping("/registerUser")
 	@ResponseBody
 	@PassToken
-	public BusinessResult login(@RequestParam(value = "file") MultipartFile file, @RequestParam String userVOStr){
+	public BusinessResult login(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam String userVOStr){
 //		User user = new User();
 //		user.setNickName(nickName);
 //		user.setUserName(userName);

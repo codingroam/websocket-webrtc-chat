@@ -3,7 +3,7 @@ function websocketInit() {
     var token = window.localStorage.getItem(currentUserInfo.userName+"_token")
     if(token != null && token != undefined){
         try {
-            websocket = new WebSocket("wss://182.92.218.20:8089/webSocket/" + currentUserInfo.userName+"?token="+token);
+            websocket = new WebSocket("wss://localhost:8089/webSocket/" + currentUserInfo.userName+"?token="+token);
         } catch (e) {
             console.log(' 您的浏览器暂时不支持 webSocket ');
         }

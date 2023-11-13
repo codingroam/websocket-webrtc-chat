@@ -26,6 +26,7 @@
     <script src="/js/external/bootstrapValidator.js"></script>
 
 
+
 </head>
 
 <body class="bg-light">
@@ -63,7 +64,7 @@
                                     <label   class="form-label">确认密码</label>
                                     <input type="password" id="password2" name="password2" class="form-control" placeholder="确认密码" required>
                                 </div>
-                                <div class="form-group mb-3">
+                                <div id= "addImg" class="form-group mb-3">
                                     <label   class="form-label">头像</label>
                                     <label for="image_head"> <i class="bi bi-plus-circle-fill"></i></label>
                                     <input
@@ -72,6 +73,9 @@
                                             name="image_head"
                                             accept=".png,.jepg,.jpg"
                                              />
+                                    <canvas id="cvs"></canvas>
+                                    <canvas id="clipCvs"></canvas>
+                                    <button style="display: none" id="image_confirm">确定</button>
                                 </div>
 
                                 <button id="registerbutton" onclick="registerClick()"  class="btn chat-btn-color w-100 text-light">注册</button>
@@ -100,6 +104,8 @@
     var formData = new FormData();
 
     $(document).ready(function () {
+
+        dragable('cvs')
 
         //此处为校验的核心代码
         $("#register-form").bootstrapValidator({
@@ -221,8 +227,19 @@
     });
 
     function updateImageDisplay() {
+
+        $("#image_confirm").show()
         const curFiles = $("#image_head")[0].files;
-        formData.set("file",curFiles[0])
+        //formData.set("file",curFiles[0])
+        var reader = new FileReader(); //创建文件读取对象
+        reader.readAsDataURL(curFiles[0]);
+        //监听文件读取结束后事件
+        reader.onloadend = function(e) {
+            onInit(e.target.result)
+        };
+
+
+
 
     }
 
@@ -346,6 +363,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+<script src="/js/image_canvas.js"></script>
+<script src="/js/drag.js"></script>
 </body>
 
 </html>
