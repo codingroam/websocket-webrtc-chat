@@ -1,12 +1,13 @@
 var cvs = document.getElementById('cvs')
 const clipCvs = document.getElementById('clipCvs')
-const confirm = document.getElementById('image_confirm')
 const ctx = cvs.getContext('2d')
 const clipCtx = clipCvs.getContext('2d')
 const img = new Image()
 var size = 150
 var maxW = 400
 var orisrc;
+var clipDivX;
+var clipDivY;
 const p = {
     left: 0,
     top: 0,
@@ -21,7 +22,7 @@ const onChange = (file) => {
 //
 // }
 
-function onInit(src) {
+function onInit(src,divX,divY) {
 
     orisrc = src;
     clipCvs.width = clipCvs.height = size
@@ -36,7 +37,12 @@ function onInit(src) {
         }
         cvs.width = width
         cvs.height = height
-        render(width / 2 - size / 2, height / 2 - size / 2)
+        if(divX == undefined ){
+            clipDivX = width / 2 - size / 2;
+            clipDivY = height / 2 - size / 2;
+        }
+
+        render(clipDivX,clipDivY)
     }
 
 }
@@ -80,23 +86,15 @@ cvs.onmousedown = (e) => {
 }
 cvs.onmousemove = (e) => {
     if (isMoving) {
-        render(e.pageX - p.stepX, e.pageY - p.stepY)
+        clipDivX = e.pageX - p.stepX
+        clipDivY = e.pageY - p.stepY
+        render(clipDivX, clipDivY)
     }
 }
 document.onmouseup = () => {
     isMoving = false
 }
-confirm.onclick =  () => {
 
-    const file = dataURLtoFile(clipCvs.toDataURL('image/png'),"png")
-    formData.set("file",file)
-    //const res = await fetch(clipCvs.toDataURL('image/png'))
-    // const blob = await res.blob()
-    // const a = document.createElement('a')
-    // a.setAttribute('download', 'clip.png')
-    // a.href = URL.createObjectURL(blob)
-    // a.click()
-}
 
 
 function dataURLtoFile(url, filename) {
@@ -116,46 +114,20 @@ function dataURLtoFile(url, filename) {
 }
 
 
-/**
- * 通过改变坐标点信息实现缩放，可以设置缩放的中心点
- * 优点：代码量较大，需要修改每个要素的坐标点
- * 缺点：会改变数据的原始属性
- * flag true:放大 false: 缩小
- */
-function zoom3(flag = true, event) {
-    // 记录当前鼠标的相对位置
-    initX = event.offsetX;
-    initY = event.offsetY;
-    // 计算放大缩小的比例
-    multi = 1 * (flag ? 1 / scale : scale);
 
-    // 获取图形中心点
-    const center = getCenter();
-    // 获取图形最大最小的顶点坐标
-    const maxMin = getMaxMin();
-    // 计算缩放后的中心点坐标
-    const newC = [center[0] - (initX - center[0]) * (multi - 1), center[0] - (initY - center[1]) * (multi - 1)];
-
-    // 根据缩放后的中心点计算各个顶点信息
-    coordinates = coordinates.map(e => {
-        const operateX = center[0] - e[0] > 0 ? 1 : -1;
-        const operateY = center[1] - e[1] > 0 ? 1 : -1;
-        return [newC[0] - (maxMin.maxX - maxMin.minX) * multi / 2 * operateX, newC[1] - (maxMin.maxY - maxMin.minY) * multi / 2 * operateY];
-    })
-}
 
 cvs.addEventListener('mousewheel', event => {
 
     if(event.deltaY<0){
         //变大
         size = size + 3 ;
-        onInit(orisrc)
+
         console.log(event.deltaY)
 
         console.log("变大")
     }else {
         size = size - 3 ;
-        onInit(orisrc)
+        onInit(orisrc,clipDivX,clipDivY)
         console.log(event.deltaY)
         console.log("变小")
     }

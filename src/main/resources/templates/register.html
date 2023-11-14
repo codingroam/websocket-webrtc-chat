@@ -75,7 +75,6 @@
                                     <div>
                                         <canvas id="cvs"></canvas>
                                         <canvas id="clipCvs"></canvas>
-                                        <button style="display: none" id="image_confirm">确定</button>
 
                                     </div>
 
@@ -232,8 +231,6 @@
     });
 
     function updateImageDisplay() {
-
-        $("#image_confirm").show()
         const curFiles = $("#image_head")[0].files;
         //formData.set("file",curFiles[0])
         var reader = new FileReader(); //创建文件读取对象
@@ -270,6 +267,10 @@
         userData.password = md5($("#password1").val())
         userData.tel = $("#tel").val()
         formData.set("userVOStr",JSON.stringify(userData));
+        if(orisrc != undefined && orisrc != null){
+            let file = dataURLtoFile(clipCvs.toDataURL('image/png'),"png")
+            formData.set("file",file)
+        }
 
         $.ajax({
             url: '/registerUser',
