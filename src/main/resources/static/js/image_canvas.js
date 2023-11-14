@@ -6,6 +6,7 @@ const clipCtx = clipCvs.getContext('2d')
 const img = new Image()
 var size = 150
 var maxW = 400
+var orisrc;
 const p = {
     left: 0,
     top: 0,
@@ -22,6 +23,7 @@ const onChange = (file) => {
 
 function onInit(src) {
 
+    orisrc = src;
     clipCvs.width = clipCvs.height = size
     img.src = src
     img.onload = () => {
@@ -112,3 +114,51 @@ function dataURLtoFile(url, filename) {
     return new File([u8arr], filename, { type: mime });
 
 }
+
+
+/**
+ * 通过改变坐标点信息实现缩放，可以设置缩放的中心点
+ * 优点：代码量较大，需要修改每个要素的坐标点
+ * 缺点：会改变数据的原始属性
+ * flag true:放大 false: 缩小
+ */
+function zoom3(flag = true, event) {
+    // 记录当前鼠标的相对位置
+    initX = event.offsetX;
+    initY = event.offsetY;
+    // 计算放大缩小的比例
+    multi = 1 * (flag ? 1 / scale : scale);
+
+    // 获取图形中心点
+    const center = getCenter();
+    // 获取图形最大最小的顶点坐标
+    const maxMin = getMaxMin();
+    // 计算缩放后的中心点坐标
+    const newC = [center[0] - (initX - center[0]) * (multi - 1), center[0] - (initY - center[1]) * (multi - 1)];
+
+    // 根据缩放后的中心点计算各个顶点信息
+    coordinates = coordinates.map(e => {
+        const operateX = center[0] - e[0] > 0 ? 1 : -1;
+        const operateY = center[1] - e[1] > 0 ? 1 : -1;
+        return [newC[0] - (maxMin.maxX - maxMin.minX) * multi / 2 * operateX, newC[1] - (maxMin.maxY - maxMin.minY) * multi / 2 * operateY];
+    })
+}
+
+cvs.addEventListener('mousewheel', event => {
+
+    if(event.deltaY<0){
+        //变大
+        size = size + 3 ;
+        onInit(orisrc)
+        console.log(event.deltaY)
+
+        console.log("变大")
+    }else {
+        size = size - 3 ;
+        onInit(orisrc)
+        console.log(event.deltaY)
+        console.log("变小")
+    }
+
+});
+

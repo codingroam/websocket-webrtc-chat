@@ -26,14 +26,11 @@
     <script src="/js/external/bootstrapValidator.js"></script>
 
 
-
 </head>
 
 <body class="bg-light">
-<div class="p-5">
+<div class="p-1">
     <div class="d-flex justify-content-center">
-
-
         <div class="card room-card">
             <div class="card-header header-color bg-gradient text-light">
                 <div class="text-center fs-6">
@@ -64,18 +61,26 @@
                                     <label   class="form-label">确认密码</label>
                                     <input type="password" id="password2" name="password2" class="form-control" placeholder="确认密码" required>
                                 </div>
-                                <div id= "addImg" class="form-group mb-3">
-                                    <label   class="form-label">头像</label>
-                                    <label for="image_head"> <i class="bi bi-plus-circle-fill"></i></label>
-                                    <input
-                                            type="file"
-                                            id="image_head"
-                                            name="image_head"
-                                            accept=".png,.jepg,.jpg"
-                                             />
-                                    <canvas id="cvs"></canvas>
-                                    <canvas id="clipCvs"></canvas>
-                                    <button style="display: none" id="image_confirm">确定</button>
+                                <div id= "addImg" class="form-group">
+                                    <div style="width: 100%">
+                                        <label   class="form-label">头像</label>
+                                        <label for="image_head"> <i class="bi bi-plus-circle-fill"></i></label>
+                                        <input
+                                                type="file"
+                                                id="image_head"
+                                                name="image_head"
+                                                accept=".png,.jepg,.jpg"
+                                        />
+                                    </div>
+                                    <div>
+                                        <canvas id="cvs"></canvas>
+                                        <canvas id="clipCvs"></canvas>
+                                        <button style="display: none" id="image_confirm">确定</button>
+
+                                    </div>
+
+
+
                                 </div>
 
                                 <button id="registerbutton" onclick="registerClick()"  class="btn chat-btn-color w-100 text-light">注册</button>
