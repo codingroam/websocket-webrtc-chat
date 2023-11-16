@@ -202,11 +202,7 @@
                     var activeuser = $("#users > .active").val()
                     if (activeuser == undefined) {
                         // alert("当前没有其他用户在线,无法发送消息");
-
-                        $.alert({
-                            title: '提示',
-                            content: '请选中好友后再发送消息',
-                        });
+						commonMsg('请选中好友后再发送消息');
                         return false;
                     } else {
                         currentUserInfo.to = activeuser;
@@ -220,12 +216,6 @@
                 data["contentType"] = "text";
                 websocket.send(JSON.stringify(data));
                 var messagevar = getEmojiStr($("#sendmessage").val())
-                // var message = `<div class="d-flex justify-content-end my-3">
-                //         <div class="card w-30 border-light">
-                //             <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
-                //             <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
-                //         </div>
-                //     </div>`;
                 var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
 
                 $("#talk-container").append(message);
