@@ -76,13 +76,7 @@ public class RegisterController {
 	@RequestMapping("/registerUser")
 	@ResponseBody
 	@PassToken
-	public BusinessResult login(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam String userVOStr){
-//		User user = new User();
-//		user.setNickName(nickName);
-//		user.setUserName(userName);
-//		user.setPassWord(passWord);
-//		user.setTel(tel);
-//		userService.registerUser(user);
+	public BusinessResult registerUser(@RequestParam(value = "file",required = false) MultipartFile file, @RequestParam String userVOStr){
 		UserVO userVO = JSON.parseObject(userVOStr, UserVO.class);
 
 		if(file != null){

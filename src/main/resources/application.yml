@@ -20,6 +20,10 @@ spring:
       password: BD065806A33E223C.
       url: jdbc:mysql://localhost:3306/websocket_chatroom?serverTimezone=GMT%2B8
       username: root
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
 
 logging:
   config: classpath:log4j2.xml

@@ -23,4 +23,8 @@ public class BusinessResult<T> {
     public BusinessResult(){
 
     }
+
+    public BusinessResult(T t){
+        data = t;
+    }
 }

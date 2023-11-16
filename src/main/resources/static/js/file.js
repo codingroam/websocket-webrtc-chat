@@ -1,34 +1,45 @@
 var inputfile;
 function sendFileClick() {
 
+    inputfile = document.getElementById("fileupload");
 
-
-    $("#fileupload").show()
-    inputfile = document.querySelector("input[type=file]");
-    // input.style.opacity = 0;
     inputfile.addEventListener("change",uploadFiles)
+    inputfile.click()
 
-    $("#fileupload").click()
-
-    // $("#fileupload")[0].addEventListener("change", uploadFiles);
-
-
-
-    $("#fileupload").hide()
 
 
 }
 
-function uploadFiles(files) {
+function uploadFiles() {
     console.log("来了")
-    // const curFiles = inputfile.files;
-    // curFiles.forEach(u =>{
-    //     console.log(u.name)
-    //     console.log(u.size)
-    // })
-    $("#fileupload").hide()
+    const files = inputfile.files;
+    let formData = new FormData();
+    for(var i=0;i<files.length;i++){
+        formData.append("files",files[i]);
+    }
 
+    // formData.set("files",files);
+    let msg = {}
+    msg.from = currentUserInfo.userName;
+    msg.to = currentUserInfo.to;
+    formData.set("msg",JSON.stringify(msg));
 
+    $.ajax({
+        url: '/uploadFiles',
+        type: 'POST',
+        cache: false,
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: successCallback,
+        error: errorCallback,
+    })
+}
 
+function successCallback(data) {
+    console.log(data)
+}
+
+function errorCallback(err) {
 
 }
