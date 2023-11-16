@@ -25,9 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Controller
@@ -36,11 +34,12 @@ public class FileController {
 	UserService userService;
 
 	
-	@RequestMapping("/imag/{type}/{name}")
+	@RequestMapping("/file/{type}/{name}")
 	@ResponseBody
 	@LoginToken
 	public void login(@PathVariable("type") String type, @PathVariable("name") String name, HttpServletResponse response) throws IOException {
-		response.setContentType("image/png,image/jpeg");// 设置MIME类型，也就是响应类型
+		//response.setContentType("image/png,image/jpeg");// 设置MIME类型，也就是响应类型
+		//response.setContentType("blob");
 		ServletOutputStream out = response.getOutputStream();
 		String filePath = FileUtils.rootFilePath + File.separator + type +File.separator + name;
 		File file = new File(filePath);
@@ -60,28 +59,10 @@ public class FileController {
 	@ResponseBody
 	@PassToken
 	public BusinessResult uploadFiles(@RequestParam List<MultipartFile> files, @RequestParam String msg){
-//		User user = new User();
-//		user.setNickName(nickName);
-//		user.setUserName(userName);
-//		user.setPassWord(passWord);
-//		user.setTel(tel);
-//		userService.registerUser(user);
 		Message message = JSON.parseObject(msg, Message.class);
-
-//		if(file != null){
-//			String orgFileName = file.getOriginalFilename();
-//			String ext = orgFileName.substring(orgFileName.lastIndexOf(".")+1, orgFileName.length());
-//			String uuid = UUID.randomUUID().toString();
-//			String fileName = uuid + "." + ext;
-//			String imagPath = FileUtils.rootFilePath + File.separator + "head" + File.separator + fileName;
-//			FileUtils.uploadFile(file,imagPath);
-//			userVO.setPicture(fileName);
-//		}
-//		User user = BeanUtil.copyProperties(userVO, User.class);
-//		userService.registerUser(user);
-
-		HashMap<String, String> fileInfoMap = new HashMap<>();
+		Map<String,Object> resultMap = new HashMap<>();
 		if(files != null&& files.size() > 0){
+			HashMap<String, String> fileInfoMap = new HashMap<>();
 			for(MultipartFile multipartFile : files){
 				String originalFilename = multipartFile.getOriginalFilename();
 				String filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + originalFilename;
@@ -90,19 +71,21 @@ public class FileController {
 					String name = originalFilename.substring(0, originalFilename.lastIndexOf("."));
 					name += "(1)";
 					String ext = originalFilename.substring(originalFilename.lastIndexOf(".")+1, originalFilename.length());
-					filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + name + "." + ext;
+					originalFilename = name + "." + ext;
+					filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + originalFilename;
 				}
 
 				FileUtils.uploadFile(multipartFile,filePath);
 				fileInfoMap.put(originalFilename,filePath);
 
+
 			}
+			resultMap.put("fileInfoMap",fileInfoMap);
+
 		}
-		fileInfoMap.put("msg",msg);
+		resultMap.put("msg",msg);
 
-
-
-		return new BusinessResult(fileInfoMap);
+		return new BusinessResult(resultMap);
 
 	}
 

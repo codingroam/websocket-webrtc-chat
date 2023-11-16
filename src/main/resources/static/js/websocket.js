@@ -46,19 +46,9 @@ function websocketInit() {
                 }
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
-            } else if (data.contentType == "text") {
-                // 普通消息
-                // 接收服务端的实时消息并添加到HTML页面中
-                // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
-
+            } else if (data.contentType == "text" || data.contentType == "file") {
                 var messagevar = getEmojiStr(data.content)
-                // var message = `<div class="d-flex justify-content-start my-3">
-                //             <div class="card w-30 border-light">
-                //                 <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
-                //                 <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
-                //             </div>
-                //         </div>`;
-                var message = dialogHtmlTemplate(data.from,messagevar,"from");
+                var message = dialogHtmlTemplate(data.from,messagevar,"from",data.contentType);
                 if (data.from == currentUserInfo.to) {
                     $("#talk-container").append(message);
                 } else {

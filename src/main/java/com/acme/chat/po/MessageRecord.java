@@ -15,6 +15,7 @@ public class MessageRecord {
     private String fromUser;
     private String toUser;
     private String content;
+    private String contentType;
     private Date date;
     private int state;
 

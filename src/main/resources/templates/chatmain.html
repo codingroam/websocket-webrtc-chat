@@ -145,27 +145,10 @@
         var isCaller = false;
         var currentUserInfo = {};
         var isPC = true;
-        var preHeadPath = "imag/head/";
+        var preHeadPath = "file/head/";
+        var preUploadPath = "/file/upload/";
         var pictureCache = new Map();
 
-
-
-        // $(window).resize(function(){
-        //     var width = $(window).width(); //获取窗口宽度
-        //     var height = $(window).height(); //获取窗口高度
-        //
-        //     console.log("width:"+width+" height:" + height);
-        //     if(width < 768){
-        //         $("#card-footer").css('height',height*0.082+'px')
-        //         console.log("card-footer-height:" + '100px')
-        //         $("#user").css('height', height*0.43+'px')
-        //         console.log("")
-        //         $("#talk-container").css('height', height*0.33+'px')
-        //
-        //     }
-        //     // $("div").css("width", width); //设置div的宽度为窗口宽度
-        //     // $("div").css("height", height); //设置div的高度为窗口高度
-        // });
 
 
 
@@ -214,14 +197,8 @@
                 data["to"] = currentUserInfo.to;
                 data["content"] = $("#sendmessage").val();
                 data["contentType"] = "text";
-                websocket.send(JSON.stringify(data));
-                var messagevar = getEmojiStr($("#sendmessage").val())
-                var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
+                sendByMsgInfo(data)
 
-                $("#talk-container").append(message);
-                storageTalkUserMessage(data["to"], message)
-                scrollToBottom();
-                $("#sendmessage").val("");
             });
 
             $('#sendmessage').keydown(function (e) {
@@ -282,6 +259,17 @@
                 }
             });
 
+            function sendUserMsgOnBoard(sendMessage,toUserName) {
+
+                var messagevar = getEmojiStr(sendMessage)
+                var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
+
+                $("#talk-container").append(message);
+                storageTalkUserMessage(toUserName, message)
+                scrollToBottom();
+                $("#sendmessage").val("");
+            }
+
 
             //移动端自适应高度
             var width = $(window).width(); //获取窗口宽度
@@ -339,17 +327,10 @@
 
 
         function sendByMsgInfo(msginfo) {
-
             var data = msginfo
             websocket.send(JSON.stringify(data));
             var messagevar = getEmojiStr(msginfo.content)
-            var message = `<div class="d-flex justify-content-end my-3">
-                        <div class="card w-30 border-light">
-                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
-                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
-                        </div>
-                    </div>`;
-
+            var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to",data.contentType)
             $("#talk-container").append(message);
             storageTalkUserMessage(data["to"], message)
             scrollToBottom();
@@ -430,16 +411,26 @@
             div.scrollTop = div.scrollHeight;
         }
         
-        function dialogHtmlTemplate(username,messagevar,messageType) {
+        function dialogHtmlTemplate(username,messagevar,messageType,contentType) {
+
+            var filepath;
+            if(contentType == 'file'){
+                var arr = messagevar.split('@&@')
+                filename = arr[1]
+                messagevar = arr[0]
+            }
 
            return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
                         ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
 
+                        ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
                         <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${messagevar} </div>
+                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="uploadfile(${"'"+filename+"'"})">下载</button></div>`:''}
 
                         ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
                         </div>
+
                     </div>`;
 
         }
