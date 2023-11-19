@@ -56,6 +56,17 @@
 
 </div>
 
+
+<div id="imagmain" draggable="true" class="display-none  imagmain videomain-border-radius no-cursor">
+    <div style="width: 100%;height: 30px;padding: 5px 5px 0 0" class="d-flex justify-content-end">
+        <i onclick="closeImagPreview()" class="bi bi-x-circle"></i>
+    </div>
+<img id="imag-preview">
+
+
+
+</div>
+
 <div class="container pt-3" id="card-container">
     <div class="card">
         <div class="card-header  text-light d-flex justify-content-between no-cursor topbar-gradient no-border" >
@@ -259,16 +270,6 @@
                 }
             });
 
-            function sendUserMsgOnBoard(sendMessage,toUserName) {
-
-                var messagevar = getEmojiStr(sendMessage)
-                var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to")
-
-                $("#talk-container").append(message);
-                storageTalkUserMessage(toUserName, message)
-                scrollToBottom();
-                $("#sendmessage").val("");
-            }
 
 
             //移动端自适应高度
@@ -296,6 +297,7 @@
 
             //可推拽
             dragable('videomain')
+            dragable('imagmain')
 
 
 
@@ -329,8 +331,7 @@
         function sendByMsgInfo(msginfo) {
             var data = msginfo
             websocket.send(JSON.stringify(data));
-            var messagevar = getEmojiStr(msginfo.content)
-            var message = dialogHtmlTemplate(currentUserInfo.userName,messagevar,"to",data.contentType)
+            var message = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",data.contentType)
             $("#talk-container").append(message);
             storageTalkUserMessage(data["to"], message)
             scrollToBottom();
@@ -411,28 +412,59 @@
             div.scrollTop = div.scrollHeight;
         }
         
-        function dialogHtmlTemplate(username,messagevar,messageType,contentType) {
+        function dialogHtmlTemplate(messageSender,messageContent,messageType,contentType) {
 
-            var filepath;
+            var messagevar = getEmojiStr(messageContent)
+            var filename;
             if(contentType == 'file'){
                 var arr = messagevar.split('@&@')
                 filename = arr[1]
                 messagevar = arr[0]
             }
+            var isImag = judgeFileIsImag(filename);
 
+            var imagsrc = preUploadPath+filename;
            return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
-                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
+                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
 
                         ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
-                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${messagevar} </div>
+                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
                         ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="uploadfile(${"'"+filename+"'"})">下载</button></div>`:''}
 
-                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(username) }"> </div>`:''}
+                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
                         </div>
 
                     </div>`;
 
+        }
+
+        function judgeFileIsImag(filename) {
+            if(!filename){
+                return false;
+            }
+            let filetype = filename.substr(filename.lastIndexOf(".")+1);
+            if(filetype && (filetype == "png" || filetype == "jpg" || filetype == "jpeg" || filetype == "webp" || filetype == "heic" || filetype == "svg" || filetype == "bmp")){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+
+        function clickImag(filepath) {
+
+            $("#imagmain").show()
+            divCenterShow('.imagmain')
+            $("#imag-preview").attr('src',filepath)
+            $("#imag-preview").css('max-width','700px')
+            $("#imag-preview").css('max-height','500px')
+
+        }
+
+        function closeImagPreview() {
+
+            $("#imagmain").hide()
         }
 
 

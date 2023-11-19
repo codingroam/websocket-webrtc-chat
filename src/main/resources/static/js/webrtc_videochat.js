@@ -349,7 +349,7 @@ function videoPostProcessor(type,data) {
         $("#videomain").css('width','380px')
         $("#videomain").css('height','330px')
     }
-    videoMainCenterShow()
+    divCenterShow('.videomain')
 
     $("#localVideo").show();
     $("#remoteVideo").show();
@@ -361,18 +361,18 @@ function videoPostProcessor(type,data) {
 
 }
 
-function videoMainCenterShow() {
+function divCenterShow(divClass) {
 
     var window_width = $(window).width();
     var window_height = $(window).height();
 // 获取div的宽高
-    var div_width = $('.videomain').width();
-    var div_height = $('.videomain').height();
+    var div_width = $(divClass).width();
+    var div_height = $(divClass).height();
 // 计算div元素的左上角位置
     var left_margin = (window_width - div_width) / 2;
     var top_margin = (window_height - div_height) / 3;
 // 设置div元素的样式
-    $('.videomain').css({
+    $(divClass).css({
         'left': left_margin + 'px',
         'top': top_margin + 'px'
     });
@@ -403,7 +403,7 @@ function audioPostProcessor(type,data) {
     $("#videomain").css('height','90px')
     $("#videoinfo").removeClass('videoinfo')
     $("#videoinfo").addClass('audioinfo')
-    videoMainCenterShow()
+    divCenterShow()
 
 
 }
@@ -564,7 +564,7 @@ function minmaxvideo() {
         $("#minmaxbutton i").addClass('bi bi-dash-square');
         minflag=0
 
-        videoMainCenterShow()
+        divCenterShow()
     }
 
 }

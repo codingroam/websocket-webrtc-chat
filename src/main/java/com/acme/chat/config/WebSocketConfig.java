@@ -1,31 +1,11 @@
 package com.acme.chat.config;
 
-import com.acme.chat.cache.LoginUserInfoCahce;
-import com.acme.chat.chatenum.ErrorEnum;
-import com.acme.chat.exception.BusinessException;
-import com.acme.chat.po.User;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import org.apache.catalina.Context;
-import org.apache.tomcat.websocket.server.WsSci;
-import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.websocket.HandshakeResponse;
-import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * WebScoket配置处理器

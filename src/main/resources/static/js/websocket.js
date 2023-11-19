@@ -47,8 +47,7 @@ function websocketInit() {
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
             } else if (data.contentType == "text" || data.contentType == "file") {
-                var messagevar = getEmojiStr(data.content)
-                var message = dialogHtmlTemplate(data.from,messagevar,"from",data.contentType);
+                var message = dialogHtmlTemplate(data.from,data.content,"from",data.contentType);
                 if (data.from == currentUserInfo.to) {
                     $("#talk-container").append(message);
                 } else {
