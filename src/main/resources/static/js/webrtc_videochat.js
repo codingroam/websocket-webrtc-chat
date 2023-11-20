@@ -370,7 +370,7 @@ function divCenterShow(divClass) {
     var div_height = $(divClass).height();
 // 计算div元素的左上角位置
     var left_margin = (window_width - div_width) / 2;
-    var top_margin = (window_height - div_height) / 3;
+    var top_margin = (window_height - div_height) / 4;
 // 设置div元素的样式
     $(divClass).css({
         'left': left_margin + 'px',

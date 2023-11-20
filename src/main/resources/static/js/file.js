@@ -1,6 +1,11 @@
 var inputfile;
 function sendFileClick() {
 
+    if(!currentUserInfo.to){
+        commonMsg('请先选择好友再发送文件');
+        return false;
+    }
+
     inputfile = document.getElementById("fileupload");
 
     inputfile.addEventListener("change",uploadFiles)

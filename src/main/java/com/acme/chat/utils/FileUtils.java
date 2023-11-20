@@ -25,6 +25,12 @@ public class FileUtils {
         if(!dirhead.exists()){
             dirhead.mkdirs();
         }
+
+        String uploadPath = rootFilePath  + File.separator + "upload";
+        File dirUpload = new File(uploadPath);
+        if(!dirUpload.exists()){
+            dirUpload.mkdirs();
+        }
     }
 
     public static void uploadFile(MultipartFile file,String filePath){

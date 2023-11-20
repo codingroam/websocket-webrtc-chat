@@ -188,6 +188,62 @@
         margin-top: 15px;
         margin-right: 5px;
     }
+
+    .dialog-imag{
+
+        max-width: 300px;
+        max-height: 200px;
+    }
+    .imagmain{
+        text-align: center;
+        position: absolute;
+        width: 750px;
+        height: 550px;
+        z-index: 999;
+        background: #ffffff;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .dialog-button{
+        /* width: 0px; */
+        height: 20px!important;
+        font-size: 12px!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        z-index: 1000;
+        display: none;
+        min-width: 0rem!important;
+        padding: 0.5rem 0;
+        margin: 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-menu .show {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -37.6667px)!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -37.6667px)!important;
+    }
+
+    .chat-btn-color{
+        background-color: #12b7f5!important;
+    }
 }
 
 @media(max-width: 768px) {
@@ -300,7 +356,7 @@
 
 
     .w-30 {
-        max-width: 70%;
+        max-width: 80%;
         height: auto;
     }
 
@@ -405,12 +461,12 @@
 
     .dialog-content-from{
         background: #ffffff;
-        padding: 5px 10px;
+        padding: 5px 5px;
     }
 
     .dialog-content-to{
         background: #95ec69;
-        padding: 5px 10px;
+        padding: 5px 5px;
     }
 
     .dialog-head-icon-from{
@@ -442,6 +498,73 @@
         background-color: #53c753;
         margin-top: 14px;
         margin-right: 5px;
+    }
+    .dialog-imag{
+        max-width: 100px;
+        max-height: 150px;
+    }
+    .imagmain{
+        text-align: center;
+        position: absolute;
+        width: 90%;
+        height: auto;
+        z-index: 999;
+        background: #ffffff;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+    .dialog-button{
+        /* width: 0px; */
+        height: 20px!important;
+        font-size: 12px!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        z-index: 1000;
+        display: none;
+        min-width: 0rem!important;
+        padding: 0.2rem 0;
+        margin: 0;
+        font-size: 0.7rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-menu .show {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -47.6667px)!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -47.6667px)!important;
+    }
+
+    .chat-btn-color{
+        background-color: #12b7f5!important;
+        font-size: 12px!important;
+    }
+
+    body {
+        margin: 0;
+        font-family: var(--bs-font-sans-serif);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: transparent;
+        padding: 0 12px!important;
     }
 
 
@@ -502,9 +625,7 @@
     color: #fff!important;
     background-color: #c3c4c4!important;
 }
-.chat-btn-color{
-    background-color: #12b7f5!important;
-}
+
 .card-footer {
     background-color: rgba(0,0,0,.03);
 }
@@ -561,36 +682,9 @@
 
 
 
-.dropdown-menu .show {
-    position: absolute;
-    inset: auto auto 0px 0px;
-    margin: 0px;
-    transform: translate(-20px, -37.6667px)!important;
-}
 
-.dropdown-menu {
-    position: absolute;
-    inset: auto auto 0px 0px;
-    margin: 0px;
-    transform: translate(-20px, -37.6667px)!important;
-}
 
-.dropdown-menu {
-    position: absolute;
-    z-index: 1000;
-    display: none;
-    min-width: 0rem!important;
-    padding: 0.5rem 0;
-    margin: 0;
-    font-size: 1rem;
-    color: #212529;
-    text-align: left;
-    list-style: none;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 0.25rem;
-}
+
 
 .dialog-from{
     background: #95ec69
@@ -731,21 +825,9 @@
     margin-right: -16px;
 }
 
-.dialog-imag{
 
-    max-width: 300px;
-    max-height: 200px;
-}
 
-.imagmain{
-    text-align: center;
-    position: absolute;
-    width: 750px;
-    height: 550px;
-    z-index: 999;
-    background: #ffffff;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-}
+
 
 
 

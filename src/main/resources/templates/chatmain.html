@@ -428,9 +428,9 @@
                         <div class="w-30 d-flex justify-content-between border-light">
                         ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
 
-                        ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
+                        ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
                         <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
-                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="upload btn btn-link" onclick="uploadfile(${"'"+filename+"'"})">下载</button></div>`:''}
+                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="uploadfile(${"'"+filename+"'"})">下载</button></div>`:''}
 
                         ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
                         </div>
@@ -457,8 +457,14 @@
             $("#imagmain").show()
             divCenterShow('.imagmain')
             $("#imag-preview").attr('src',filepath)
-            $("#imag-preview").css('max-width','700px')
-            $("#imag-preview").css('max-height','500px')
+            if(isPC){
+                $("#imag-preview").css('max-width','700px')
+                $("#imag-preview").css('max-height','500px')
+            }else{
+                $("#imag-preview").css('max-width','380px')
+                $("#imag-preview").css('max-height','500px')
+            }
+
 
         }
 
