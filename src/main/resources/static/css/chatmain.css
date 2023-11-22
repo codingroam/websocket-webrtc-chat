@@ -8,12 +8,18 @@
         border-right: 1px solid rgba(0, 0, 0, 0.125);
     }
     .panel-chat-list{
-        height: 360px; overflow-y:scroll; background: #e3e3e4
+        height: auto;
+        max-height: 400px;
+        overflow-y:scroll;
+        background: #e3e3e4
     }
     .panel-chat-card{
-        height: 500px; overflow-y:scroll; background: #f5f5f5;
+        height: auto;
+        max-height: 550px;
+        overflow-y:scroll;
+        background: #f5f5f5;
         padding-top:20px;
-        padding-bottom:20px ;
+
     }
     .imag-size{
         height: 50px;
@@ -144,18 +150,39 @@
 
     .dialog-head-from{
         margin-left: 30px;
-        margin-bottom: 30px;
+        margin-top: 30px;
     }
 
     .dialog-head-to{
         margin-right: 30px;
-        margin-bottom: 30px;
+        margin-top: 30px;
+    }
+    .dialog-uploadprogress-to{
+        margin-top: 3px;
+        margin-right: 80px;
+    }
+
+    .dialog-uploadprogress-from{
+        margin-top: 3px;
+        margin-left: 80px;
+    }
+
+    .dialog-progressinfo-to{
+        font-size: 10px;
+        margin-left: 20px;
+    }
+
+    .dialog-progressinfo-from{
+        font-size: 10px;
+        margin-left: 20px;
     }
 
     .dialog-content-from{
         background: #ffffff;
         padding: 7px 10px;
     }
+
+
 
     .dialog-content-to{
         background: #95ec69;

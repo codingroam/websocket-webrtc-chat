@@ -424,7 +424,7 @@
             var isImag = judgeFileIsImag(filename);
 
             var imagsrc = preUploadPath+filename;
-           return `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+            return `<div><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
                         ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
 
@@ -434,8 +434,13 @@
 
                         ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
                         </div>
-
-                    </div>`;
+                    </div>
+                      ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex"><div class="progress progress-striped active">
+            <div id="progressBar" class="progress-bar progress-bar-success" style="height: 10px;min-width: 100px"
+                 role="progressbar" aria-valuemin="0" aria-valuenow="0"
+                 aria-valuemax="100" style="width: 20%"></div></div><div id="showInfo" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
+        </div>` : ''}
+</div>`;
 
         }
 
