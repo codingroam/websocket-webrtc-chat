@@ -331,10 +331,11 @@
         function sendByMsgInfo(msginfo) {
             var data = msginfo
             websocket.send(JSON.stringify(data));
-            var message = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",data.contentType)
+            var message,uuid = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",data.contentType)
             $("#talk-container").append(message);
             storageTalkUserMessage(data["to"], message)
             scrollToBottom();
+            return uuid;
 
         }
 
@@ -415,6 +416,7 @@
         function dialogHtmlTemplate(messageSender,messageContent,messageType,contentType) {
 
             var messagevar = getEmojiStr(messageContent)
+            var uuid  = getuuid();
             var filename;
             if(contentType == 'file'){
                 var arr = messagevar.split('@&@')
@@ -436,11 +438,11 @@
                         </div>
                     </div>
                       ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex"><div class="progress progress-striped active">
-            <div id="progressBar" class="progress-bar progress-bar-success" style="height: 10px;min-width: 100px"
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-success" style="height: 10px;min-width: 100px"
                  role="progressbar" aria-valuemin="0" aria-valuenow="0"
-                 aria-valuemax="100" style="width: 20%"></div></div><div id="showInfo" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
+                 aria-valuemax="100" style="width: 20%"></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
         </div>` : ''}
-</div>`;
+</div>`,uuid;
 
         }
 
@@ -477,6 +479,20 @@
 
             $("#imagmain").hide()
         }
+
+
+        function getuuid() {
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 10; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+
+
+
+            return s.join("");
+        }
+
 
 
     </script>
