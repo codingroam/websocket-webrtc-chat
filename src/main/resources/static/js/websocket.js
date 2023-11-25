@@ -47,13 +47,13 @@ function websocketInit() {
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
             } else if (data.contentType == "text" || data.contentType == "file") {
-                var message = dialogHtmlTemplate(data.from,data.content,"from",data.contentType);
+                var templateJSON = dialogHtmlTemplate(data.from,data.content,"from",data.contentType);
                 if (data.from == currentUserInfo.to) {
-                    $("#talk-container").append(message);
+                    $("#talk-container").append(templateJSON.message);
                 } else {
                     addAndFlushUnreadMessageCount(data.from)
                 }
-                storageTalkUserMessage(data.from, message)
+                storageTalkUserMessage(data.from, templateJSON.message)
                 // 滚动条滚动到最低部
                 scrollToBottom();
             } else if(data.contentType == "onlineUsers") {

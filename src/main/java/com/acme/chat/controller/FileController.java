@@ -67,18 +67,19 @@ public class FileController {
 				String originalFilename = multipartFile.getOriginalFilename();
 				String filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + originalFilename;
 				File file = new File(filePath);
+				String finalFileName = null;
 				if(file.exists()){
 					String name = originalFilename.substring(0, originalFilename.lastIndexOf("."));
 					name += "(1)";
 					String ext = originalFilename.substring(originalFilename.lastIndexOf(".")+1, originalFilename.length());
-					originalFilename = name + "." + ext;
-					filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + originalFilename;
+					finalFileName = name + "." + ext;
+					filePath = FileUtils.rootFilePath + File.separator + "upload" + File.separator + finalFileName;
+				}else{
+					finalFileName  = originalFilename;
 				}
 
 				FileUtils.uploadFile(multipartFile,filePath);
-				fileInfoMap.put(originalFilename,filePath);
-
-
+				fileInfoMap.put(originalFilename,finalFileName);
 			}
 			resultMap.put("fileInfoMap",fileInfoMap);
 

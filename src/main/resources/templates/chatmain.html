@@ -329,14 +329,27 @@
 
 
         function sendByMsgInfo(msginfo) {
-            var data = msginfo
-            websocket.send(JSON.stringify(data));
-            var message,uuid = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",data.contentType)
-            $("#talk-container").append(message);
-            storageTalkUserMessage(data["to"], message)
-            scrollToBottom();
-            return uuid;
 
+            //通过websocket发送信息
+            sendMessageByWebsocket(msginfo);
+            //将信息append到聊天Container，并返回模板uuid
+            return sendMessageTalkContainer(msginfo);
+
+
+        }
+
+        function sendMessageByWebsocket(msginfo) {
+            websocket.send(JSON.stringify(msginfo));
+
+        }
+
+        function sendMessageTalkContainer(msginfo) {
+
+            var templateJSON = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",msginfo.contentType)
+            $("#talk-container").append(templateJSON.message);
+            storageTalkUserMessage(msginfo["to"], templateJSON.message)
+            scrollToBottom();
+            return templateJSON.uuid;
         }
 
 
@@ -426,23 +439,27 @@
             var isImag = judgeFileIsImag(filename);
 
             var imagsrc = preUploadPath+filename;
-            return `<div><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+            var fileInfo = filename + '&@&@' + uuid;
+            var message = `<div><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
                         ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
 
                         ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
                         <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
-                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="uploadfile(${"'"+filename+"'"})">下载</button></div>`:''}
-
+                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">下载</button></div>`:''}
                         ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
                         </div>
                     </div>
                       ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex"><div class="progress progress-striped active">
-            <div id="progressBar${uuid}" class="progress-bar progress-bar-success" style="height: 10px;min-width: 100px"
+            <div id="progressBar${uuid}" class="progress-bar" style="height: 10px;min-width: 100px"
                  role="progressbar" aria-valuemin="0" aria-valuenow="0"
                  aria-valuemax="100" style="width: 20%"></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
         </div>` : ''}
-</div>`,uuid;
+</div>`
+            return {
+                uuid,
+                message
+            }
 
         }
 

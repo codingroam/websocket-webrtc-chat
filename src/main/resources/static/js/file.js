@@ -17,143 +17,217 @@ function sendFileClick() {
 }
 
 function uploadFiles() {
-    console.log("来了")
+    console.log("上传文件")
     const files = inputfile.files;
-    let formData = new FormData();
-    for(var i=0;i<files.length;i++){
-        formData.append("files",files[i]);
-        var msginfo = {};
-        msginfo.to = currentUserInfo.to;
-        msginfo.from = currentUserInfo.userName;
-        msginfo.content = '<文件:'+ files[i].name +'>';
-        msginfo.contentType = 'file';
-        var uuid = sendByMsgInfo(msginfo)
-        // formData.set("files",files);
-        let msg = {}
-        msg.from = currentUserInfo.userName;
-        msg.to = currentUserInfo.to;
-        formData.set("msg",JSON.stringify(msg));
+    const imagFiles = [];
+    const fileFiles = [];
+    for(var i = 0; i < files.length; i++){
+        if(files[i].type.startsWith("image")){
+            imagFiles.push(files[i]);
+        }else{
+            fileFiles.push(files[i])
+        }
+    }
 
+    if(imagFiles.length>0){
+        doUploadImages(imagFiles)
+    }
+    if(fileFiles.length>0){
+        doUploadFiles(fileFiles)
+    }
+
+    function doUploadImages(files) {
+
+        let formData = new FormData();
+        for(const file of files){
+            formData.append("files",file);
+        }
+        let fileUserMsg = {}
+        fileUserMsg.from = currentUserInfo.userName;
+        fileUserMsg.to = currentUserInfo.to;
+        formData.set("msg",JSON.stringify(fileUserMsg));
         var xhr = new XMLHttpRequest();
         //true为异步处理
         xhr.open('post','/uploadFiles', true);
-        //上传开始执行方法
-        xhr.onloadstart = function() {
-            console.log('开始上传')
-            ot = new Date().getTime();   //设置上传开始时间
-            oloaded = 0;//已上传的文件大小为0
-        };
-
-        xhr.upload.addEventListener('progress', function (evt) {
-            progressFunction(evt,uuid)
-
-        }, false);
-        xhr.addEventListener("load", uploadComplete, false);
-        xhr.addEventListener("error", uploadFailed, false);
-        xhr.addEventListener("abort", uploadCanceled, false);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 var data = xhr.response
+                var msg = data.msg;
+                var fileInfoMap = data.fileInfoMap
+                var userjson = JSON.parse(msg);
+                for(var key in fileInfoMap){
+                    var sendMsg = {};
+                    sendMsg.to = userjson.to;
+                    sendMsg.from = userjson.from;
+                    sendMsg.content = '<文件:'+ key +'>'+'@&@'+fileInfoMap.get(key);
+                    sendMsg.contentType = 'file';
+                    sendByMsgInfo(sendMsg)
+                }
             }
         }
         xhr.send(formData); // 发送ajax请求
+
+
     }
 
+     function doUploadFiles(files) {
+        for(const file of files){
 
+            //给对方发送文件消息
+            var sendMsg = {};
+            sendMsg.to = currentUserInfo.to;
+            sendMsg.from = currentUserInfo.userName;
+            sendMsg.content = '<文件:'+ file.name +'>';
+            sendMsg.contentType = 'file';
+            var uuid = sendMessageTalkContainer(sendMsg);
 
-    // $.ajax({
-    //     url: '/uploadFiles',
-    //     type: 'POST',
-    //     cache: false,
-    //     data: formData,
-    //     processData: false,
-    //     contentType: false,
-    //     success: successCallback,
-    //     error: errorCallback,
-    // })
+            let formData = new FormData();
+            formData.set("files",file);
+            let fileUserMsg = {}
+            fileUserMsg.from = currentUserInfo.userName;
+            fileUserMsg.to = currentUserInfo.to;
+            formData.set("msg",JSON.stringify(fileUserMsg));
 
+            var xhr = new XMLHttpRequest();
+            //true为异步处理
+            xhr.open('post','/uploadFiles', true);
+            //如果发送的是文件类型(非图片)，需要展示进度条
+            xhr.onloadstart = function() {
+                console.log('开始上传')
+                ot = new Date().getTime();   //设置上传开始时间
+                oloaded = 0;//已上传的文件大小为0
+            };
 
+            xhr.upload.addEventListener('progress', function (evt) {
+                progressFunction(evt,uuid)
 
-}
+            }, false);
+            xhr.addEventListener("load", uploadComplete, false);
+            xhr.addEventListener("error", uploadFailed, false);
+            xhr.addEventListener("abort", uploadCanceled, false);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    var data = xhr.response
+                    var msg = data.msg;
+                    var fileInfoMap = data.fileInfoMap
+                    var userjson = JSON.parse(msg);
+                    for(var key in fileInfoMap){
+                        var msginfo = {};
+                        msginfo.to = userjson.to;
+                        msginfo.from = userjson.from;
+                        msginfo.content = '<文件:'+ key +'>'+'@&@'+ fileInfoMap.get(key);
+                        msginfo.contentType = 'file';
+                        sendMessageByWebsocket(msginfo)
+                    }
 
-function progressFunction(evt,uuid) {
-    var processBar= $("#progressBar"+uuid);
-    if (evt.lengthComputable) {
-        var completePercent = Math.round(evt.loaded / evt.total * 100)
-            + '%';
-        processBar.width(completePercent);
-        processBar.text(completePercent);
+                }
+            }
+            xhr.send(formData); // 发送ajax请求
 
-        var time = $("#time");
-        var nt = new Date().getTime();     //获取当前时间
-        var pertime = (nt-ot)/1000;        //计算出上次调用该方法时到现在的时间差，单位为s
-        ot = new Date().getTime();          //重新赋值时间，用于下次计算
-
-        var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
-        oloaded = evt.loaded;               //重新赋值已上传文件大小
-
-        //上传速度计算
-        var speed = perload/pertime;//单位b/s
-        var bspeed = speed;
-        var units = 'b/s';//单位名称
-        if(speed/1024>1){
-            speed = speed/1024;
-            units = 'k/s';
         }
-        if(speed/1024>1){
-            speed = speed/1024;
-            units = 'M/s';
+
+
+
+
+
+
+        function progressFunction(evt,uuid) {
+            var processBar= $("#progressBar"+uuid);
+            if (evt.lengthComputable) {
+                var completePercent = Math.round(evt.loaded / evt.total * 100)
+                    + '%';
+                processBar.width(completePercent);
+                processBar.text(completePercent);
+
+                var time = $("#time");
+                var nt = new Date().getTime();     //获取当前时间
+                var pertime = (nt-ot)/1000;        //计算出上次调用该方法时到现在的时间差，单位为s
+                ot = new Date().getTime();          //重新赋值时间，用于下次计算
+
+                var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
+                oloaded = evt.loaded;               //重新赋值已上传文件大小
+
+                //上传速度计算
+                var speed = perload/pertime;//单位b/s
+                var bspeed = speed;
+                var units = 'b/s';//单位名称
+                if(speed/1024>1){
+                    speed = speed/1024;
+                    units = 'k/s';
+                }
+                if(speed/1024>1){
+                    speed = speed/1024;
+                    units = 'M/s';
+                }
+                speed = speed.toFixed(1);
+                //剩余时间
+                var resttime = ((evt.total-evt.loaded)/bspeed).toFixed(1);
+                $("#showInfo"+uuid).html(speed+units+'，剩余时间：'+resttime+'s');
+            }
         }
-        speed = speed.toFixed(1);
-        //剩余时间
-        var resttime = ((evt.total-evt.loaded)/bspeed).toFixed(1);
-        $("#showInfo"+uuid).html(speed+units+'，剩余时间：'+resttime+'s');
-    }
-}
 
 //上传成功后回调
-function uploadComplete(evt) {
-    //uploadBtn.attr('disabled', false);
-    console.log('上传完成')
-};
+        function uploadComplete(evt) {
+            //uploadBtn.attr('disabled', false);
+            console.log('上传完成')
+        };
 
 //上传失败回调
-function uploadFailed(evt) {
-    console.log('上传失败' + evt.target.responseText);
-}
+        function uploadFailed(evt) {
+            console.log('上传失败' + evt.target.responseText);
+        }
 
 //终止上传
-function cancelUpload() {
-    xhr.abort();
-}
+        function cancelUpload() {
+            xhr.abort();
+        }
 
 //上传取消后回调
-function uploadCanceled(evt) {
-    console.log('上传取消,上传被用户取消或者浏览器断开连接:' + evt.target.responseText);
-}
+        function uploadCanceled(evt) {
+            console.log('上传取消,上传被用户取消或者浏览器断开连接:' + evt.target.responseText);
+        }
 
 // canelBtn.click(function(){
 //     //uploadBtn.attr('disabled', false);
 //     cancelUpload();
 // })
-function getSize(size) {
-    var fileSize = '0KB';
-    if (size > 1024 * 1024) {
-        fileSize = (Math.round(size / (1024 * 1024))).toString() + 'MB';
-    } else {
-        fileSize = (Math.round(size / 1024)).toString() + 'KB';
+        function getSize(size) {
+            var fileSize = '0KB';
+            if (size > 1024 * 1024) {
+                fileSize = (Math.round(size / (1024 * 1024))).toString() + 'MB';
+            } else {
+                fileSize = (Math.round(size / 1024)).toString() + 'KB';
+            }
+            return fileSize;
+        }
+        function setProgress(w) {
+            processBar.width(w + '%');
+        }
+        function showProgress() {
+            processBar.parent().show();
+        }
+        function hideProgress() {
+            processBar.parent().hide();
+        }
+
+
+
+
+
+
+
+
+
     }
-    return fileSize;
+
+
+
+
+
+
 }
-function setProgress(w) {
-    processBar.width(w + '%');
-}
-function showProgress() {
-    processBar.parent().show();
-}
-function hideProgress() {
-    processBar.parent().hide();
-}
+
+
 
 
 function successCallback(data) {
@@ -182,8 +256,9 @@ function errorCallback(err) {
 }
 
 
-function uploadfile(filename) {
-
+function downloadfile(fileInfo) {
+    var fileJSON = fileInfo.split("&@&@")
+    var filename = fileJSON[0]
     let xhr = new XMLHttpRequest();
     xhr.open('get', preUploadPath+filename, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
