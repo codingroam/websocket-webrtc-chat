@@ -107,15 +107,15 @@ function uploadFiles() {
             xhr.addEventListener("abort", uploadCanceled, false);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
-                    var data = xhr.response
+                    var data = JSON.parse(xhr.response).data
                     var msg = data.msg;
-                    var fileInfoMap = data.fileInfoMap
+                    var fileInfoMap = new Map(Object.entries(data.fileInfoMap))
                     var userjson = JSON.parse(msg);
-                    for(var key in fileInfoMap){
+                    for(var [key,value] of fileInfoMap){
                         var msginfo = {};
                         msginfo.to = userjson.to;
                         msginfo.from = userjson.from;
-                        msginfo.content = '<文件:'+ key +'>'+'@&@'+ fileInfoMap.get(key);
+                        msginfo.content = '<文件:'+ key +'>'+'@&@'+ value;
                         msginfo.contentType = 'file';
                         sendMessageByWebsocket(msginfo)
                     }
@@ -127,97 +127,6 @@ function uploadFiles() {
         }
 
 
-
-
-
-
-        function progressFunction(evt,uuid) {
-            var processBar= $("#progressBar"+uuid);
-            if (evt.lengthComputable) {
-                var completePercent = Math.round(evt.loaded / evt.total * 100)
-                    + '%';
-                processBar.width(completePercent);
-                processBar.text(completePercent);
-
-                var time = $("#time");
-                var nt = new Date().getTime();     //获取当前时间
-                var pertime = (nt-ot)/1000;        //计算出上次调用该方法时到现在的时间差，单位为s
-                ot = new Date().getTime();          //重新赋值时间，用于下次计算
-
-                var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
-                oloaded = evt.loaded;               //重新赋值已上传文件大小
-
-                //上传速度计算
-                var speed = perload/pertime;//单位b/s
-                var bspeed = speed;
-                var units = 'b/s';//单位名称
-                if(speed/1024>1){
-                    speed = speed/1024;
-                    units = 'k/s';
-                }
-                if(speed/1024>1){
-                    speed = speed/1024;
-                    units = 'M/s';
-                }
-                speed = speed.toFixed(1);
-                //剩余时间
-                var resttime = ((evt.total-evt.loaded)/bspeed).toFixed(1);
-                $("#showInfo"+uuid).html(speed+units+'，剩余时间：'+resttime+'s');
-            }
-        }
-
-//上传成功后回调
-        function uploadComplete(evt) {
-            //uploadBtn.attr('disabled', false);
-            console.log('上传完成')
-        };
-
-//上传失败回调
-        function uploadFailed(evt) {
-            console.log('上传失败' + evt.target.responseText);
-        }
-
-//终止上传
-        function cancelUpload() {
-            xhr.abort();
-        }
-
-//上传取消后回调
-        function uploadCanceled(evt) {
-            console.log('上传取消,上传被用户取消或者浏览器断开连接:' + evt.target.responseText);
-        }
-
-// canelBtn.click(function(){
-//     //uploadBtn.attr('disabled', false);
-//     cancelUpload();
-// })
-        function getSize(size) {
-            var fileSize = '0KB';
-            if (size > 1024 * 1024) {
-                fileSize = (Math.round(size / (1024 * 1024))).toString() + 'MB';
-            } else {
-                fileSize = (Math.round(size / 1024)).toString() + 'KB';
-            }
-            return fileSize;
-        }
-        function setProgress(w) {
-            processBar.width(w + '%');
-        }
-        function showProgress() {
-            processBar.parent().show();
-        }
-        function hideProgress() {
-            processBar.parent().hide();
-        }
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -225,6 +134,86 @@ function uploadFiles() {
 
 
 
+}
+
+
+function progressFunction(evt,uuid) {
+    var processBar= $("#progressBar"+uuid);
+    if (evt.lengthComputable) {
+        var completePercent = Math.round(evt.loaded / evt.total * 100)
+            + '%';
+        processBar.width(completePercent);
+        processBar.text(completePercent);
+
+        var time = $("#time");
+        var nt = new Date().getTime();     //获取当前时间
+        var pertime = (nt-ot)/1000;        //计算出上次调用该方法时到现在的时间差，单位为s
+        ot = new Date().getTime();          //重新赋值时间，用于下次计算
+
+        var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
+        oloaded = evt.loaded;               //重新赋值已上传文件大小
+
+        //上传速度计算
+        var speed = perload/pertime;//单位b/s
+        var bspeed = speed;
+        var units = 'b/s';//单位名称
+        if(speed/1024>1){
+            speed = speed/1024;
+            units = 'k/s';
+        }
+        if(speed/1024>1){
+            speed = speed/1024;
+            units = 'M/s';
+        }
+        speed = speed.toFixed(1);
+        //剩余时间
+        var resttime = ((evt.total-evt.loaded)/bspeed).toFixed(1);
+        $("#showInfo"+uuid).html(speed+units+'，剩余时间：'+resttime+'s');
+    }
+}
+
+//上传成功后回调
+function uploadComplete(evt) {
+    //uploadBtn.attr('disabled', false);
+    console.log('上传完成')
+};
+
+//上传失败回调
+function uploadFailed(evt) {
+    console.log('上传失败' + evt.target.responseText);
+}
+
+//终止上传
+function cancelUpload() {
+    xhr.abort();
+}
+
+//上传取消后回调
+function uploadCanceled(evt) {
+    console.log('上传取消,上传被用户取消或者浏览器断开连接:' + evt.target.responseText);
+}
+
+// canelBtn.click(function(){
+//     //uploadBtn.attr('disabled', false);
+//     cancelUpload();
+// })
+function getSize(size) {
+    var fileSize = '0KB';
+    if (size > 1024 * 1024) {
+        fileSize = (Math.round(size / (1024 * 1024))).toString() + 'MB';
+    } else {
+        fileSize = (Math.round(size / 1024)).toString() + 'KB';
+    }
+    return fileSize;
+}
+function setProgress(w) {
+    processBar.width(w + '%');
+}
+function showProgress() {
+    processBar.parent().show();
+}
+function hideProgress() {
+    processBar.parent().hide();
 }
 
 
@@ -259,8 +248,22 @@ function errorCallback(err) {
 function downloadfile(fileInfo) {
     var fileJSON = fileInfo.split("&@&@")
     var filename = fileJSON[0]
+    var uuid = fileJSON[1]
     let xhr = new XMLHttpRequest();
+    xhr.addEventListener("progress", function (evt) {
+        progressFunction(evt,uuid)
+
+    }, false);
+    xhr.addEventListener("load", uploadComplete, false);
+    xhr.addEventListener("error", uploadFailed, false);
+    xhr.addEventListener("abort", uploadCanceled, false);
     xhr.open('get', preUploadPath+filename, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            console.log("dsf")
+        }
+
+    }
     xhr.setRequestHeader('Content-Type', 'application/json;charset=utf-8');
     // xhr.setRequestHeader('Authorization', `Bearer ${JSON.parse(Cookies.get('tm_token'))}`);
     xhr.responseType = "blob"; // 返回类型blob
@@ -281,27 +284,12 @@ function downloadfile(fileInfo) {
             window.URL.revokeObjectURL(href); // 释放掉blob对象
         }
     }
+     xhr.send()
 
 
 
 
 
-    // $.ajax({
-    //     url: preUploadPath+filename,
-    //     type: 'GET',
-    //     responseType:'blob',
-    //
-    //     success: successUploadfileCallback,
-    //     error: errorCallback,
-    // })
-    // function successUploadfileCallback(data) {
-    //     var a = document.createElement('a');
-    //     var url = window.URL.createObjectURL(new Blob([data],{type: 'application/png'}));
-    //     a.href = url;
-    //     a.download = filename;
-    //     a.click();
-    //     URL.revokeObjectURL(url)
-    //
-    // }
+
 }
 

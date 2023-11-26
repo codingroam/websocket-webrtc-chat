@@ -46,6 +46,7 @@ public class FileController {
 		InputStream in = new FileInputStream(file);
 		int available = in.available();
 		byte[] bytes = new byte[available];
+		response.setContentLength(bytes.length);
 		in.read(bytes);
 		out.write(bytes);
 		in.close();
