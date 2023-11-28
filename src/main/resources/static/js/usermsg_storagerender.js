@@ -22,6 +22,32 @@ function storageTalkUserMessage(talkUser, message) {
 
 }
 
+//当前聊天好友的message存储
+function storageCurrentTalkUserMessage(message, fileuuid) {
+    var userMessageKey = getTalkUserMessageKey(message.to) + "current"
+    var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
+    if (messageList == undefined) {
+        messageList = new Array();
+        messageList.push(message)
+        window.localStorage.setItem(userMessageKey, JSON.stringify(messageList));
+    } else {
+        messageList.push(message);
+        window.localStorage.setItem(userMessageKey, JSON.stringify(messageList));
+    }
+
+    if(fileuuid != undefined){
+        var fileinfoMap = JSON.parse(window.localStorage.getItem("fileinfokey"));
+        if(fileinfoMap == undefined){
+            fileinfoMap = new Map();
+        }
+        fileinfoMap.set(fileuuid,messageList.length)
+        window.localStorage.setItem("fileinfokey", JSON.stringify(fileinfoMap));
+    }
+
+
+
+}
+
 function addOnlineUserAndGet(user) {
     var alluserkey = getAlluserKey();
     var allUserSet = window.localStorage.getItem(alluserkey);

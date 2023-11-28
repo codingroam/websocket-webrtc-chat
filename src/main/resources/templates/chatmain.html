@@ -340,7 +340,6 @@
 
         function sendMessageByWebsocket(msginfo) {
             websocket.send(JSON.stringify(msginfo));
-
         }
 
         function sendMessageTalkContainer(msginfo) {
@@ -348,6 +347,7 @@
             var templateJSON = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",msginfo.contentType)
             $("#talk-container").append(templateJSON.message);
             storageTalkUserMessage(msginfo["to"], templateJSON.message)
+            storageCurrentTalkUserMessage(msginfo,templateJSON.uuid)
             scrollToBottom();
             return templateJSON.uuid;
         }
@@ -450,10 +450,47 @@
                         ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
                         </div>
                     </div>
-                      ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex"><div class="progress progress-striped active">
-            <div id="progressBar${uuid}" class="progress-bar" style="height: 10px;min-width: 100px"
-                 role="progressbar" aria-valuemin="0" aria-valuenow="0"
-                 aria-valuemax="100" style="width: 20%"></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
+                      ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 10px;min-width: 150px">
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 20%"
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
+        </div>` : ''}
+</div>`
+            return {
+                uuid,
+                message
+            }
+
+        }
+
+
+
+        function getDialogHtmlTemplate(msginfo,messageType) {
+
+            var messagevar = getEmojiStr(msginfo.content)
+            var uuid  = getuuid();
+            var filename;
+            if(msginfo.contentType == 'file'){
+                var arr = messagevar.split('@&@')
+                filename = arr[1]
+                messagevar = arr[0]
+            }
+            var isImag = judgeFileIsImag(filename);
+
+            var imagsrc = preUploadPath+filename;
+            var fileInfo = filename + '&@&@' + uuid;
+            var message = `<div><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+                        <div class="w-30 d-flex justify-content-between border-light">
+                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+
+                        ${msginfo.contentType && msginfo.contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
+                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
+                        ${msginfo.contentType && msginfo.contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">下载</button></div>`:''}
+                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+                        </div>
+                    </div>
+                      ${msginfo.contentType == 'file' ? `<div id="progressDiv${uuid}" class="d-flex ${msginfo.fileState == undefined ? '' : 'processbar-display-none'} ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 10px;min-width: 150px">
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 20%"
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
         </div>` : ''}
 </div>`
             return {

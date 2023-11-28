@@ -669,6 +669,9 @@
 .display-none{
     display: none;
 }
+.processbar-display-none{
+    display: none;
+}
 .videoclass{
     display: none;
 }
