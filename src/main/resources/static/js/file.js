@@ -102,7 +102,10 @@ function uploadFiles() {
                 progressFunction(evt,uuid)
 
             }, false);
-            xhr.addEventListener("load", uploadComplete, false);
+            xhr.addEventListener("load", function (evt) {
+                uploadComplete(evt,uuid,sendMsg.to)
+
+            }, false);
             xhr.addEventListener("error", uploadFailed, false);
             xhr.addEventListener("abort", uploadCanceled, false);
             xhr.onreadystatechange = function () {
@@ -173,14 +176,27 @@ function progressFunction(evt,uuid) {
 }
 
 //上传成功后回调
-function uploadComplete(evt) {
+function uploadComplete(evt,uuid,messageto) {
     //uploadBtn.attr('disabled', false);
     console.log('上传完成')
+    $('#showInfo'+uuid).html('上传完成')
+    modifyStorageMessage(uuid,'uploadSuccess',messageto)
+};
+
+//下载成功后回调
+function downloadComplete(evt,uuid,messageto) {
+    //uploadBtn.attr('disabled', false);
+    console.log('下载完成')
+    $('#showInfo'+uuid).html('下载完成')
+    $('#downloadbutton'+uuid).text('重新下载')
+    modifyStorageMessage(uuid,'downloadSuccess',messageto)
 };
 
 //上传失败回调
-function uploadFailed(evt) {
+function uploadFailed(evt,uuid,messageto) {
     console.log('上传失败' + evt.target.responseText);
+    $('#showInfo'+uuid).html('上传失败')
+    modifyStorageMessage(uuid,'uploadSuccess',messageto)
 }
 
 //终止上传
@@ -249,12 +265,16 @@ function downloadfile(fileInfo) {
     var fileJSON = fileInfo.split("&@&@")
     var filename = fileJSON[0]
     var uuid = fileJSON[1]
+    var messageto = currentUserInfo.to
     let xhr = new XMLHttpRequest();
     xhr.addEventListener("progress", function (evt) {
         progressFunction(evt,uuid)
 
     }, false);
-    xhr.addEventListener("load", uploadComplete, false);
+    xhr.addEventListener("load", function (evt) {
+        downloadComplete(evt,uuid,messageto)
+
+    }, false);
     xhr.addEventListener("error", uploadFailed, false);
     xhr.addEventListener("abort", uploadCanceled, false);
     xhr.open('get', preUploadPath+filename, true);

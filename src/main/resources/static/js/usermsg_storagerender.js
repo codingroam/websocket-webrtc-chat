@@ -231,3 +231,44 @@ function getUserListItemHtmlTemplete(user,count,active) {
 return   `<div  class="list-group-item d-flex justify-content-between"  onclick="clicktalk(this)" data-bs-toggle="list" ><div><img class="dialog-head-icon-list" src="${ preHeadPath + pictureCache.get(user.userName) }"><span id="username">${user.userName}</span></div><div class="d-flex justify-content-between"><div class="${ user.onLineState ? 'green-circle' : 'offstate-font'}">&nbsp;</div><div id="message-count" class="bubble opacity-0 text-light">${count}</div></div></div>`
 
 }
+
+
+function modifyStorageMessage(uuid,fileState,messageto){
+    var fileInfoMap =  window.localStorage.getItem("fileinfokey");
+    var messageindex = fileInfoMap.get(uuid);
+    var userMessageKey = getTalkUserMessageKey(messageto) + "current"
+    var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
+    var messageInfo = messageList[messageindex]
+    messageInfo.fileState = fileState
+    messageInfo.fileStateName = getFileStateNameByState(fileState)
+    messageList[messageindex] = messageInfo;
+    window.localStorage.setItem(userMessageKey,messageList);
+
+
+    
+}
+
+
+function getFileStateNameByState(fileState){
+
+    let stateName;
+
+    switch(fileState){
+        case 'uploadSuccess':
+            stateName = '上传成功'
+            break;
+        case 'downloadSuccess':
+            stateName = '下载成功'
+            break;
+        case 'uploadFail':
+            stateName = '上传失败'
+            break;
+        case 'downloadFail':
+            stateName = '下载失败'
+            break;
+        
+
+    }
+    return stateName;
+
+}
