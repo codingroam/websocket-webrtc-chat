@@ -74,7 +74,7 @@
             <span id="talktitle">飞鱼Chat&nbsp;</i></span>
             <span class="text-light" onclick="logout()">退出</span>
         </div>
-        <div style="padding:0rem 0.75rem" class="card-body no-cursor">
+        <div style="padding:0rem 0.75rem;background: #f5f5f5" class="card-body no-cursor">
             <div class="row" >
                 <div  class="panel-container col-sm-12 col-md-4" style="background: #eae7e6;padding: 0 0;">
                     <ul class="list-group list-group-flush panel-chat-header" style="background: #eae7e6">
@@ -344,11 +344,19 @@
 
         function sendMessageTalkContainer(msginfo) {
 
-            var templateJSON = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",msginfo.contentType)
+            // var templateJSON = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",msginfo.contentType)
+            // $("#talk-container").append(templateJSON.message);
+            // storageTalkUserMessage(msginfo["to"], templateJSON.message)
+            // scrollToBottom();
+            // return templateJSON.uuid;
+
+
+            msginfo.position = "right"
+            var templateJSON = getDialogHtmlTemplate(msginfo)
             $("#talk-container").append(templateJSON.message);
-            storageTalkUserMessage(msginfo["to"], templateJSON.message)
             storageCurrentTalkUserMessage(msginfo,templateJSON.uuid)
             scrollToBottom();
+            $('#sendmessage').val('')
             return templateJSON.uuid;
         }
 
@@ -464,7 +472,7 @@
 
 
 
-        function getDialogHtmlTemplate(msginfo,messageType) {
+        function getDialogHtmlTemplate(msginfo) {
 
             var messagevar = getEmojiStr(msginfo.content)
             var uuid  = getuuid();
@@ -478,19 +486,19 @@
 
             var imagsrc = preUploadPath+filename;
             var fileInfo = filename + '&@&@' + uuid;
-            var message = `<div ${contentType && contentType == 'file' ? `id='dialogdiv${uuid}'` : ''}><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+            var message = `<div ${msginfo.contentType && msginfo.contentType == 'file' ? `id='dialogdiv${uuid}'` : ''}><div class="d-flex ${msginfo.position == 'right' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
                         <div class="w-30 d-flex justify-content-between border-light">
-                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+                        ${msginfo.position == 'left' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
 
-                        ${msginfo.contentType && msginfo.contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
-                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
-                        ${msginfo.contentType && msginfo.contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button id="downloadbutton${uuid}" type="button" class="dialog-button btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">${msginfo.fileState == 'downloadSuccess' ? '重新下载' : '下载'}</button></div>`:''}
-                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+                        ${msginfo.contentType && msginfo.contentType == 'file' && msginfo.position == 'right' ?`<div style="padding: 0 0"><button type="button" class="dialog-button dialog-button-right btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
+                        <div class="${msginfo.position == 'right' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
+                        ${msginfo.contentType && msginfo.contentType == 'file' && msginfo.position == 'left' ?`<div style="padding: 0 0"><button id="downloadbutton${uuid}" type="button" class="dialog-button dialog-button-left btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">${msginfo.fileState == 'downloadSuccess' ? '重新下载' : '下载'}</button></div>`:''}
+                        ${msginfo.position == 'right' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
                         </div>
                     </div>
-                      ${msginfo.contentType == 'file' ? `<div id="progressDiv${uuid}" class="d-flex  ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 10px;min-width: 150px">
-            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped progress-bar-animated" ${(msginfo.fileState=='uploadSuccess' || msginfo.fileState=='downloadSuccess') ?`style="width: 100%"`:`style="width: 20%"`}
-                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">${msginfo.fileStateName}</div></div>
+                      ${msginfo.contentType == 'file' && !isImag ? `<div id="progressDiv${uuid}" class="d-flex  ${msginfo.position == 'right' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 8px;min-width: 120px">
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped" ${(msginfo.fileState=='uploadSuccess' || msginfo.fileState=='downloadSuccess') ?`style="width: 100%"`:`style="width: 20%"`}
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${msginfo.position == 'right' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">${msginfo.fileStateName ? msginfo.fileStateName : '未下载'}</div></div>
         </div>` : ''}
 </div>`
             return {

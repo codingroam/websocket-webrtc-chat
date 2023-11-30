@@ -19,6 +19,7 @@
         overflow-y:scroll;
         background: #f5f5f5;
         padding-top:20px;
+        padding-bottom: 20px;
 
     }
     .imag-size{
@@ -168,13 +169,13 @@
     }
 
     .dialog-progressinfo-to{
-        font-size: 10px;
-        margin-left: 20px;
+        font-size: 8px;
+        margin-left: 10px;
     }
 
     .dialog-progressinfo-from{
-        font-size: 10px;
-        margin-left: 20px;
+        font-size: 8px;
+        margin-left: 10px;
     }
 
     .dialog-content-from{
@@ -853,6 +854,29 @@
     /* margin-bottom: 8px; */
     margin-top: -8px;
     margin-right: -16px;
+}
+
+.progress {
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: 0.5rem!important;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+}
+
+.dialog-button-left{
+    width: 80px;
+    padding: 0 0!important;
+    text-align: left!important;
+    margin-left: 5px;
+}
+
+.dialog-button-right{
+    width: 80px;
+    padding: 0 0!important;
+    text-align: right!important;
+    margin-right: 5px ;
 }
 
 

@@ -23,8 +23,8 @@ function storageTalkUserMessage(talkUser, message) {
 }
 
 //当前聊天好友的message存储
-function storageCurrentTalkUserMessage(message, fileuuid) {
-    var userMessageKey = getTalkUserMessageKey(message.to) + "current"
+function storageCurrentTalkUserMessage(message, fileuuid,isFrom) {
+    var userMessageKey = getTalkUserMessageKey(isFrom ? message.from : message.to)
     var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
     if (messageList == undefined) {
         messageList = new Array();
@@ -36,12 +36,12 @@ function storageCurrentTalkUserMessage(message, fileuuid) {
     }
 
     if(fileuuid != undefined){
-        var fileinfoMap = JSON.parse(window.localStorage.getItem("fileinfokey"));
+        var fileinfoMap = getLocalStorageMap("fileinfokey");
         if(fileinfoMap == undefined){
             fileinfoMap = new Map();
         }
         fileinfoMap.set(fileuuid,messageList.length)
-        window.localStorage.setItem("fileinfokey", JSON.stringify(fileinfoMap));
+        setLocalStorageMap("fileinfokey",fileinfoMap)
     }
 
 
@@ -78,7 +78,8 @@ function clicktalk(a) {
     if (messageList != undefined) {
         $("#talk-container").empty();
         for (var i = 0; i < messageList.length; i++) {
-            $("#talk-container").append(messageList[i]);
+            var template = getDialogHtmlTemplate(messageList[i])
+            $("#talk-container").append(template.message);
         }
 
     } else {
@@ -99,7 +100,8 @@ function talkuser(username) {
     if (messageList != undefined) {
         $("#talk-container").empty();
         for (var i = 0; i < messageList.length; i++) {
-            $("#talk-container").append(messageList[i]);
+            var template = getDialogHtmlTemplate(messageList[i])
+            $("#talk-container").append(template.message);
         }
 
     } else {
@@ -233,19 +235,17 @@ return   `<div  class="list-group-item d-flex justify-content-between"  onclick=
 }
 
 
-function modifyStorageMessage(uuid,fileState,messageto){
-    var fileInfoMap =  window.localStorage.getItem("fileinfokey");
-    var messageindex = fileInfoMap.get(uuid);
-    var userMessageKey = getTalkUserMessageKey(messageto) + "current"
+function modifyStorageMessage(uuid,fileState,talkto){
+    var fileInfoMap =  getLocalStorageMap("fileinfokey");
+    var messageindex = fileInfoMap.get(uuid) - 1;
+    var userMessageKey = getTalkUserMessageKey(talkto)
     var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
     var messageInfo = messageList[messageindex]
     messageInfo.fileState = fileState
     messageInfo.fileStateName = getFileStateNameByState(fileState)
     messageList[messageindex] = messageInfo;
-    window.localStorage.setItem(userMessageKey,messageList);
+    window.localStorage.setItem(userMessageKey,JSON.stringify(messageList));
 
-
-    
 }
 
 
@@ -270,5 +270,26 @@ function getFileStateNameByState(fileState){
 
     }
     return stateName;
+
+}
+
+function getLocalStorageMap(key) {
+
+    // 从 localStorage 中读取存储的字符串
+    const storedMapString = localStorage.getItem(key);
+
+// 将字符串转换为 Map 对象
+    var storedMap = new Map(JSON.parse(storedMapString));
+    return storedMap;
+
+}
+
+function setLocalStorageMap(key,map) {
+
+    // 将 Map 对象转换为字符串
+    var mapString = JSON.stringify(Array.from(map.entries()));
+
+// 将转换后的字符串存储到 localStorage 中
+    localStorage.setItem(key, mapString);
 
 }

@@ -1,4 +1,5 @@
 var inputfile;
+var ot;
 
 function sendFileClick() {
 
@@ -51,15 +52,15 @@ function uploadFiles() {
         xhr.open('post','/uploadFiles', true);
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                var data = xhr.response
+                var data = JSON.parse(xhr.response).data
                 var msg = data.msg;
-                var fileInfoMap = data.fileInfoMap
+                var fileInfoMap = new Map(Object.entries(data.fileInfoMap))
                 var userjson = JSON.parse(msg);
-                for(var key in fileInfoMap){
+                for(var [key,value] of fileInfoMap){
                     var sendMsg = {};
                     sendMsg.to = userjson.to;
                     sendMsg.from = userjson.from;
-                    sendMsg.content = '<文件:'+ key +'>'+'@&@'+fileInfoMap.get(key);
+                    sendMsg.content = '<文件:'+ key +'>'+'@&@'+value;
                     sendMsg.contentType = 'file';
                     sendByMsgInfo(sendMsg)
                 }
@@ -150,7 +151,7 @@ function progressFunction(evt,uuid) {
 
         var time = $("#time");
         var nt = new Date().getTime();     //获取当前时间
-        var pertime = (nt-ot)/1000;        //计算出上次调用该方法时到现在的时间差，单位为s
+        var pertime = ot ? (nt-ot)/1000 : 0;        //计算出上次调用该方法时到现在的时间差，单位为s
         ot = new Date().getTime();          //重新赋值时间，用于下次计算
 
         var perload = evt.loaded - oloaded; //计算该分段上传的文件大小，单位b
@@ -179,17 +180,18 @@ function progressFunction(evt,uuid) {
 function uploadComplete(evt,uuid,messageto) {
     //uploadBtn.attr('disabled', false);
     console.log('上传完成')
+    inputfile.value=''
     $('#showInfo'+uuid).html('上传完成')
     modifyStorageMessage(uuid,'uploadSuccess',messageto)
 };
 
 //下载成功后回调
-function downloadComplete(evt,uuid,messageto) {
+function downloadComplete(evt,uuid,talkto) {
     //uploadBtn.attr('disabled', false);
     console.log('下载完成')
     $('#showInfo'+uuid).html('下载完成')
     $('#downloadbutton'+uuid).text('重新下载')
-    modifyStorageMessage(uuid,'downloadSuccess',messageto)
+    modifyStorageMessage(uuid,'downloadSuccess',talkto)
 };
 
 //上传失败回调
@@ -265,14 +267,20 @@ function downloadfile(fileInfo) {
     var fileJSON = fileInfo.split("&@&@")
     var filename = fileJSON[0]
     var uuid = fileJSON[1]
-    var messageto = currentUserInfo.to
+    var talkto = currentUserInfo.to
     let xhr = new XMLHttpRequest();
+
+    xhr.onloadstart = function() {
+        console.log('开始上传')
+        ot = new Date().getTime();   //设置上传开始时间
+        oloaded = 0;//已上传的文件大小为0
+    };
     xhr.addEventListener("progress", function (evt) {
         progressFunction(evt,uuid)
 
     }, false);
     xhr.addEventListener("load", function (evt) {
-        downloadComplete(evt,uuid,messageto)
+        downloadComplete(evt,uuid,talkto)
 
     }, false);
     xhr.addEventListener("error", uploadFailed, false);
