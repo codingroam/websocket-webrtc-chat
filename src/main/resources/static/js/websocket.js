@@ -53,6 +53,7 @@ function websocketInit() {
                     $("#talk-container").append(templateJSON.message);
                 } else {
                     addAndFlushUnreadMessageCount(data.from)
+                    userFirstMessagePrompt(data)
                 }
                 storageCurrentTalkUserMessage(data,templateJSON.uuid,true)
                 //storageTalkUserMessage(data.from, templateJSON.message)

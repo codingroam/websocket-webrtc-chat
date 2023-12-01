@@ -36,12 +36,9 @@ function storageCurrentTalkUserMessage(message, fileuuid,isFrom) {
     }
 
     if(fileuuid != undefined){
-        var fileinfoMap = getLocalStorageMap("fileinfokey");
-        if(fileinfoMap == undefined){
-            fileinfoMap = new Map();
-        }
+        var fileinfoMap = getLocalStorageMapByKey("fileinfokey");
         fileinfoMap.set(fileuuid,messageList.length)
-        setLocalStorageMap("fileinfokey",fileinfoMap)
+        setLocalStorageKeyMap("fileinfokey",fileinfoMap)
     }
 
 
@@ -117,6 +114,20 @@ function getIsActive(username){
     }else{
         return activeUser == username;
     }
+}
+
+function userFirstMessagePrompt(data){
+    var fromUser = data.from;
+    var promptKey = currentUserInfo.userName+"@@"+fromUser+"prompt"
+    var promptMap =  getLocalStorageMapByKey(promptKey)
+    var promptMessage = getPromptMessage(data)
+    promptMap.set(fromUser,)
+
+
+}
+
+function getPromptMessage(data){
+    
 }
 
 function getUserUnreadMessageCount(fromuser){
@@ -236,7 +247,7 @@ return   `<div  class="list-group-item d-flex justify-content-between"  onclick=
 
 
 function modifyStorageMessage(uuid,fileState,talkto){
-    var fileInfoMap =  getLocalStorageMap("fileinfokey");
+    var fileInfoMap =  getLocalStorageMapByKey("fileinfokey");
     var messageindex = fileInfoMap.get(uuid) - 1;
     var userMessageKey = getTalkUserMessageKey(talkto)
     var messageList = JSON.parse(window.localStorage.getItem(userMessageKey));
@@ -273,10 +284,13 @@ function getFileStateNameByState(fileState){
 
 }
 
-function getLocalStorageMap(key) {
+function getLocalStorageMapByKey(key) {
 
     // 从 localStorage 中读取存储的字符串
     const storedMapString = localStorage.getItem(key);
+    if(storedMapString == undefined || storedMapString == null){
+        return new Map();
+    }
 
 // 将字符串转换为 Map 对象
     var storedMap = new Map(JSON.parse(storedMapString));
@@ -284,7 +298,7 @@ function getLocalStorageMap(key) {
 
 }
 
-function setLocalStorageMap(key,map) {
+function setLocalStorageKeyMap(key,map) {
 
     // 将 Map 对象转换为字符串
     var mapString = JSON.stringify(Array.from(map.entries()));
