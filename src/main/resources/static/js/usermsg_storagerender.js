@@ -1,4 +1,5 @@
 
+var staticPromptMap;
 //获取当前登录用户的所有好友key
 function getAlluserKey() {
     return currentUserInfo.userName + "@@" + "all_user";
@@ -64,7 +65,7 @@ function addOnlineUserAndGet(user) {
 function clicktalk(a) {
     $("#users").children().removeClass("active")
     $(a).addClass("active");
-    var talkToUsername = $(a).children()[0].childNodes[1].innerHTML
+    var talkToUsername = $(a).children()[0].childNodes[1].childNodes[0].childNodes[0].innerHTML
     $("#talktitle").text("与 " + talkToUsername + " 的聊天");
 
     $(a).find('div#message-count')[0].innerText = ''
@@ -116,17 +117,29 @@ function getIsActive(username){
     }
 }
 
-function userFirstMessagePrompt(data){
-    var fromUser = data.from;
-    var promptKey = currentUserInfo.userName+"@@"+fromUser+"prompt"
+function addUserFirstMessagePrompt(data,messageType){
+    var userName = messageType == "to" ? data.to : data.from;
+    var promptKey = currentUserInfo.userName+"@@" + "prompt"
     var promptMap =  getLocalStorageMapByKey(promptKey)
     var promptMessage = getPromptMessage(data)
-    promptMap.set(fromUser,)
-
+    promptMap.set(userName,promptMessage);
+    staticPromptMap = promptMap
+    setLocalStorageKeyMap(promptKey,promptMap)
 
 }
 
 function getPromptMessage(data){
+    if(data.contentType == 'text'){
+        return data.content
+    }else{
+        var arr = data.content.split('@&@')
+        var isImage = judgeFileIsImag(arr[1])
+        if(isImage){
+            return "[图片]"
+        }else{
+            return arr[0]
+        }
+    }
     
 }
 
@@ -162,22 +175,23 @@ function clearUnreadMessageCount(fromuser) {
 }
 
 function userListClick() {
-    listindex = 0;
+    listindex = 1;
     $("#messageList").removeClass("text-light").removeClass("list-focus")
     $("#userList").addClass("text-light").addClass("list-focus")
-    var allUserList = JSON.parse(window.localStorage.getItem(currentUserInfo.userName+"-allUserList"));
-    createUserList(allUserList)
-}
-
-function messageListClick() {
-    listindex = 1
-    $("#userList").removeClass("text-light").removeClass("list-focus")
-    $("#messageList").addClass("text-light").addClass("list-focus")
     $("#users").empty()
     $("#users").append(`<div class="list-group-item d-flex flex-row"><div><img  src="images/suolong.png" width="50" height="50"></div>&nbsp;&nbsp;<div class="d-flex w-100 flex-column">
                                 <div>索隆</div>
                                 <div class="mt-2 w-100 d-flex justify-content-between" style="font-size: 12px"><div>你在吗</div><div>17:26</div></div>
                             </div></div>`);
+}
+
+function messageListClick() {
+    listindex = 0
+    $("#userList").removeClass("text-light").removeClass("list-focus")
+    $("#messageList").addClass("text-light").addClass("list-focus")
+    var allUserList = JSON.parse(window.localStorage.getItem(currentUserInfo.userName+"-allUserList"));
+    createUserMessageList(allUserList)
+
 
 
 }
@@ -185,14 +199,14 @@ function messageListClick() {
 function search(key) {
     if(key != null && key != undefined && key.length>0){
         if(listindex == 0){
-            createUserListByKey(key)
+            createUserMessageListByKey(key)
         }else{
             if(!"索隆你在吗".includes(key)){
                 $("#users").empty()
             }
         }
     }else{
-        if(listindex == 0){
+        if(listindex == 1){
             userListClick()
         }else{
             messageListClick()
@@ -203,14 +217,50 @@ function search(key) {
 
 }
 
-function createUserList(users) {
+function createUserMessageList(users) {
     $("#users").empty()
     for (var i = 0; i < users.length; i++) {
         pictureCache.set(users[i].userName,getUserPictureUrl(users[i].picture))
-        var count = getUserUnreadMessageCount(users[i].userName)
-        var active = getIsActive(users[i].userName)
-        $("#users").append(getUserListItemHtmlTemplete(users[i],count,active));
+        var userInfo = getShowUserInfo(users[i])
+        $("#users").append(getUserListItemHtmlTemplete(userInfo));
+
     }
+
+}
+
+function getShowUserInfo(user) {
+    var userInfo = {};
+    userInfo.count = getUserUnreadMessageCount(user.userName)
+    userInfo.promptMessage = getUserPromptMessageMap().get(user.userName)
+    userInfo.active = getIsActive(user.userName)
+    userInfo.userName = user.userName
+    userInfo.onLineState = user.onLineState
+    return userInfo
+
+
+}
+
+function userBubble(username) {
+    //$("#users > span").remove(":contains('" + username + "')");
+    $("#users").children().removeClass("active")
+    $("#users").find(`div:contains(${username})`).remove()
+    var user = {}
+    user.userName = username;
+    user.onLineState = true;
+    var userInfo = getShowUserInfo(user)
+    $("#users").prepend(getUserListItemHtmlTemplete(userInfo,'active'));
+}
+
+
+function getUserPromptMessageMap() {
+
+    if(!staticPromptMap){
+        var promptKey = currentUserInfo.userName+"@@" + "prompt"
+        staticPromptMap =  getLocalStorageMapByKey(promptKey)
+    }
+
+    return staticPromptMap
+
 
 }
 
@@ -224,14 +274,13 @@ function getUserPictureUrl(picture) {
 
 }
 
-function createUserListByKey(key) {
+function createUserMessageListByKey(key) {
     var users = JSON.parse(window.localStorage.getItem(currentUserInfo.userName+"-allUserList"));
     $("#users").empty()
     for (var i = 0; i < users.length; i++) {
         if(PinyinMatch.match(users[i].userName, key)){
-            var count = getUserUnreadMessageCount(users[i].userName)
-            var active = getIsActive(users[i].userName)
-            $("#users").append(getUserListItemHtmlTemplete(users[i].userName,users[i].onLineState,count,active));
+            var userinfo = getShowUserInfo(users[i])
+            $("#users").append(getUserListItemHtmlTemplete(userinfo));
         }
     }
 
@@ -239,9 +288,9 @@ function createUserListByKey(key) {
 }
 
 
-function getUserListItemHtmlTemplete(user,count,active) {
+function getUserListItemHtmlTemplete(userinfo,active) {
 
-return   `<div  class="list-group-item d-flex justify-content-between"  onclick="clicktalk(this)" data-bs-toggle="list" ><div><img class="dialog-head-icon-list" src="${ preHeadPath + pictureCache.get(user.userName) }"><span id="username">${user.userName}</span></div><div class="d-flex justify-content-between"><div class="${ user.onLineState ? 'green-circle' : 'offstate-font'}">&nbsp;</div><div id="message-count" class="bubble opacity-0 text-light">${count}</div></div></div>`
+return   `<div  class="list-group-item d-flex justify-content-between ${active}"  onclick="clicktalk(this)" data-bs-toggle="list" ><div class="d-flex"><div class="overflow: hidden;"><img class="dialog-head-icon-list" src="${ preHeadPath + pictureCache.get(userinfo.userName) }"><div class="${ userinfo.onLineState ? 'green-circle' : ''}"></div></div><div><div class="username-font"><span id="username">${userinfo.userName}</span></div><div class="prompt-font">${userinfo.promptMessage ? userinfo.promptMessage : ''}</div></div></div><div class="d-flex justify-content-between"></div><div id="message-count" class="bubble ${userinfo.count > 0 ? 'opacity-100' : 'opacity-0'} text-light">${userinfo.count}</div></div></div>`
 
 }
 

@@ -47,13 +47,14 @@ function websocketInit() {
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
             } else if (data.contentType == "text" || data.contentType == "file") {
+                userBubble(data.from)
                 data.position = "left"
                 var templateJSON = getDialogHtmlTemplate(data,"from");
+                addUserFirstMessagePrompt(data,"from")
                 if (data.from == currentUserInfo.to) {
                     $("#talk-container").append(templateJSON.message);
                 } else {
                     addAndFlushUnreadMessageCount(data.from)
-                    userFirstMessagePrompt(data)
                 }
                 storageCurrentTalkUserMessage(data,templateJSON.uuid,true)
                 //storageTalkUserMessage(data.from, templateJSON.message)
@@ -61,7 +62,7 @@ function websocketInit() {
                 scrollToBottom();
             } else if(data.contentType == "onlineUsers") {
                 window.localStorage.setItem(currentUserInfo.userName+"-allUserList", JSON.stringify(data.content));
-                createUserList(data.content)
+                createUserMessageList(data.content)
             }else if(data.contentType == "msg"){
                 commonMsg(data.content)
             }else{
