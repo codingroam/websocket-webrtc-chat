@@ -90,53 +90,52 @@ function uploadFiles() {
             formData.set("msg",JSON.stringify(fileUserMsg));
 
             var xhr = new XMLHttpRequest();
-            //true为异步处理
-            xhr.open('post','/uploadFiles', true);
-            //如果发送的是文件类型(非图片)，需要展示进度条
-            xhr.onloadstart = function() {
-                console.log('开始上传')
-                ot = new Date().getTime();   //设置上传开始时间
-                oloaded = 0;//已上传的文件大小为0
-            };
-
-            xhr.upload.addEventListener('progress', function (evt) {
-                progressFunction(evt,uuid)
-
-            }, false);
-            xhr.addEventListener("load", function (evt) {
-                uploadComplete(evt,uuid,sendMsg.to)
-
-            }, false);
-            xhr.addEventListener("error", uploadFailed, false);
-            xhr.addEventListener("abort", uploadCanceled, false);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    var data = JSON.parse(xhr.response).data
-                    var msg = data.msg;
-                    var fileInfoMap = new Map(Object.entries(data.fileInfoMap))
-                    var userjson = JSON.parse(msg);
-                    for(var [key,value] of fileInfoMap){
-                        var msginfo = {};
-                        msginfo.to = userjson.to;
-                        msginfo.from = userjson.from;
-                        msginfo.content = '<文件:'+ key +'>'+'@&@'+ value;
-                        msginfo.contentType = 'file';
-                        sendMessageByWebsocket(msginfo)
-                    }
-
-                }
-            }
-            xhr.send(formData); // 发送ajax请求
+            xhrUploadFile(xhr,formData,uuid)
 
         }
 
-
     }
 
+}
 
+function xhrUploadFile(xhr,formData,uuid) {
+    //true为异步处理
+    xhr.open('post','/uploadFiles', true);
+    //如果发送的是文件类型(非图片)，需要展示进度条
+    xhr.onloadstart = function() {
+        console.log('开始上传')
+        ot = new Date().getTime();   //设置上传开始时间
+        oloaded = 0;//已上传的文件大小为0
+    };
 
+    xhr.upload.addEventListener('progress', function (evt) {
+        progressFunction(evt,uuid)
 
+    }, false);
+    xhr.addEventListener("load", function (evt) {
+        uploadComplete(evt,uuid,sendMsg.to)
 
+    }, false);
+    xhr.addEventListener("error", uploadFailed, false);
+    xhr.addEventListener("abort", uploadCanceled, false);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            var data = JSON.parse(xhr.response).data
+            var msg = data.msg;
+            var fileInfoMap = new Map(Object.entries(data.fileInfoMap))
+            var userjson = JSON.parse(msg);
+            for(var [key,value] of fileInfoMap){
+                var msginfo = {};
+                msginfo.to = userjson.to;
+                msginfo.from = userjson.from;
+                msginfo.content = '<文件:'+ key +'>'+'@&@'+ value;
+                msginfo.contentType = 'file';
+                sendMessageByWebsocket(msginfo)
+            }
+
+        }
+    }
+    xhr.send(formData); // 发送ajax请求
 
 }
 
@@ -178,7 +177,7 @@ function progressFunction(evt,uuid) {
 
 //上传成功后回调
 function uploadComplete(evt,uuid,messageto) {
-    //uploadBtn.attr('disabled', false);
+
     console.log('上传完成')
     inputfile.value=''
     $('#showInfo'+uuid).html('上传完成')
@@ -187,7 +186,6 @@ function uploadComplete(evt,uuid,messageto) {
 
 //下载成功后回调
 function downloadComplete(evt,uuid,talkto) {
-    //uploadBtn.attr('disabled', false);
     console.log('下载完成')
     $('#showInfo'+uuid).html('下载完成')
     $('#downloadbutton'+uuid).text('重新下载')
@@ -234,33 +232,6 @@ function hideProgress() {
     processBar.parent().hide();
 }
 
-
-
-
-function successCallback(data) {
-    console.log(data)
-   // var data = JSON.parse(data.data);
-    var msg = data.data.msg;
-    var fileInfoMap = data.data.fileInfoMap
-
-    var userjson = JSON.parse(msg);
-
-    for(var key in fileInfoMap){
-        var msginfo = {};
-        msginfo.to = userjson.to;
-        msginfo.from = userjson.from;
-        msginfo.content = '<文件:'+ key +'>'+'@&@'+key;
-        msginfo.contentType = 'file';
-        sendByMsgInfo(msginfo)
-    }
-
-
-
-}
-
-function errorCallback(err) {
-
-}
 
 
 function downloadfile(fileInfo) {

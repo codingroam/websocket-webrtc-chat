@@ -47,10 +47,10 @@ function websocketInit() {
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
             } else if (data.contentType == "text" || data.contentType == "file") {
+                addUserFirstMessagePrompt(data,"from")
                 userBubble(data.from)
                 data.position = "left"
                 var templateJSON = getDialogHtmlTemplate(data,"from");
-                addUserFirstMessagePrompt(data,"from")
                 if (data.from == currentUserInfo.to) {
                     $("#talk-container").append(templateJSON.message);
                 } else {
