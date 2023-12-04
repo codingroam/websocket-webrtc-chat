@@ -17,19 +17,12 @@
 
   效果图：
   移动端效果图
-![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/%E7%A7%BB%E5%8A%A8%E7%AB%AF.png)
   pc端效果图
-![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/pc%E7%AB%AF.png)
-
-视频聊天：
-
-![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/%E8%A7%86%E9%A2%911.png)
-
-![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/%E8%A7%86%E9%A2%912.png)
-
-登录界面：
-
-![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/%E7%99%BB%E5%BD%95%E9%A1%B5.png)
+![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/pc%E7%AB%AF%E4%B8%BB%E7%95%8C%E9%9D%A2.png)
+![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/pc%E7%AB%AF%E4%B8%BB%E7%95%8C%E9%9D%A2.png)
+![](https://bucket-typora-kw.oss-cn-beijing.aliyuncs.com/typora-image/%E6%B3%A8%E5%86%8C.png)
+演示视频地址：
+【飞鱼聊天chat 音视频通话 springboot+websocket+webrtc+bootstrap5实现仿微信QQ】 https://www.bilibili.com/video/BV14c411S7w1/?share_source=copy_web&vd_source=b3acfcfa7fd3206c27f10c8cc238ac27
 =======
 
 
