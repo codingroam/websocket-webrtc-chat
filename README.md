@@ -1,4 +1,4 @@
-# websocket-webrtc-chat(飞鱼chat)
+# websocket-webrtc-chat(飞鱼chat 音视频通话)
   WebSocket是一种在单个TCP连接上进行全双工通信的协议，这使得客户端和服务器之间的数据交换变得更加简单，允许服务端主动向客户端推送数据，相对于传统的HTTP协议有很大进步。本项目基于SpringBoot，websocket和webrtc，实现一个简易网页聊天，视频通话，离线消息和搜索功能的项目。项目主要功能特性如下:
 
 1. 采用springboot+websocket+webrtc+bootstrap5+H5+JQuery3.3实现，可自适应PC端和移动端，仿QQ界面UI配色
