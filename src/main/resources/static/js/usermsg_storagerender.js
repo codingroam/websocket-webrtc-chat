@@ -290,7 +290,7 @@ function createUserMessageListByKey(key) {
 
 function getUserListItemHtmlTemplete(userinfo,active) {
 
-return   `<div  class="list-group-item d-flex justify-content-between ${active}"  onclick="clicktalk(this)" data-bs-toggle="list" ><div class="d-flex"><div class="overflow: hidden;"><img class="dialog-head-icon-list" src="${ preHeadPath + pictureCache.get(userinfo.userName) }"><div class="${ userinfo.onLineState ? 'green-circle' : ''}"></div></div><div><div class="username-font"><span id="username">${userinfo.userName}</span></div><div class="prompt-font">${userinfo.promptMessage ? userinfo.promptMessage : ''}</div></div></div><div class="d-flex justify-content-between"></div><div id="message-count" class="bubble ${userinfo.count > 0 ? 'opacity-100' : 'opacity-0'} text-light">${userinfo.count}</div></div></div>`
+return   `<div  class="list-group-item d-flex justify-content-between ${active}"  onclick="clicktalk(this)" data-bs-toggle="list" ><div class="d-flex"><div class="overflow: hidden;"><img class="dialog-head-icon-list" src="${ preHeadPath + pictureCache.get(userinfo.userName) }"><div class="${ userinfo.onLineState ? 'green-circle' : ''}"></div></div><div class="chat-list-item"><div class="username-font"><span id="username">${userinfo.userName}</span></div><div class="prompt-font">${userinfo.promptMessage ? userinfo.promptMessage : ''}</div></div></div><div class="d-flex justify-content-between"></div><div id="message-count" class="bubble ${userinfo.count > 0 ? 'opacity-100' : 'opacity-0'} text-light">${userinfo.count}</div></div></div>`
 
 }
 

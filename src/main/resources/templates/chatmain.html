@@ -31,7 +31,7 @@
 </head>
 
 
-<body id="body-container" class="bg-light">
+<body id="body-container" class="bg-light body-container">
 <div id="videomain" draggable="true" class="display-none videomain videomain-border-radius no-cursor">
     <div id="videoinfo" class="videoinfo text-light videoinfo-color videoinfo-border-radius">来电</div>
 
@@ -67,7 +67,7 @@
 
 </div>
 
-<div class="container pt-3" id="card-container">
+<div class="container padding-top-4" id="card-container">
     <div class="card">
         <div class="card-header  text-light d-flex justify-content-between no-cursor topbar-gradient no-border" >
             <span class="text-light no-cursor"><i class="bi bi-send"></i>&nbsp;飞鱼&nbsp;</i> </span>
@@ -299,8 +299,9 @@
             }
 
             //可推拽
-            dragable('videomain')
+
             dragable('imagmain')
+            dragable('videomain')
 
 
 
@@ -335,8 +336,8 @@
 
             //通过websocket发送信息
             sendMessageByWebsocket(msginfo);
-            userBubble(msginfo.to)
             addUserFirstMessagePrompt(msginfo,"to")
+            userBubble(msginfo.to)
             //将信息append到聊天Container，并返回模板uuid
             return sendMessageTalkContainer(msginfo);
 

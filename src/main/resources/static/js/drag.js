@@ -1,7 +1,8 @@
 
-var dragdiv;
-var x, y;
+
 function dragable(domid){
+    var dragdiv;
+    var x, y;
 
     dragdiv = document.getElementById(domid);
     //记录到点击时鼠标到移动框左边和上边的距离

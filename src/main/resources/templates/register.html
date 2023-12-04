@@ -17,6 +17,7 @@
     <link rel="stylesheet" type="text/css" href="css/external/fontcss/bootstrap.icons.css" >
     <link rel="stylesheet" type="text/css" href="css/external/bootstrap.min.css" >
 
+
     <script src="/js/external/bootstrap.bundle.min.js"></script>
 
     <script src="/js/external/jquery.js"></script>
@@ -25,21 +26,56 @@
 
     <script src="/js/external/bootstrapValidator.js"></script>
 
+    <link rel="stylesheet" type="text/css" href="/css/external/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="css/external/fontcss/bootstrap.icons.css" >
+    <!-- Favicon -->
+    <link rel="stylesheet" href="/css/all_min.css">
+    <!-- Quick CSS -->
+    <link rel="stylesheet" href="/css/quick-website.css" id="stylesheet">
+
+
+
+    <!-- Core JS  -->
+    <!--<script src="assets/libs/jquery/dist/jquery.min.js"></script>-->
+    <!--<script src="assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>-->
+    <script src="/js/external/svg-injector.min.js"></script>
+    <!-- Quick JS -->
+    <script src="/js/external/quick-website.js"></script>
+
+
 
 </head>
 
-<body class="bg-light">
-<div class="p-1">
-    <div class="d-flex justify-content-center">
-        <div class="card room-card">
-            <div class="card-header header-color bg-gradient text-light">
-                <div class="text-center fs-6">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>注册飞鱼聊天</span>
+<body class="body-container">
 
-                </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-cookies" data-backdrop="false" aria-labelledby="modal-cookies" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-aside left-4 right-4 bottom-4">
+        <div class="modal-content bg-dark-dark">
+            <div class="modal-body">
+                <!-- Text -->
+                <p class="text-sm text-white mb-3">
+                    We use cookies so that our themes work for you. By using our website, you agree to our use of cookies.
+                </p>
+                <!-- Buttons -->
+                <a href="pages/utility/terms.html" class="btn btn-sm btn-white" target="_blank">Learn more</a>
+                <button type="button" class="btn btn-sm btn-primary mr-2" data-dismiss="modal">OK</button>
             </div>
-            <form id="register-form" action="" >
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<div>
+    <div class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center min-vh-100">
+            <div class="col-md-6 col-lg-5 col-xl-5 py-6 py-md-0">
+                <div class="card shadow zindex-100 mb-0">
+                    <div class="card-body px-md-5 py-5">
+                        <div class="mb-5">
+                            <h6 class="h3">注册飞鱼聊天</h6>
+                        </div>
+                        <span class="clearfix"></span>
+                        <form id="register-form" action="" >
                             <div class="card-body">
                                 <div class="form-group mb-3">
                                     <label   class="form-label">用户名</label>
@@ -77,25 +113,24 @@
                                         <canvas id="clipCvs"></canvas>
 
                                     </div>
-
-
-
                                 </div>
 
                                 <button id="registerbutton" onclick="registerClick()"  class="btn chat-btn-color w-100 text-light">注册</button>
 
                             </div>
-            </form>
-            <div class="d-flex justify-content-end">
-                <button id="backbutton" onclick="backLogin()"
-                        class="btn hidden btn-outline-success btn-sm me-3 mb-2">返回登录</button>
+                        </form>
+                        <div class="d-flex justify-content-end" style="width:97%">
+                            <button id="backbutton" onclick="backLogin()"
+                                    class="btn hidden btn-outline-success btn-sm me-3 mb-2 mt-2">返回登录</button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-
-
-
         </div>
     </div>
 </div>
+
 <script>
 
 
