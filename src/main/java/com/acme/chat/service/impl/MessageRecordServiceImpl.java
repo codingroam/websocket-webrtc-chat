@@ -39,7 +39,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
         Message<String> message = new Message<>();
         message.setTo(messageRecord.getToUser());
         message.setFrom(messageRecord.getFromUser());
-        message.setContentType("msg");
+        message.setContentType(messageRecord.getContentType());
         message.setDate(messageRecord.getDate());
         message.setContent(messageRecord.getContent());
         return message;
@@ -67,6 +67,7 @@ public class MessageRecordServiceImpl implements MessageRecordService {
 
         messageRecord.setDate(message.getDate());
         messageRecord.setState(1);
+        messageRecord.setContentType(message.getContentType());
         return messageRecord;
     }
 }

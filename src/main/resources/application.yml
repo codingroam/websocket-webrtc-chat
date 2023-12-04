@@ -17,9 +17,13 @@ spring:
   datasource:
     ssm:
       driver-class-name: com.mysql.jdbc.Driver
-      password: root
+      password: BD065806A33E223C.
       url: jdbc:mysql://localhost:3306/websocket_chatroom?serverTimezone=GMT%2B8
       username: root
+  servlet:
+    multipart:
+      max-file-size: 10240MB
+      max-request-size: 10240MB
 
 logging:
   config: classpath:log4j2.xml

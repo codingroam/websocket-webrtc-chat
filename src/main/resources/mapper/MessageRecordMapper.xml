@@ -10,13 +10,14 @@
         <result column="date" property="date"/>
         <result column="state" property="state"/>
         <result column="content" property="content"/>
+        <result column="content_type" property="contentType"/>
     </resultMap>
     <select id="getUserUnreadMessage" parameterType="String"  resultMap="messageMap">
     	select * from offmessage_record where  to_user=#{userName} and state = 1
     </select>
 
     <insert id="addMessagerecord"  parameterType="com.acme.chat.po.MessageRecord" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-    	insert into offmessage_record (from_user,to_user,date,content,state) values (#{fromUser},#{toUser},#{date},#{content},#{state})
+    	insert into offmessage_record (from_user,to_user,date,content,content_type,state) values (#{fromUser},#{toUser},#{date},#{content},#{contentType},#{state})
     </insert>
 
     <delete id="deleteUserMessagerecord"  parameterType="String" >

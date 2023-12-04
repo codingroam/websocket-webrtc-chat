@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -40,32 +39,39 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+
+
     @Override
-    public List<String> getAllUserName(){
+    public Map<String,List<User>> getAllUserMap(){
         List<User> allUser = userMapper.getAllUser();
-        List<String> userNames = allUser.stream().map(User::getUserName).collect(Collectors.toList());
-        return userNames;
+        Map<String, List<User>> collect = allUser.stream().collect(Collectors.groupingBy(User::getUserName));
+
+//        List<String> userNames = allUser.stream().map(User::getUserName).collect(Collectors.toList());
+        return collect;
     }
 
     @Override
     public List<UserVO> getAllUserWithState(Set<String> onLineUsers) {
-        List<String> allUserName = getAllUserName();
-        List<String> offlineUsers = allUserName.stream().filter(u -> !onLineUsers.contains(u)).collect(Collectors.toList());
+        Map<String,List<User>> allUserMap = getAllUserMap();
+        List<String> offlineUsers = new ArrayList<>(allUserMap.keySet()).stream().filter(u-> !onLineUsers.contains(u)).collect(Collectors.toList());
         ArrayList<UserVO> allUsers = new ArrayList<>();
         if(onLineUsers != null){
             for(String userName : onLineUsers){
                 UserVO userVO = new UserVO();
                 userVO.setUserName(userName);
                 userVO.setOnLineState(true);
+                userVO.setPicture(allUserMap.get(userName).get(0).getPicture());
                 allUsers.add(userVO);
             }
         }
 
-        if(offlineUsers != null){
+        if(offlineUsers != null || offlineUsers.size() > 0){
             for(String userName : offlineUsers){
                 UserVO userVO = new UserVO();
                 userVO.setUserName(userName);
                 userVO.setOnLineState(false);
+                userVO.setPicture(allUserMap.get(userName).get(0).getPicture());
                 allUsers.add(userVO);
             }
         }

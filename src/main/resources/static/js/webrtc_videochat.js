@@ -59,7 +59,7 @@ function initWebRTC() {
         yourConn.onicecandidate = function (event) {
             if (event.candidate) {
                 websocket.send(JSON.stringify({
-                    from :  currentUserInfo.username,
+                    from :  currentUserInfo.userName,
                     to : isCaller ? currentUserInfo.to : videodata.caller,
                     contentType:"candidate",
                     content:event.candidate
@@ -133,7 +133,7 @@ function videoCallClick(type) {
     }
 
     var data = {};
-    data["from"] = currentUserInfo.username;
+    data["from"] = currentUserInfo.userName;
     data["to"] = currentUserInfo.to;
     data["contentType"] = "call_start";
     data["content"] = "";
@@ -164,9 +164,9 @@ function audioCallClick() {
 //挂断视频聊天
 function hangupVideoButton() {
     if(isVideo || isCaller){
-        if(currentUserInfo.username != currentUserInfo.to){
+        if(currentUserInfo.userName != currentUserInfo.to){
             var data = {};
-            data["from"] = currentUserInfo.username;
+            data["from"] = currentUserInfo.userName;
             data["to"] = isCaller ? currentUserInfo.to : videodata.caller;
             data["contentType"] = "leave";
             data["content"] = "";
@@ -201,7 +201,7 @@ function handleCallBack(data) {
     if(data.content == "accept"){
         yourConn.createOffer(function (offer) {
             websocket.send(JSON.stringify({
-                from :  currentUserInfo.username,
+                from :  currentUserInfo.userName,
                 to : isCaller ? currentUserInfo.to : videodata.caller,
                 contentType:"offer",
                 content:offer
@@ -254,7 +254,7 @@ function handleOffer(data) {
 
         websocket.send(JSON.stringify({
             to:isCaller ? currentUserInfo.to : videodata.caller,
-            from:currentUserInfo.username,
+            from:currentUserInfo.userName,
             contentType:"answer",
             content:answer
         }));
@@ -349,7 +349,7 @@ function videoPostProcessor(type,data) {
         $("#videomain").css('width','380px')
         $("#videomain").css('height','330px')
     }
-    videoMainCenterShow()
+    divCenterShow('.videomain')
 
     $("#localVideo").show();
     $("#remoteVideo").show();
@@ -361,18 +361,18 @@ function videoPostProcessor(type,data) {
 
 }
 
-function videoMainCenterShow() {
+function divCenterShow(divClass) {
 
     var window_width = $(window).width();
     var window_height = $(window).height();
 // 获取div的宽高
-    var div_width = $('.videomain').width();
-    var div_height = $('.videomain').height();
+    var div_width = $(divClass).width();
+    var div_height = $(divClass).height();
 // 计算div元素的左上角位置
     var left_margin = (window_width - div_width) / 2;
-    var top_margin = (window_height - div_height) / 3;
+    var top_margin = (window_height - div_height) / 4;
 // 设置div元素的样式
-    $('.videomain').css({
+    $(divClass).css({
         'left': left_margin + 'px',
         'top': top_margin + 'px'
     });
@@ -403,7 +403,7 @@ function audioPostProcessor(type,data) {
     $("#videomain").css('height','90px')
     $("#videoinfo").removeClass('videoinfo')
     $("#videoinfo").addClass('audioinfo')
-    videoMainCenterShow()
+    divCenterShow()
 
 
 }
@@ -564,7 +564,7 @@ function minmaxvideo() {
         $("#minmaxbutton i").addClass('bi bi-dash-square');
         minflag=0
 
-        videoMainCenterShow()
+        divCenterShow()
     }
 
 }

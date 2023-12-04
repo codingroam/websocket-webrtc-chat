@@ -9,6 +9,7 @@
         <result column="password" property="passWord"/>
         <result column="nickname" property="nickName"/>
         <result column="signature" property="signature"/>
+        <result column="picture" property="picture"/>
         <result column="addr" property="addr"/>
         <result column="tel" property="tel"/>
     </resultMap>
@@ -25,6 +26,6 @@
     </select>
 
     <insert id="addUser"  parameterType="com.acme.chat.po.User" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-    	insert into user (username,nickname,password,signature,addr,tel) values (#{userName},#{nickName},#{passWord},#{signature},#{addr},#{tel})
+    	insert into user (username,nickname,password,picture,signature,addr,tel) values (#{userName},#{nickName},#{passWord},#{picture},#{signature},#{addr},#{tel})
     </insert>
 </mapper>

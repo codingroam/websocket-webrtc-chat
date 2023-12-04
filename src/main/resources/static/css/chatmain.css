@@ -1,6 +1,9 @@
 
 
 @media(min-width: 768px) {
+    .padding-top-4{
+        padding-top: 3rem!important;
+    }
     .head-margin-top{
         margin-top: 30px;
     }
@@ -8,10 +11,21 @@
         border-right: 1px solid rgba(0, 0, 0, 0.125);
     }
     .panel-chat-list{
-        height: 360px; overflow-y:scroll; background: #f5f5f5
+        height: 500px;
+        /*min-height: 400px;*/
+        overflow-y:scroll;
+        overflow-x:hidden;
+        background: #e3e3e4
     }
     .panel-chat-card{
-        height: 500px; overflow-y:scroll; background: #f5f5f5
+        height: 600px;
+        /*min-height: 550px;*/
+        overflow-y:scroll;
+        overflow-x:hidden;
+        background: #f5f5f5;
+        padding-top:20px;
+        padding-bottom: 20px;
+
     }
     .imag-size{
         height: 50px;
@@ -126,7 +140,8 @@
 
 
     .w-30 {
-        width: 30%;
+        max-width: 60%;
+        height: auto;
     }
     .sign-font{
         font-size: 12px;
@@ -138,9 +153,157 @@
         width: 102%;
         margin-left: -12px;
     }
+
+    .dialog-head-from{
+        margin-left: 30px;
+        margin-top: 30px;
+    }
+
+    .dialog-head-to{
+        margin-right: 30px;
+        margin-top: 30px;
+    }
+    .dialog-uploadprogress-to{
+        margin-top: 3px;
+        margin-right: 83px;
+    }
+
+    .dialog-uploadprogress-from{
+        margin-top: 3px;
+        margin-left: 83px;
+    }
+
+    .dialog-progressinfo-to{
+        font-size: 8px;
+        margin-left: 10px;
+    }
+
+    .dialog-progressinfo-from{
+        font-size: 8px;
+        margin-left: 10px;
+    }
+
+    .dialog-content-from{
+        background: #ffffff;
+        padding: 7px 10px;
+    }
+
+
+
+    .dialog-content-to{
+        background: #95ec69;
+        padding: 7px 10px;
+    }
+
+    .dialog-head-icon-from{
+        width: 43px;
+        height: 43px;
+        margin-right: 10px;
+    }
+
+    .dialog-head-icon-to{
+        width: 43px;
+        height: 43px;
+        margin-left: 10px;
+    }
+
+    .dialog-head-icon-list{
+        width: 43px;
+        height: 43px;
+        margin-right: 10px;
+    }
+
+    .green-circle {
+        position: absolute;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background-color: #53c753;
+        margin-top: -5px;
+        /* margin-right: 5px; */
+        margin-left: 38px;
+    }
+
+    .dialog-imag{
+
+        max-width: 300px;
+        max-height: 200px;
+    }
+    .imagmain{
+        text-align: center;
+        position: absolute;
+        width: 750px;
+        height: 550px;
+        z-index: 999;
+        background: #ffffff;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .dialog-button{
+        /* width: 0px; */
+        height: 20px!important;
+        font-size: 12px!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        z-index: 1000;
+        display: none;
+        min-width: 0rem!important;
+        padding: 0.5rem 0;
+        margin: 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-menu .show {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -37.6667px)!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -37.6667px)!important;
+    }
+
+    .chat-btn-color{
+        background-color: #12b7f5!important;
+    }
+
+    .username-font{
+        font-size: 15px;
+        color: #090909;
+    }
+    .prompt-font{
+        min-width: 70%;
+        font-size: 13px;
+        color: rgba(92, 88, 86, 0.56);
+        margin-top:3px;
+
+    }
+
+    .chat-list-item{
+        min-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
 
 @media(max-width: 768px) {
+    .padding-top-4{
+        padding-top: 1rem!important;
+    }
     .head-margin-top{
         margin-top: 0px;
     }
@@ -149,13 +312,15 @@
     }
     .panel-chat-list{
         /*height: 174px; */
-        overflow-y:scroll; background: #f5f5f5;
+        overflow-y:scroll; background: #e3e3e4;
         font-size: 12px;
     }
     .panel-chat-card{
         /*height: 280px;*/
         overflow-y:scroll; background: #f5f5f5;
         font-size: 12px;
+        padding-top:10px;
+        padding-bottom:10px ;
     }
 
     .videomain {
@@ -248,7 +413,8 @@
 
 
     .w-30 {
-        width: 48%;
+        max-width: 80%;
+        height: auto;
     }
 
     .panel-chat-header{
@@ -283,9 +449,9 @@
         padding: 0.5rem 0.5rem;
         color: #212529;
         text-decoration: none;
-        background-color: #fff;
-        border: 1px solid rgba(0,0,0,.125);
+        background-color: #e9e7e6;
         font-size: 12px;
+        width: 100%;
     }
     .card-header {
         padding: 0.3rem 0.7rem;
@@ -338,6 +504,135 @@
     }
 
 
+    .dialog-head-from {
+        margin-left: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    .dialog-head-to{
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+
+    .dialog-content-from{
+        background: #ffffff;
+        padding: 5px 5px;
+    }
+
+    .dialog-content-to{
+        background: #95ec69;
+        padding: 5px 5px;
+    }
+
+    .dialog-head-icon-from{
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .dialog-head-icon-to{
+        width: 30px;
+        height: 30px;
+        margin-left: 10px;
+    }
+
+    .dialog-head-icon-list{
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .list-header-font{
+        font-size: 12px
+    }
+
+    .green-circle {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background-color: #53c753;
+        margin-top: 14px;
+        margin-right: 5px;
+    }
+    .dialog-imag{
+        max-width: 100px;
+        max-height: 150px;
+    }
+    .imagmain{
+        text-align: center;
+        position: absolute;
+        width: 90%;
+        height: auto;
+        z-index: 999;
+        background: #ffffff;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+    .dialog-button{
+        /* width: 0px; */
+        height: 20px!important;
+        font-size: 12px!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        z-index: 1000;
+        display: none;
+        min-width: 0rem!important;
+        padding: 0.2rem 0;
+        margin: 0;
+        font-size: 0.7rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-menu .show {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -47.6667px)!important;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        inset: auto auto 0px 0px;
+        margin: 0px;
+        transform: translate(-20px, -47.6667px)!important;
+    }
+
+    .chat-btn-color{
+        background-color: #12b7f5!important;
+        font-size: 12px!important;
+    }
+
+    body {
+        margin: 0;
+        font-family: var(--bs-font-sans-serif);
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        /*color: #212529;*/
+        /*background-color: #fff;*/
+        /*-webkit-text-size-adjust: 100%;*/
+        /*-webkit-tap-highlight-color: transparent;*/
+        padding: 0 12px!important;
+        -webkit-text-size-adjust: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
+        background-image: url(../images/bg.png)!important;
+        background-size: cover!important;
+
+
+    }
+
+
+
+
 
 
 
@@ -356,15 +651,28 @@
 
 .linestate-font {
     font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #4b8cfe;
+
+}
+
+.offstate-font {
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 .count-font{
     font-size: 10px;
 }
 
-.online-background {
-    background-color: #00d62475!important;
-}
+/*.online-background {*/
+/*    background-color: #00d62475!important;*/
+/*}*/
 
 .offline-background {
 
@@ -380,12 +688,9 @@
 .list-group-item.active {
     z-index: 2;
     color: #fff!important;
-    background-color: #4b8cfe!important;
-    border-color: #4b8cfe!important;
+    background-color: #c3c4c4!important;
 }
-.chat-btn-color{
-    background-color: #12b7f5!important;
-}
+
 .card-footer {
     background-color: rgba(0,0,0,.03);
 }
@@ -400,6 +705,15 @@
 }
 
 .display-none{
+    display: none;
+}
+.processbar-display-none{
+    display: none;
+}
+.videoclass{
+    display: none;
+}
+.audioclass{
     display: none;
 }
 .opacity-0{
@@ -436,35 +750,12 @@
 
 
 
-.dropdown-menu .show {
-    position: absolute;
-    inset: auto auto 0px 0px;
-    margin: 0px;
-    transform: translate(-20px, -37.6667px)!important;
-}
 
-.dropdown-menu {
-    position: absolute;
-    inset: auto auto 0px 0px;
-    margin: 0px;
-    transform: translate(-20px, -37.6667px)!important;
-}
 
-.dropdown-menu {
-    position: absolute;
-    z-index: 1000;
-    display: none;
-    min-width: 0rem!important;
-    padding: 0.5rem 0;
-    margin: 0;
-    font-size: 1rem;
-    color: #212529;
-    text-align: left;
-    list-style: none;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 0.25rem;
+
+
+.dialog-from{
+    background: #95ec69
 }
 
 .card {
@@ -516,6 +807,140 @@
     margin-right: auto;
     margin-left: auto;
 }
+
+
+
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 1rem 0.5rem;
+    color: #212529;
+    text-decoration: none;
+    background-color: #e9e7e6!important;
+    width: 100%!important;
+    border:none!important;
+
+}
+
+.no-border{
+    border:none;
+}
+
+/*---滚动条默认显示样式--*/
+
+::-webkit-scrollbar-thumb{
+
+    background-color:#b4b2af;
+    outline-offset:-2px;
+
+    outline:2px solid #e9e7e6;
+
+    -webkit-border-radius:4px;
+
+    border: 2px solid #e9e7e6;
+
+}
+
+/*---鼠标点击滚动条显示样式--*/
+
+::-webkit-scrollbar-thumb:hover{
+
+    background-color:#b4b2af;
+
+
+
+    -webkit-border-radius:4px;
+
+}
+
+/*---滚动条大小--*/
+
+::-webkit-scrollbar{
+
+    width:9px;
+
+    height:9px;
+
+}
+
+/*---滚动框背景样式--*/
+
+::-webkit-scrollbar-track-piece{
+
+    background-color:#e9e7e6;
+    width: 30px;
+    height: 30px;
+
+    -webkit-border-radius:2px;
+
+}
+
+
+
+.bubble {
+    position: static;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px 5px;
+    padding: 7px 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, .2);
+    height: 28px;
+    width: 28px;
+    background: #fa5151;
+    font-size: 10px;
+    /* margin-bottom: 8px; */
+    margin-top: -8px;
+    margin-right: -16px;
+}
+
+.progress {
+    display: flex;
+    height: 1rem;
+    overflow: hidden;
+    font-size: 0.5rem!important;
+    background-color: #e9ecef;
+    border-radius: 0.25rem;
+}
+
+.dialog-button-left{
+    width: 80px;
+    padding: 0 0!important;
+    text-align: left!important;
+    margin-left: 5px;
+}
+
+.dialog-button-right{
+    width: 80px;
+    padding: 0 0!important;
+    text-align: right!important;
+    margin-right: 5px ;
+}
+
+
+.body-container {
+
+    /*color: #212529;*/
+    /*background-color: #fff;*/
+    /*-webkit-text-size-adjust: 100%;*/
+    /*-webkit-tap-highlight-color: transparent;*/
+
+    -webkit-text-size-adjust: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)!important;
+    background-image: url(../images/bg.png)!important;
+    background-size: cover!important;
+
+
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

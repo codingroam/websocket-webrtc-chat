@@ -1,9 +1,9 @@
 function websocketInit() {
 
-    var token = window.localStorage.getItem(currentUserInfo.username+"_token")
+    var token = window.localStorage.getItem(currentUserInfo.userName+"_token")
     if(token != null && token != undefined){
         try {
-            websocket = new WebSocket("wss://localhost:8089/webSocket/" + currentUserInfo.username+"?token="+token);
+            websocket = new WebSocket("wss://localhost:8089/webSocket/" + currentUserInfo.userName+"?token="+token);
         } catch (e) {
             console.log(' 您的浏览器暂时不支持 webSocket ');
         }
@@ -46,29 +46,23 @@ function websocketInit() {
                 }
             } else if (data.contentType == "offline") {//下线消息
                 $("#users > span").remove(":contains('" + data.content + "')");
-            } else if (data.contentType == "text") {
-                // 普通消息
-                // 接收服务端的实时消息并添加到HTML页面中
-                // $("#talk-container").append("<div class='bg-info'><label class='text-danger'>"+data.from+"&nbsp;"+data.date+"</label><div class='text-success'>"+data.text+"</div></div><br>");
-
-                var messagevar = getEmojiStr(data.content)
-                var message = `<div class="d-flex justify-content-start my-3">
-                            <div class="card w-30 border-light">
-                                <div class="card-header text-center chat-card-header">${data.from}&nbsp;${data.date}</div>
-                                <div class="card-body text-center" style="background: #95ec69"> ${messagevar} </div>
-                            </div>
-                        </div>`;
+            } else if (data.contentType == "text" || data.contentType == "file") {
+                addUserFirstMessagePrompt(data,"from")
+                userBubble(data.from)
+                data.position = "left"
+                var templateJSON = getDialogHtmlTemplate(data,"from");
                 if (data.from == currentUserInfo.to) {
-                    $("#talk-container").append(message);
+                    $("#talk-container").append(templateJSON.message);
                 } else {
                     addAndFlushUnreadMessageCount(data.from)
                 }
-                storageTalkUserMessage(data.from, message)
+                storageCurrentTalkUserMessage(data,templateJSON.uuid,true)
+                //storageTalkUserMessage(data.from, templateJSON.message)
                 // 滚动条滚动到最低部
                 scrollToBottom();
             } else if(data.contentType == "onlineUsers") {
-                window.localStorage.setItem(currentUserInfo.username+"-allUserList", JSON.stringify(data.content));
-                createUserList(data.content)
+                window.localStorage.setItem(currentUserInfo.userName+"-allUserList", JSON.stringify(data.content));
+                createUserMessageList(data.content)
             }else if(data.contentType == "msg"){
                 commonMsg(data.content)
             }else{
@@ -76,7 +70,7 @@ function websocketInit() {
                     var data = {
                         contentType:"msg",
                         to:data.from,
-                        from:currentUserInfo.username,
+                        from:currentUserInfo.userName,
                         content:"对方占线请稍后再拨"
                     }
                     websocket.send(JSON.stringify(data));

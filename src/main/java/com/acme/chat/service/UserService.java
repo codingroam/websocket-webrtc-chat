@@ -5,6 +5,7 @@ import com.acme.chat.po.User;
 import com.acme.chat.vo.UserVO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -27,7 +28,7 @@ public interface UserService {
      * 获取所有用户
      * @return
      */
-    List<String> getAllUserName();
+    Map<String,List<User>> getAllUserMap();
 
     /**
      * 获取所有用户(带用户状态)

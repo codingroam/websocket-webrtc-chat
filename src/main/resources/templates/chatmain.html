@@ -31,7 +31,7 @@
 </head>
 
 
-<body id="body-container" class="bg-light">
+<body id="body-container" class="bg-light body-container">
 <div id="videomain" draggable="true" class="display-none videomain videomain-border-radius no-cursor">
     <div id="videoinfo" class="videoinfo text-light videoinfo-color videoinfo-border-radius">来电</div>
 
@@ -44,11 +44,11 @@
         <button id="hangup" class="hangup" onclick="hangupVideoButton()">挂断</button>
         <button id="accept" class="accept" onclick="acceptVideoButton()" >接受</button>
     </div>
-    <div  class="videobuttonicon display-none">
+    <div  class="videobuttonicon videoclass">
         <button id="turnoverbutton" class="accept btn-mini" onclick="overturnvideo()" ><i class="bi bi-arrow-counterclockwise"></i></button>
         <button id="minmaxbutton" class="accept btn-mini" onclick="minmaxvideo()"><i class="bi bi-dash-square"></i></button>
     </div>
-    <div  class="videobuttonicon display-none">
+    <div  class="videobuttonicon audioclass">
         <button  class="accept btn-mini" ><i class="bi bi-ear"></i></i></button>
     </div>
 
@@ -56,14 +56,25 @@
 
 </div>
 
-<div class="container pt-3" id="card-container">
+
+<div id="imagmain" draggable="true" class="display-none  imagmain videomain-border-radius no-cursor">
+    <div style="width: 100%;height: 30px;padding: 5px 5px 0 0" class="d-flex justify-content-end">
+        <i onclick="closeImagPreview()" class="bi bi-x-circle"></i>
+    </div>
+<img id="imag-preview">
+
+
+
+</div>
+
+<div class="container padding-top-4" id="card-container">
     <div class="card">
         <div class="card-header  text-light d-flex justify-content-between no-cursor topbar-gradient no-border" >
             <span class="text-light no-cursor"><i class="bi bi-send"></i>&nbsp;飞鱼&nbsp;</i> </span>
             <span id="talktitle">飞鱼Chat&nbsp;</i></span>
             <span class="text-light" onclick="logout()">退出</span>
         </div>
-        <div style="padding:0rem 0.75rem" class="card-body no-cursor">
+        <div style="padding:0rem 0.75rem;background: #f5f5f5" class="card-body no-cursor">
             <div class="row" >
                 <div  class="panel-container col-sm-12 col-md-4" style="background: #eae7e6;padding: 0 0;">
                     <ul class="list-group list-group-flush panel-chat-header" style="background: #eae7e6">
@@ -72,6 +83,9 @@
                                 <div class="d-flex flex-row text-light"><img id="imaghead" class="round_icon imag-size">&nbsp;&nbsp;<div><div class="d-flex flex-column"><b>&nbsp;<span
                                         style="text-overflow:ellipsis" id="user"></span></b><span class="sign-font" id="signature"></span></div></div></div>
                             </div>
+                            <div>
+                                <span style="font-size: 12px"><i class="bi bi-sliders"></i></span>
+                            </div>
                         </li>
 
                     </ul>
@@ -79,10 +93,13 @@
                         <input id="search" type="search" class="form-control search-font-size" placeholder="搜索">
                     </ul>
 
-                    <ul class="list-group list-group-flush" style="background: #eae7e6">
-                        <li class="list-group-item d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0"><div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center" class="w-33 d-flex justify-content-center"><i
-                            class="bi bi-person-video2"></i>&nbsp;好友</div><div id="messageList" onclick="messageListClick()" style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center">
-                            <i class="bi bi-chat"></i>&nbsp;消息</div><div style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center"><i
+                    <ul class="list-group list-group-flush list-header-font" style="background: #eae7e6">
+                        <li class="d-flex justify-content-between" style="background: #f5f5f5;padding: 0 0">
+                            <div id="messageList" onclick="messageListClick()" style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center">
+                                <i class="bi bi-chat"></i>&nbsp;消息</div>
+                            <div id="userList" onclick="userListClick()" style="padding: 0.5rem 1rem;text-align: center;" class="w-33 d-flex justify-content-center"><i
+                            class="bi bi-person-video2"></i>&nbsp;好友</div>
+                            <div style="padding: 0.5rem 1rem" class="w-33 d-flex justify-content-center"><i
                                 class="bi bi-people-fill" ></i>&nbsp;&nbsp;群组</div></li>
 
                     </ul>
@@ -142,24 +159,10 @@
         var isCaller = false;
         var currentUserInfo = {};
         var isPC = true;
+        var preHeadPath = "file/head/";
+        var preUploadPath = "/file/upload/";
+        var pictureCache = new Map();
 
-
-        // $(window).resize(function(){
-        //     var width = $(window).width(); //获取窗口宽度
-        //     var height = $(window).height(); //获取窗口高度
-        //
-        //     console.log("width:"+width+" height:" + height);
-        //     if(width < 768){
-        //         $("#card-footer").css('height',height*0.082+'px')
-        //         console.log("card-footer-height:" + '100px')
-        //         $("#user").css('height', height*0.43+'px')
-        //         console.log("")
-        //         $("#talk-container").css('height', height*0.33+'px')
-        //
-        //     }
-        //     // $("div").css("width", width); //设置div的宽度为窗口宽度
-        //     // $("div").css("height", height); //设置div的高度为窗口高度
-        // });
 
 
 
@@ -168,8 +171,9 @@
             var url = location.href;
             var paraString = url.substring(url.indexOf("?") + 1, url.length).split("=");
             if (paraString != null && paraString.length == 2) {
-                currentUserInfo.username = decodeURI(paraString[1])
-                $("#user").html(currentUserInfo.username);
+                var userName = decodeURI(paraString[1])
+                currentUserInfo = getCurrentUserInfo(userName);
+                $("#user").html(currentUserInfo.userName);
             } else {
                 $.alert({
                     title: '提示',
@@ -184,10 +188,9 @@
                 alert("not support websocket")
                 return;
             }
-        <!-- 默认选中用户列表 -->
-            $("#userList").addClass("text-light").addClass("list-focus")
-            var randomHead = "images/head"+( currentUserInfo.username.charCodeAt(0) % 7 )+".png"
-            $("#imaghead").attr("src",randomHead)
+        <!-- 默认选中消息列表 -->
+            $("#messageList").addClass("text-light").addClass("list-focus")
+            $("#imaghead").attr("src",preHeadPath + getUserPictureUrl(currentUserInfo.picture))
             $("#signature").html(signList[Math.floor(Math.random()*14)])
 
             $("#send").click(function () {
@@ -196,11 +199,7 @@
                     var activeuser = $("#users > .active").val()
                     if (activeuser == undefined) {
                         // alert("当前没有其他用户在线,无法发送消息");
-
-                        $.alert({
-                            title: '提示',
-                            content: '请选中好友后再发送消息',
-                        });
+						commonMsg('请选中好友后再发送消息');
                         return false;
                     } else {
                         currentUserInfo.to = activeuser;
@@ -208,23 +207,12 @@
 
                 }
                 var data = {};
-                data["from"] = currentUserInfo.username;
+                data["from"] = currentUserInfo.userName;
                 data["to"] = currentUserInfo.to;
                 data["content"] = $("#sendmessage").val();
                 data["contentType"] = "text";
-                websocket.send(JSON.stringify(data));
-                var messagevar = getEmojiStr($("#sendmessage").val())
-                var message = `<div class="d-flex justify-content-end my-3">
-                        <div class="card w-30 border-light">
-                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
-                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
-                        </div>
-                    </div>`;
+                sendByMsgInfo(data)
 
-                $("#talk-container").append(message);
-                storageTalkUserMessage(data["to"], message)
-                scrollToBottom();
-                $("#sendmessage").val("");
             });
 
             $('#sendmessage').keydown(function (e) {
@@ -286,6 +274,7 @@
             });
 
 
+
             //移动端自适应高度
             var width = $(window).width(); //获取窗口宽度
             var height = $(window).height(); //获取窗口高度
@@ -309,12 +298,21 @@
 
             }
 
+            //可推拽
+
+            dragable('imagmain')
+            dragable('videomain')
+
 
 
 
 
 
         });
+
+        function getCurrentUserInfo(userName){
+            return  JSON.parse(window.localStorage.getItem(userName + "_data"));
+        }
 
         isPC = function() {
             var userAgentInfo = navigator.userAgent;
@@ -336,20 +334,36 @@
 
         function sendByMsgInfo(msginfo) {
 
-            var data = msginfo
-            websocket.send(JSON.stringify(data));
-            var messagevar = getEmojiStr(msginfo.content)
-            var message = `<div class="d-flex justify-content-end my-3">
-                        <div class="card w-30 border-light">
-                            <div class="card-header text-center chat-card-header">我 ${new Date().format("yyyy-MM-dd hh:mm:ss")}</div>
-                            <div class="card-body bg-success text-center text-light"> ${messagevar} </div>
-                        </div>
-                    </div>`;
+            //通过websocket发送信息
+            sendMessageByWebsocket(msginfo);
+            addUserFirstMessagePrompt(msginfo,"to")
+            userBubble(msginfo.to)
+            //将信息append到聊天Container，并返回模板uuid
+            return sendMessageTalkContainer(msginfo);
 
-            $("#talk-container").append(message);
-            storageTalkUserMessage(data["to"], message)
+
+        }
+
+        function sendMessageByWebsocket(msginfo) {
+            websocket.send(JSON.stringify(msginfo));
+        }
+
+        function sendMessageTalkContainer(msginfo) {
+
+            // var templateJSON = dialogHtmlTemplate(currentUserInfo.userName,msginfo.content,"to",msginfo.contentType)
+            // $("#talk-container").append(templateJSON.message);
+            // storageTalkUserMessage(msginfo["to"], templateJSON.message)
+            // scrollToBottom();
+            // return templateJSON.uuid;
+
+
+            msginfo.position = "right"
+            var templateJSON = getDialogHtmlTemplate(msginfo)
+            $("#talk-container").append(templateJSON.message);
+            storageCurrentTalkUserMessage(msginfo,templateJSON.uuid)
             scrollToBottom();
-
+            $('#sendmessage').val('')
+            return templateJSON.uuid;
         }
 
 
@@ -425,6 +439,128 @@
             var div = document.getElementById('talk-container');
             div.scrollTop = div.scrollHeight;
         }
+        
+        function dialogHtmlTemplate(messageSender,messageContent,messageType,contentType) {
+
+            var messagevar = getEmojiStr(messageContent)
+            var uuid  = getuuid();
+            var filename;
+            if(contentType == 'file'){
+                var arr = messagevar.split('@&@')
+                filename = arr[1]
+                messagevar = arr[0]
+            }
+            var isImag = judgeFileIsImag(filename);
+
+            var imagsrc = preUploadPath+filename;
+            var fileInfo = filename + '&@&@' + uuid;
+            var message = `<div><div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+                        <div class="w-30 d-flex justify-content-between border-light">
+                        ${messageType == 'from' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
+
+                        ${contentType && contentType == 'file' && messageType == 'to' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
+                        <div class="${messageType == 'to' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
+                        ${contentType && contentType == 'file' && messageType == 'from' ?`<div style="padding: 0 0"><button type="button" class="dialog-button btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">下载</button></div>`:''}
+                        ${messageType == 'to' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(messageSender) }"> </div>`:''}
+                        </div>
+                    </div>
+                      ${contentType == 'file' ? `<div class="d-flex ${messageType == 'to' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 10px;min-width: 150px">
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped progress-bar-animated" style="width: 20%"
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${messageType == 'to' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">0KB/s</div></div>
+        </div>` : ''}
+</div>`
+            return {
+                uuid,
+                message
+            }
+
+        }
+
+
+
+        function getDialogHtmlTemplate(msginfo) {
+
+            var messagevar = getEmojiStr(msginfo.content)
+            var uuid  = getuuid();
+            var filename;
+            if(msginfo.contentType == 'file'){
+                var arr = messagevar.split('@&@')
+                filename = arr[1]
+                messagevar = arr[0]
+            }
+            var isImag = judgeFileIsImag(filename);
+
+            var imagsrc = preUploadPath+filename;
+            var fileInfo = filename + '&@&@' + uuid;
+            var message = `<div ${msginfo.contentType && msginfo.contentType == 'file' ? `id='dialogdiv${uuid}'` : ''}><div class="d-flex ${msginfo.position == 'right' ? 'justify-content-end dialog-head-to' : 'justify-content-start dialog-head-from'}">
+                        <div class="w-30 d-flex justify-content-between border-light">
+                        ${msginfo.position == 'left' ?`<div><img class="dialog-head-icon-from" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+
+                        ${msginfo.contentType && msginfo.contentType == 'file' && msginfo.position == 'right' ?`<div style="padding: 0 0"><button type="button" class="dialog-button dialog-button-right btn btn-link" onclick="openfile(${"'"+filename+"'"})">打开</button></div>`:''}
+                        <div class="${msginfo.position == 'right' ? 'dialog-content-to' : 'dialog-content-from'} "> ${isImag ? `<img onclick="clickImag(${"'" + imagsrc + "'"})" class="dialog-imag" src="${imagsrc}">` : `${messagevar}`}</div>
+                        ${msginfo.contentType && msginfo.contentType == 'file' && msginfo.position == 'left' ?`<div style="padding: 0 0"><button id="downloadbutton${uuid}" type="button" class="dialog-button dialog-button-left btn btn-link" onclick="downloadfile(${"'" +fileInfo + "'"})">${msginfo.fileState == 'downloadSuccess' ? '重新下载' : '下载'}</button></div>`:''}
+                        ${msginfo.position == 'right' ?`<div><img class="dialog-head-icon-to" src="${ preHeadPath + pictureCache.get(msginfo.from) }"> </div>`:''}
+                        </div>
+                    </div>
+                      ${msginfo.contentType == 'file' && !isImag ? `<div id="progressDiv${uuid}" class="d-flex  ${msginfo.position == 'right' ? 'justify-content-end dialog-uploadprogress-to' : 'justify-content-start dialog-uploadprogress-from'}"><div class="w-30 d-flex" ><div class="progress" style="height: 8px;min-width: 120px">
+            <div id="progressBar${uuid}" class="progress-bar progress-bar-striped" ${(msginfo.fileState=='uploadSuccess' || msginfo.fileState=='downloadSuccess') ?`style="width: 100%"`:`style="width: 20%"`}
+                 role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" ></div></div><div id="showInfo${uuid}" class="${msginfo.position == 'right' ? 'dialog-progressinfo-to' : 'dialog-progressinfo-from'}">${msginfo.fileStateName ? msginfo.fileStateName : '未下载'}</div></div>
+        </div>` : ''}
+</div>`
+            return {
+                uuid,
+                message
+            }
+
+        }
+
+        function judgeFileIsImag(filename) {
+            if(!filename){
+                return false;
+            }
+            let filetype = filename.substr(filename.lastIndexOf(".")+1);
+            if(filetype && (filetype == "png" || filetype == "jpg" || filetype == "jpeg" || filetype == "webp" || filetype == "heic" || filetype == "svg" || filetype == "dng" || filetype == "raw" || filetype == "bmp")){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+
+        function clickImag(filepath) {
+
+            $("#imagmain").show()
+            divCenterShow('.imagmain')
+            $("#imag-preview").attr('src',filepath)
+            if(isPC){
+                $("#imag-preview").css('max-width','700px')
+                $("#imag-preview").css('max-height','500px')
+            }else{
+                $("#imag-preview").css('max-width','380px')
+                $("#imag-preview").css('max-height','500px')
+            }
+
+
+        }
+
+        function closeImagPreview() {
+
+            $("#imagmain").hide()
+        }
+
+
+        function getuuid() {
+            var s = [];
+            var hexDigits = "0123456789abcdef";
+            for (var i = 0; i < 10; i++) {
+                s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+            }
+
+
+
+            return s.join("");
+        }
+
 
 
     </script>
@@ -432,7 +568,7 @@
     <script src="/js/usermsg_storagerender.js"></script>
     <script src="/js/webrtc_videochat.js"></script>
     <script src="/js/message_tips.js"></script>
-    <script src="/js/draft.js"></script>
+    <script src="/js/drag.js"></script>
     <script src="/js/resize.js"></script>
     <script src="/js/file.js"></script>
 
