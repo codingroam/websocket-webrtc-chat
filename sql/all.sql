@@ -1,4 +1,5 @@
 CREATE DATABASE IF NOT EXISTS websocket_chatroom;
+use websocket_chatroom;
 DROP TABLE offmessage_record;
 CREATE TABLE offmessage_record (id int NOT NULL AUTO_INCREMENT, from_user varchar(50) NOT NULL, to_user varchar(50) NOT NULL, DATE datetime NOT NULL, state int(2) NOT NULL, content varchar(300) NOT NULL, content_type varchar(30) NOT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 DEFAULT COLLATE=utf8mb4_general_ci;
 DROP TABLE user;
