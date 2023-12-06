@@ -5,7 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-//需要登录才能进行操作的注解LoginToken
+/**
+ * 快速登录功能，使用手机号+验证码实现快速注册登录
+ */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FastLoginToken {

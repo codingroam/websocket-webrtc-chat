@@ -33,11 +33,18 @@ public class FileController {
 	@Autowired
 	UserService userService;
 
+	/**
+	 * 根据文件类别(type)和文件名称(name)下载文件
+	 * @param type
+	 * @param name
+	 * @param response
+	 * @throws IOException
+	 */
 	
 	@RequestMapping("/file/{type}/{name}")
 	@ResponseBody
 	@LoginToken
-	public void login(@PathVariable("type") String type, @PathVariable("name") String name, HttpServletResponse response) throws IOException {
+	public void downloadFile(@PathVariable("type") String type, @PathVariable("name") String name, HttpServletResponse response) throws IOException {
 		//response.setContentType("image/png,image/jpeg");// 设置MIME类型，也就是响应类型
 		//response.setContentType("blob");
 		ServletOutputStream out = response.getOutputStream();

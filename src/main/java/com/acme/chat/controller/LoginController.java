@@ -19,7 +19,14 @@ public class LoginController {
 	@Autowired
 	UserService userService;
 
-	
+
+	/**
+	 * 用户名密码登录
+	 * @param userName
+	 * @param passWord
+	 * @param httpSession
+	 * @return
+	 */
 	@RequestMapping("/login")
 	@ResponseBody
 	@LoginToken
@@ -30,6 +37,13 @@ public class LoginController {
 		return businessResult;
 	}
 
+	/**
+	 * 快速登录，手机号+验证码实现一键注册+登录
+	 * @param tel
+	 * @param checkNum
+	 * @param httpSession
+	 * @return
+	 */
 	@RequestMapping("/fastlogin")
 	@ResponseBody
 	@LoginToken
@@ -40,6 +54,11 @@ public class LoginController {
 		return businessResult;
 	}
 
+	/**
+	 * 获取验证码
+	 * @param tel
+	 * @return
+	 */
 	@RequestMapping("/getcheckcode")
 	@ResponseBody
 	@LoginToken
